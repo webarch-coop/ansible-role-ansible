@@ -40,3 +40,27 @@
   service:
     name: ssh 
     state: restarted
+
+- name: Stat SSH root ECDSA public key
+  stat:
+    path: "/root/.ssh/id_ed25519"
+  register: ssh_ecdsa_pubkey
+
+- block:
+
+  - name: Generating SSH ECDSA keypair
+    command: ssh-keygen -q -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" -C "root@{{ hostname }}"
+
+  when: ssh_ecdsa_pubkey.stat.exists == False
+
+- name: Stat SSH root RSA public key
+  stat:
+    path: "/root/.ssh/id_rsa"
+  register: ssh_rsa_pubkey
+
+- block:
+
+  - name: Generating SSH RSA keypair
+    command: ssh-keygen -q -t rsa -b 4096 -f /root/.ssh/id_rsa -q -N "" -C "root@{{ hostname }}"
+
+  when: ssh_rsa_pubkey.stat.exists == False

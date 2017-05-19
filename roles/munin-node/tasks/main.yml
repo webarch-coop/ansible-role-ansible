@@ -14,7 +14,7 @@
  
 - name: Munin client node conf in place
   copy:
-    src: files/etc/munin/munin-node.conf
+    src: files/munin-node.conf
     dest: /etc/munin/munin-node.conf
     backup: yes
 
