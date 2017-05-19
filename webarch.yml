@@ -1,0 +1,13 @@
+---
+- name: Webarchitects Debian Server Config
+  hosts: "{{ hostname }}"
+
+  roles:
+    - bash
+    - apt
+    - sshd
+    - vim
+    - locale
+    - munin-node
+    - chrony
+
