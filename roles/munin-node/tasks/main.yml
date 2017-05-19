@@ -1,0 +1,37 @@
+---
+- name: Munin node packages installed 
+  apt:
+    pkg: "{{ item }}"
+    state: latest 
+    update_cache: yes
+  with_items:
+    - munin-node
+    - munin-plugins-core
+    - munin-plugins-extra
+    - libwww-perl
+    - time
+    - libcache-cache-perl
+ 
+- name: Munin client node conf in place
+  copy:
+    src: files/etc/munin/munin-node.conf
+    dest: /etc/munin/munin-node.conf
+    backup: yes
+
+- name: Distro set to {{ distro }} in munin apt_all plugin 
+  lineinfile:
+    state: present
+    line: "my @releases = ('{{ distro }}');"
+    regexp: "^my @releases"
+    dest: "/usr/share/munin/plugins/apt_all"
+
+- name: Munin apt_all plugin symlinked
+  file:
+    src: /usr/share/munin/plugins/apt_all
+    dest: /etc/munin/plugins/apt_all
+    state: link
+
+- name: Munin node restarted
+  service:
+    name: munin-node
+    state: restarted

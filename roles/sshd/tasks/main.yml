@@ -1,0 +1,42 @@
+---
+# https://wiki.mozilla.org/Security/Guidelines/OpenSSH
+- name: Ssh access restricted to root and sudoers
+  lineinfile:
+    backup: yes
+    state: present
+    line: "AllowGroups root sudo"
+    regexp: "^#?AllowGroups"
+    insertafter: "^PermitRootLogin"
+    dest: "/etc/ssh/sshd_config"
+
+- name: Ssh root login only using keys 
+  lineinfile:
+    backup: yes
+    backrefs: yes
+    state: present
+    line: "PermitRootLogin prohibit-password"
+    regexp: "^#?PermitRootLogin"
+    dest: "/etc/ssh/sshd_config"
+
+- name: Tunneled clear text passwords disabled
+  lineinfile:
+    backup: yes
+    backrefs: yes
+    state: present
+    line: "PasswordAuthentication no"
+    regexp: "^#?PasswordAuthentication"
+    dest: "/etc/ssh/sshd_config"
+
+- name: Public key based logins only
+  lineinfile:
+    backup: yes
+    state: present
+    line: "AuthenticationMethods publickey"
+    regexp: "^AuthenticationMethods"
+    insertafter: "^#?PubkeyAuthentication"
+    dest: "/etc/ssh/sshd_config"
+
+- name: Sshd restarted
+  service:
+    name: ssh 
+    state: restarted

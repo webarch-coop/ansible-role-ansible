@@ -1,0 +1,16 @@
+---
+- name: Time related packages installed
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - chrony
+    - rdate
+
+- name: Set the date after a reboot crontab in place
+  cron:
+    name: Check the date following reboots
+    special_time: reboot
+    job: "rdate -s ntp.demon.co.uk"
+
