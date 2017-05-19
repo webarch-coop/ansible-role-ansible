@@ -1,0 +1,8 @@
+---
+- name: Bash packages installed
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - bash-completion 

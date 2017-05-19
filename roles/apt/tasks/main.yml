@@ -1,0 +1,43 @@
+---
+- name: Packages installed
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - apt-transport-https
+    - apticron
+    - aptitude
+    - apt-listchanges
+    - apt-show-versions
+    - git
+
+- block:
+
+  - name: Use HTTPS mirror for {{ distro }} apt packages 
+    lineinfile:
+      backup: yes
+      backrefs: yes
+      state: present
+      dest: "/etc/apt/sources.list"
+      regexp: '^deb\s+http://httpredir.debian.org/debian'
+      line: "deb     https://www.mirrorservice.org/sites/ftp.debian.org/debian/     {{ distro }} main contrib non-free"
+  
+  - name: Use HTTPS mirror for {{ distro }} apt source packages 
+    lineinfile:
+      backup: yes
+      backrefs: yes
+      state: present
+      dest: "/etc/apt/sources.list"
+      regexp: '^deb-src\s+http://httpredir.debian.org/debian'
+      line: "deb-src https://www.mirrorservice.org/sites/ftp.debian.org/debian/     {{ distro }} main contrib non-free"
+
+  when: ( distro == 'jessie' ) or ( distro == 'stretch' )
+
+- name: Checkout Webarchitects scripts
+  git:
+    repo: https://git.coop/webarch/scripts.git 
+    dest: /usr/local/src/scripts
+
+- name: Install Webarchitects scripts
+  command: /usr/local/src/scripts/install.sh 
