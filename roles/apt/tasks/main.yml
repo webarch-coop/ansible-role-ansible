@@ -38,6 +38,7 @@
   git:
     repo: https://git.coop/webarch/scripts.git 
     dest: /usr/local/src/scripts
+    update: yes
 
 - name: Install Webarchitects scripts
   command: /usr/local/src/scripts/install.sh 
