@@ -10,4 +10,5 @@
     - locale
     - munin-node
     - chrony
+    - screen
 
