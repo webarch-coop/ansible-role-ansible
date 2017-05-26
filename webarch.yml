@@ -10,5 +10,6 @@
     - locale
     - munin-node
     - chrony
+    - rsync
     - screen
 

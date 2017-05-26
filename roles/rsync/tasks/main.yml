@@ -1,0 +1,6 @@
+---
+- name: Rsync present
+  apt:
+    name: rsync
+    state: present
+    update_cache: yes
