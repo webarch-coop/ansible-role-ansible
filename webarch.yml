@@ -1,6 +1,7 @@
 ---
 - name: Webarchitects Debian Server Config
   hosts: "{{ hostname }}"
+  become: yes
 
   roles:
     - bash
