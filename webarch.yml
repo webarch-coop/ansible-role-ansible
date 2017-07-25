@@ -13,4 +13,5 @@
     - chrony
     - rsync
     - screen
+    - mutt
 

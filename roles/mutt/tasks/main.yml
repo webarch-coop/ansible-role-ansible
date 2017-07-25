@@ -1,0 +1,9 @@
+---
+- name: Mutt packages installed
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+  - mutt
+  - ispell
