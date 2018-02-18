@@ -29,7 +29,16 @@ export SERVERNAME="example.webarch.net"
 ansible-playbook webarch.yml -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
 ```
 
+## Ansible 2.4
 
+Debian Stretch ships with Ansible 2.2 and this is now rather old, so to update your local machine to 2.4 from backports, first add the backports repo and then install Ansible:
+
+```bash
+sudo -i
+echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/stretch-backports.list
+apt update
+apt -t stretch-backports install ansible
+```
 
 
 
