@@ -17,3 +17,6 @@ set t_Co=256
 " use F9 and F10 to switch between insert / paste whitespace modes
 map <F10> gqap
 :set pastetoggle=<F9>
+
+" https://github.com/vim/vim/issues/1326#issuecomment-266955735
+set mouse-=a
