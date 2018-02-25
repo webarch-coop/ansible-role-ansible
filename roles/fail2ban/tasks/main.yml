@@ -1,0 +1,22 @@
+---
+- name: fail2ban installed
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - fail2ban
+
+- name: Stat /etc/fail2ban/jail.local 
+  stat:
+    path: /etc/fail2ban/jail.local
+  register: jail_local
+
+- debug:
+    msg: "The result of stat.exists /etc/fail2ban/jail.local: {{ jail_local.stat.exists }}"
+
+- name: Install /etc/fail2ban/jail.local if it doesn't already exist
+  copy:
+    src: files/jail.local
+    dest: /etc/fail2ban/jail.local
+  when: jail_local.stat.exists == False

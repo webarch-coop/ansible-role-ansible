@@ -14,4 +14,4 @@
     - rsync
     - screen
     - mutt
-
+    - fail2ban
