@@ -4,6 +4,21 @@ Playbooks to setup things specifically for Webarchitects Co-operative so our
 other published playbooks can be more generic, for example we use `vim` and
 therefore remove `nano`...
 
+## Initial server configuration
+
+Once the virtual server has been created login as root using the Xen console and then run:
+
+```bash
+apt install python ssh-import-id
+ssh-import-id-gh $GITHUB_USERNAME 
+```
+
+Where `$GITHUB_USERNAME` is your GitHub username, this will import your SSH public keys from GitHub, or use `ssh-import-id-lp` to use your SSH public keys from Launchpad.
+
+You can then connect using SSH keys and don't need to restart SSH or edit `/etc/ssh/sshd_config` since Debian has `PermitRootLogin prohibit-password` by default.
+
+## Running the Playbook
+
 To run one of these playbooks as `root` on the remote server using a SSH
 password:
 
