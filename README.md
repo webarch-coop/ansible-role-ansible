@@ -1,8 +1,6 @@
 # Webarchitects Co-operative Ansible Playbooks for Debian Servers
 
-Playbooks to setup things specifically for Webarchitects Co-operative so our
-other published playbooks can be more generic, for example we use `vim` and
-therefore remove `nano`...
+Playbooks to setup things specifically for Webarchitects Co-operative so our other published playbooks can be more generic, for example we use `vim` and therefore remove `nano`...
 
 ## Initial server configuration
 
@@ -17,7 +15,17 @@ Where `$GITHUB_USERNAME` is your GitHub username, this will import your SSH publ
 
 You can then connect using SSH keys and don't need to restart SSH or edit `/etc/ssh/sshd_config` since Debian has `PermitRootLogin prohibit-password` by default.
 
+Please run an appropriate `sudoers` Playbook to add sudoers accounds before runnng this Playbook.
+
 ## Running the Playbook
+
+To run one of these playbooks as a sudoer using public keys:
+
+```bash
+export DISTRO="stretch"
+export SERVERNAME="example.webarch.net"
+ansible-playbook webarch.yml -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
+```
 
 To run one of these playbooks as `root` on the remote server using a SSH
 password:
@@ -34,14 +42,6 @@ To run one of these playbooks as `root` on the remote server using public keys:
 export DISTRO="stretch"
 export SERVERNAME="example.webarch.net"
 ansible-playbook webarch.yml -u root -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
-```
-
-To run one of these playbooks as a sudoer using public keys:
-
-```bash
-export DISTRO="stretch"
-export SERVERNAME="example.webarch.net"
-ansible-playbook webarch.yml -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
 ```
 
 ## Ansible 2.4
