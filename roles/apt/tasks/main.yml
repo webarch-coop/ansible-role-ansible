@@ -18,28 +18,12 @@
     path: "/etc/apt/sources.list"
   register: sources_list
 
-- block:
-
-  - name: Use HTTPS mirror for {{ distro }} apt packages 
-    lineinfile:
-      backup: yes
-      backrefs: yes
-      state: present
-      dest: "/etc/apt/sources.list"
-      regexp: '^deb\s+http://httpredir.debian.org/debian'
-      line: "deb     https://www.mirrorservice.org/sites/ftp.debian.org/debian/     {{ distro }} main contrib non-free"
-    when: ( distro == 'jessie' ) or ( distro == 'stretch' )
-  
-  - name: Use HTTPS mirror for {{ distro }} apt source packages 
-    lineinfile:
-      backup: yes
-      backrefs: yes
-      state: present
-      dest: "/etc/apt/sources.list"
-      regexp: '^deb-src\s+http://httpredir.debian.org/debian'
-      line: "deb-src https://www.mirrorservice.org/sites/ftp.debian.org/debian/     {{ distro }} main contrib non-free"
-    when: ( distro == 'jessie' ) or ( distro == 'stretch' )
-
+- name: /etc/apt/sources.list in place
+  template:
+    src: templates/sources.list.j2
+    dest: /etc/apt/sources.list
+    mode: 0644
+    backup: yes
   when: sources_list.stat.exists == True
 
 - name: Checkout Webarchitects scripts

@@ -3,6 +3,9 @@
   hosts: "{{ hostname }}"
   become: yes
 
+  vars:
+    distro: stretch
+
   roles:
     - bash
     - apt
