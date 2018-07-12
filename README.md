@@ -4,16 +4,20 @@ Playbooks to setup things specifically for Webarchitects Co-operative so our oth
 
 ## Initial server configuration
 
-Once the virtual server has been created login as root using the Xen console and then run:
+Once the virtual server has been created login as root using the Xen console and then run the following, replacing `chriscroome` with your username:
 
 ```bash
-apt install python ssh-import-id
-ssh-import-id-gh $GITHUB_USERNAME 
+apt update
+apt upgrade -y 
+apt install -y python ssh-import-id
+ssh-import-id chriscroome 
+sed -i 's/^#PermitRootLogin prohibit-password/#PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+service ssh restart
 ```
 
 Where `$GITHUB_USERNAME` is your GitHub username, this will import your SSH public keys from GitHub, or use `ssh-import-id-lp` to use your SSH public keys from Launchpad.
 
-You can then connect using SSH keys and don't need to restart SSH or edit `/etc/ssh/sshd_config` since Debian has `PermitRootLogin prohibit-password` by default.
+Edit `/etc/ssh/sshd_config` to uncomment `PermitRootLogin prohibit-password` and restart `sshd`. 
 
 Please run an appropriate `sudoers` Playbook to add sudoers accounds before runnng this Playbook.
 
