@@ -15,8 +15,6 @@ ssh-import-id chriscroome
 
 Where `$GITHUB_USERNAME` is your GitHub username, this will import your SSH public keys from GitHub, or use `ssh-import-id-lp` to use your SSH public keys from Launchpad.
 
-Edit `/etc/ssh/sshd_config` to uncomment `PermitRootLogin prohibit-password` and restart `sshd`. 
-
 Please run an appropriate `sudoers` Playbook to add sudoers accounds before runnng this Playbook.
 
 ## Running the Playbook
