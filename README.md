@@ -11,7 +11,7 @@ apt update
 apt upgrade -y 
 apt install -y python ssh-import-id
 ssh-import-id chriscroome 
-sed -i 's/^#PermitRootLogin prohibit-password/#PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
 service ssh restart
 ```
 
