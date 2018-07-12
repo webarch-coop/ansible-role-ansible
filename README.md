@@ -11,8 +11,6 @@ apt update
 apt upgrade -y 
 apt install -y python ssh-import-id
 ssh-import-id chriscroome 
-sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
-service ssh restart
 ```
 
 Where `$GITHUB_USERNAME` is your GitHub username, this will import your SSH public keys from GitHub, or use `ssh-import-id-lp` to use your SSH public keys from Launchpad.
