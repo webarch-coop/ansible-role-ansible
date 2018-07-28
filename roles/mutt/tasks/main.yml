@@ -7,3 +7,5 @@
   with_items:
   - mutt
   - ispell
+  environment:
+    PATH: /bin:/sbin:/usr/bin:/usr/sbin
