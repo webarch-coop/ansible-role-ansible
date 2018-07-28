@@ -1,4 +1,5 @@
 ---
+# apt-transport-https needs to be installed before the sources.list is updated to use HTTPS
 - name: Packages installed
   apt:
     pkg: "{{ item }}"
@@ -34,3 +35,20 @@
 
 - name: Install Webarchitects scripts
   command: /usr/local/src/scripts/install.sh 
+
+- name: Check for updates
+  command: apt-show-versions -b -u
+  register: packages
+
+- block:
+
+  - name: Dist upgrade
+    apt:
+      update_cache: no
+      upgrade: dist
+    register: dist_upgrade
+
+  - name: Update the Changelog
+    command: "logchange {{ packages.stdout }}"
+
+  when: packages.stdout != ""
