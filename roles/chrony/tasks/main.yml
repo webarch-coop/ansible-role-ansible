@@ -12,5 +12,5 @@
   cron:
     name: Check the date following reboots
     special_time: reboot
-    job: "rdate -s ntp.demon.co.uk"
+    job: "rdate -s 0.pool.ntp.org"
 
