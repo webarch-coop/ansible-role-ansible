@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 {% if distro == 'stretch' %}
 deb https://deb.debian.org/debian {{ distro }} main
+deb https://deb.debian.org/debian {{ distro }}-backports main 
 deb https://deb.debian.org/debian-security {{ distro }}/updates main
 {% elif distro == 'jessie' or distro == 'wheezy' %}
 deb http://ftp.uk.debian.org/debian/ {{ distro }} main contrib non-free
