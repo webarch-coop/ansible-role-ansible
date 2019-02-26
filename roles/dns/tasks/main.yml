@@ -1,9 +1,8 @@
 ---
 - name: DNS related packages installed
   apt:
-    pkg: "{{ item }}"
-    state: latest
+    pkg:
+      - dnsutils
+      - whois
+    state: present
     update_cache: yes
-  with_items:
-    - dnsutils
-    - whois

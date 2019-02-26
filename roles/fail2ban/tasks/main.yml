@@ -1,11 +1,10 @@
 ---
 - name: fail2ban installed
   apt:
-    pkg: "{{ item }}"
-    state: latest
+    pkg:
+      - fail2ban
+    state: present
     update_cache: yes
-  with_items:
-    - fail2ban
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
 

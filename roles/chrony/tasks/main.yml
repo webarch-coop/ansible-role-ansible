@@ -1,8 +1,7 @@
 ---
 - name: Time related packages installed
   apt:
-    pkg: "{{ item }}"
-    state: latest
+    pkg:
+      - chrony
+    state: present
     update_cache: yes
-  with_items:
-    - chrony

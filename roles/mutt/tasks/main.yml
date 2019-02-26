@@ -1,11 +1,10 @@
 ---
 - name: Mutt packages installed
   apt:
-    pkg: "{{ item }}"
-    state: latest
+    pkg:
+      - mutt
+      - ispell
+    state: present
     update_cache: yes
-  with_items:
-  - mutt
-  - ispell
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin

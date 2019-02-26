@@ -1,16 +1,15 @@
 ---
 - name: Munin node packages installed 
   apt:
-    pkg: "{{ item }}"
-    state: latest 
+    pkg:
+      - munin-node
+      - munin-plugins-core
+      - munin-plugins-extra
+      - libwww-perl
+      - time
+      - libcache-cache-perl
+    state: present
     update_cache: yes
-  with_items:
-    - munin-node
-    - munin-plugins-core
-    - munin-plugins-extra
-    - libwww-perl
-    - time
-    - libcache-cache-perl
  
 - name: Munin client node conf in place
   copy:

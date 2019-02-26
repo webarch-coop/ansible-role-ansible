@@ -2,22 +2,21 @@
 # apt-transport-https needs to be installed before the sources.list is updated to use HTTPS
 - name: Packages installed
   apt:
-    pkg: "{{ item }}"
-    state: latest
+    pkg:
+      - apt-transport-https
+      - apticron
+      - aptitude
+      - apt-listchanges
+      - apt-show-versions
+      - git
+    state: present
     update_cache: yes
-  with_items:
-    - apt-transport-https
-    - apticron
-    - aptitude
-    - apt-listchanges
-    - apt-show-versions
-    - git
 
 # Gandi servers don't have /etc/apt/sources.list and have HTTPS enabled already
 - name: Stat /etc/apt/sources.list
   stat:
     path: "/etc/apt/sources.list"
-  register: sources_list
+  register: ansible_apt_sources_list
 
 - name: /etc/apt/sources.list in place
   template:
@@ -25,20 +24,26 @@
     dest: /etc/apt/sources.list
     mode: 0644
     backup: yes
-  when: sources_list.stat.exists == True
+  when: ansible_apt_sources_list.stat.exists == True
 
 - name: Checkout Webarchitects scripts
   git:
-    repo: https://git.coop/webarch/scripts.git 
+    repo: https://git.coop/webarch/scripts.git
     dest: /usr/local/src/scripts
+    version: master
+    force: yes
     update: yes
+  register: ansible_apt_scripts_git_checkout
 
 - name: Install Webarchitects scripts
   command: /usr/local/src/scripts/install.sh 
+  args:
+    warn: no
+  when: ansible_apt_scripts_git_checkout.changed
 
 - name: Check for updates
   command: apt-show-versions -b -u
-  register: packages
+  register: ansible_apt_packages
 
 - block:
 
@@ -46,9 +51,12 @@
     apt:
       update_cache: no
       upgrade: dist
-    register: dist_upgrade
+    register: ansible_apt_dist_upgrade
 
   - name: Update the Changelog
-    command: "logchange {{ packages.stdout }}"
+    args:
+      warn: no
+    command: "logchange {{ ansible_packages.stdout }}"
+    when: ansible_apt_dist_upgrade.changed 
 
-  when: packages.stdout != ""
+  when: ansible_apt_packages.stdout != ""
