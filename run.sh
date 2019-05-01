@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+ansible-galaxy install -r requirements.yml --force
+
 if [[ -z "${DISTRO}" ]]; then
   echo 'Please: `export DISTRO="stretch"`'
   exit 1

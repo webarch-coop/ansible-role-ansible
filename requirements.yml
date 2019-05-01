@@ -1,0 +1,4 @@
+- name: ssh
+  src: https://git.coop/webarch/ssh.git
+  version: master
+  scm: git

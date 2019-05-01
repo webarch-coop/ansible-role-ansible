@@ -24,6 +24,7 @@ To run one of these playbooks as a sudoer using public keys:
 ```bash
 export DISTRO="stretch"
 export SERVERNAME="example.webarch.net"
+ansible-galaxy install -r requirements.yml --force
 ansible-playbook webarch.yml -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
 ```
 
@@ -33,6 +34,7 @@ password:
 ```bash
 export DISTRO="stretch"
 export SERVERNAME="example.webarch.net"
+ansible-galaxy install -r requirements.yml --force
 ansible-playbook webarch.yml -k -u root -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
 ```
 
@@ -41,6 +43,7 @@ To run one of these playbooks as `root` on the remote server using public keys:
 ```bash
 export DISTRO="stretch"
 export SERVERNAME="example.webarch.net"
+ansible-galaxy install -r requirements.yml --force
 ansible-playbook webarch.yml -u root -i ${SERVERNAME}, -e "hostname=${SERVERNAME} distro=${DISTRO}"
 ```
 

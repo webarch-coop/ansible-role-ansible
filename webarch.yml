@@ -5,6 +5,11 @@
 
   vars:
     distro: stretch
+    ssh_permit_root_login: "prohibit-password"
+    ssh_allow_groups: "root sudo"
+    ssh_authentication_methods: "publickey"
+    ssh_password_authentication: "no"
+    ssh_pubkey_authentication: "yes"
 
   roles:
     - bash
