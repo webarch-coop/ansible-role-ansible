@@ -13,9 +13,9 @@ apt install -y python ssh-import-id
 ssh-import-id chriscroome 
 ```
 
-Where `$GITHUB_USERNAME` is your GitHub username, this will import your SSH public keys from GitHub, or use `ssh-import-id-lp` to use your SSH public keys from Launchpad.
+This will import your public keys from Launchpad, use `ssh-import-id-lp` to use your SSH public keys from GitHub.
 
-Please run an appropriate `sudoers` Playbook to add sudoers accounds before runnng this Playbook.
+Please run an appropriate `sudoers` Playbook to add sudoers accounds before running this Playbook.
 
 ## Running the Playbook
 
