@@ -4,6 +4,7 @@
   become: true
 
   vars:
+    apt_distro: "{{ distro }}"
     ssh_permit_root_login: "prohibit-password"
     ssh_allow_groups: "root sudo"
     ssh_authentication_methods: "publickey"
