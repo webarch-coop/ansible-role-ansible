@@ -1,5 +1,5 @@
 ---
-- name: Munin node packages installed 
+- name: Munin node packages installed
   apt:
     pkg:
       - munin-node
@@ -9,15 +9,15 @@
       - time
       - libcache-cache-perl
     state: present
-    update_cache: yes
+    update_cache: false
  
 - name: Munin client node conf in place
   copy:
     src: files/munin-node.conf
     dest: /etc/munin/munin-node.conf
-    backup: yes
+    backup: true
 
-- name: Distro set to {{ distro }} in munin apt_all plugin 
+- name: Distro set to {{ distro }} in munin apt_all plugin
   lineinfile:
     state: present
     line: "my @releases = ('{{ distro }}');"

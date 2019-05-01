@@ -1,7 +1,7 @@
 ---
 - name: Webarchitects Debian Server Config
   hosts: "{{ hostname }}"
-  become: yes
+  become: true
 
   vars:
     ssh_permit_root_login: "prohibit-password"

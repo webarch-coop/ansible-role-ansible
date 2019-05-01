@@ -4,7 +4,7 @@
     pkg:
       - fail2ban
     state: present
-    update_cache: yes
+    update_cache: false
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
 

@@ -1,9 +1,10 @@
 ---
 - name: Full version of vim installed
   apt:
-    name: vim
+    pkg:
+      - vim
     state: present
-    update_cache: yes
+    update_cache: no
 
 - name: Remove nano
   apt:
@@ -16,15 +17,15 @@
 - name: Vim set as the default editor via select-editor
   copy:
     src: files/selected_editor
-    dest: /root/.selected_editor 
+    dest: /root/.selected_editor
 
-- name: ~/.vimrc in place 
-  copy: 
-    src: files/vimrc 
+- name: ~/.vimrc in place
+  copy:
+    src: files/vimrc
     dest: /root/.vimrc
 
 - name: /root/.vim/syntax exists
-  file: 
+  file:
     path: /root/.vim/syntax
     state: directory
 
@@ -32,7 +33,7 @@
 - name: Check if filetype.vim exists
   stat:
     path: "/root/.vim/filetype.vim"
-  register: vim_filetype_exists 
+  register: vim_filetype_exists
 
 - name: Create filetype.vim, if it doesn't exist already
   file:
@@ -42,7 +43,7 @@
 
 - name: Nginx syntax highlighting file installed
   get_url:
-    url: https://raw.githubusercontent.com/vim-scripts/nginx.vim/master/syntax/nginx.vim 
+    url: https://raw.githubusercontent.com/vim-scripts/nginx.vim/master/syntax/nginx.vim
     dest: /root/.vim/syntax/nginx.vim
     mode: 0644
 
@@ -51,4 +52,3 @@
     dest: "/root/.vim/filetype.vim"
     regexp: "^au BufRead,BufNewFile /etc/nginx"
     line: "au BufRead,BufNewFile /etc/nginx/* set ft=nginx"
-

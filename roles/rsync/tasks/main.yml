@@ -1,6 +1,7 @@
 ---
 - name: Rsync present
   apt:
-    name: rsync
+    pkg:
+      - rsync
     state: present
-    update_cache: yes
+    update_cache: false

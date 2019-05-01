@@ -1,0 +1,22 @@
+---
+- name: Packages installed
+  apt:
+    pkg:
+      - git
+    state: present
+    update_cache: false
+
+- name: Checkout Webarchitects scripts
+  git:
+    repo: https://git.coop/webarch/scripts.git
+    dest: /usr/local/src/scripts
+    version: master
+    force: yes
+    update: yes
+  register: ansible_scripts_git_checkout
+
+- name: Install Webarchitects scripts
+  command: /usr/local/src/scripts/install.sh 
+  args:
+    warn: no
+  when: ansible_scripts_git_checkout.changed

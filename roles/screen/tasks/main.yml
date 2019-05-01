@@ -1,7 +1,7 @@
 ---
 - name: Screen present
   apt:
-    name: screen
+    pgk:
+      - screen
     state: present
-    update_cache: yes
-
+    update_cache: false 
