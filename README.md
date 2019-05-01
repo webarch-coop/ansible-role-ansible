@@ -2,6 +2,9 @@
 
 Playbooks to setup things specifically for Webarchitects Co-operative so our other published playbooks can be more generic, for example we use `vim` and therefore remove `nano`...
 
+Everything in this repo should be moved into Ansible Galaxy roles at some point in the future&hellip;
+
+
 ## Initial server configuration
 
 Once the virtual server has been created login as root using the Xen console and then run the following, replacing `chriscroome` with your username:

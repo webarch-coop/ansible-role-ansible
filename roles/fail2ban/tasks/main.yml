@@ -8,7 +8,7 @@
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
 
-- name: Stat /etc/fail2ban/jail.local 
+- name: Stat /etc/fail2ban/jail.local
   stat:
     path: /etc/fail2ban/jail.local
   register: jail_local

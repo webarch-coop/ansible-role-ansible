@@ -4,7 +4,7 @@
     pkg:
       - vim
     state: present
-    update_cache: no
+    update_cache: false
 
 - name: Remove nano
   apt:

@@ -10,7 +10,7 @@
       - libcache-cache-perl
     state: present
     update_cache: false
- 
+
 - name: Munin client node conf in place
   copy:
     src: files/munin-node.conf
