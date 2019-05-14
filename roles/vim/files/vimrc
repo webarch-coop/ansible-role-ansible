@@ -11,6 +11,10 @@ set fileencoding&       " auto-sensed charset of current buffer
 syntax on
 set background=dark
 
+" Syntax highlighting in first or last line
+set modeline
+set modelines=1
+
 " http://vim.wikia.com/wiki/256_colors_in_vim
 set t_Co=256
 
