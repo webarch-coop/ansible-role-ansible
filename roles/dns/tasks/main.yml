@@ -6,4 +6,6 @@
       - whois
     state: present
     update_cache: false
+  tags:
+    - dns 
 ...

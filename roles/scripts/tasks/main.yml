@@ -5,6 +5,8 @@
       - git
     state: present
     update_cache: false
+  tags:
+    - scripts
 
 - name: Checkout Webarchitects scripts
   git:
@@ -14,10 +16,14 @@
     force: true
     update: true
   register: ansible_scripts_git_checkout
+  tags:
+    - scripts
 
 - name: Install Webarchitects scripts
   command: /usr/local/src/scripts/install.sh
   args:
     warn: false
   when: ansible_scripts_git_checkout.changed
+  tags:
+    - scripts
 ...

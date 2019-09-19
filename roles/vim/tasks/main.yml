@@ -5,46 +5,64 @@
       - vim
     state: present
     update_cache: false
+  tags:
+    - vim
 
 - name: Vim set as the default editor via update-alternatives
   command: update-alternatives --set editor /usr/bin/vim.basic
+  tags:
+    - vim
 
 - name: Vim set as the default editor via select-editor
   copy:
     src: files/selected_editor
     dest: /root/.selected_editor
+  tags:
+    - vim
 
 - name: ~/.vimrc in place
   copy:
     src: files/vimrc
     dest: /root/.vimrc
+  tags:
+    - vim
 
 - name: /root/.vim/syntax exists
   file:
     path: /root/.vim/syntax
     state: directory
+  tags:
+    - vim
 
 # The following should probably simply copy ~/.vim/ into place
 - name: Check if filetype.vim exists
   stat:
     path: "/root/.vim/filetype.vim"
   register: vim_filetype_exists
+  tags:
+    - vim
 
 - name: Create filetype.vim, if it doesn't exist already
   file:
     path: "/root/.vim/filetype.vim"
     state: touch
   when: vim_filetype_exists.stat.exists == False
+  tags:
+    - vim
 
 - name: Nginx syntax highlighting file installed
   get_url:
     url: https://raw.githubusercontent.com/vim-scripts/nginx.vim/master/syntax/nginx.vim
     dest: /root/.vim/syntax/nginx.vim
     mode: 0644
+  tags:
+    - vim
 
 - name: Nginx syntax highlighting enabled
   lineinfile:
     dest: "/root/.vim/filetype.vim"
     regexp: "^au BufRead,BufNewFile /etc/nginx"
     line: "au BufRead,BufNewFile /etc/nginx/* set ft=nginx"
+  tags:
+    - vim
 ...

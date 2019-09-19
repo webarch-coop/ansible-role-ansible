@@ -6,16 +6,22 @@
       - locales-all
     state: present
     update_cache: false
+  tags:
+    - locale
 
 - name: en_GB.UTF-8 locale generated
   command: locale-gen en_GB.UTF-8
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
+  tags:
+    - locale
 
 - name: en_GB.UTF-8 locale updated
   command: /usr/sbin/update-locale en_GB.UTF-8
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
+  tags:
+    - locale
 
 - name: /root/.bashrc LANG set to UTF-8
   blockinfile:
@@ -24,4 +30,6 @@
       export LC_ALL=en_GB.UTF-8
       export LANG=en_GB.UTF-8
       export LANGUAGE=en_GB.UTF-8
+  tags:
+    - locale
 ...

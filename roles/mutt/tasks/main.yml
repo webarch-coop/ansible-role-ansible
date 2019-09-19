@@ -8,4 +8,6 @@
     update_cache: false
   environment:
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
+  tags:
+    - mutt
 ...

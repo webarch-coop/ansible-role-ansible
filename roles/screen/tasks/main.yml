@@ -5,4 +5,6 @@
       - screen
     state: present
     update_cache: false
+  tags:
+    - screen
 ...
