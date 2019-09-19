@@ -1,9 +1,0 @@
-[DEFAULT] 
-ignoreip  = 127.0.0.1
-bantime   = 86400
-banaction = iptables-multiport
-logpath   = /var/log/auth.log
-
-[sshd]
-enabled   = true
-maxretry  = 5

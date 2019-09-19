@@ -4,6 +4,11 @@
   version: master
   scm: git
 
+- name: sudo
+  src: https://git.coop/webarch/sudo.git
+  version: master
+  scm: git
+
 - name: apt
   src: https://git.coop/webarch/apt.git
   version: master
