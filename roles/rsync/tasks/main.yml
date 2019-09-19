@@ -5,3 +5,4 @@
       - rsync
     state: present
     update_cache: false
+...

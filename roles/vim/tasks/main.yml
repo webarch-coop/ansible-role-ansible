@@ -6,11 +6,6 @@
     state: present
     update_cache: false
 
-- name: Remove nano
-  apt:
-    name: nano
-    state: absent
-
 - name: Vim set as the default editor via update-alternatives
   command: update-alternatives --set editor /usr/bin/vim.basic
 
@@ -52,3 +47,4 @@
     dest: "/root/.vim/filetype.vim"
     regexp: "^au BufRead,BufNewFile /etc/nginx"
     line: "au BufRead,BufNewFile /etc/nginx/* set ft=nginx"
+...

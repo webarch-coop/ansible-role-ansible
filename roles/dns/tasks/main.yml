@@ -5,4 +5,5 @@
       - dnsutils
       - whois
     state: present
-    update_cache: true
+    update_cache: false
+...

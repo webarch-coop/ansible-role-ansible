@@ -20,3 +20,4 @@
   args:
     warn: false
   when: ansible_scripts_git_checkout.changed
+...

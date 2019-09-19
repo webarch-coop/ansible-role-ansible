@@ -5,3 +5,4 @@
       - bash-completion
     state: present
     update_cache: false
+...

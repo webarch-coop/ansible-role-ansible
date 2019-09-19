@@ -1,5 +1,5 @@
 ---
-- name: Webarchitects Debian Server Config
+- name: Webarchitects Debian and Ubuntu Server Config
   hosts: "{{ hostname }}"
   become: true
 
@@ -23,3 +23,4 @@
     - rsync
     - screen
     - mutt
+...
