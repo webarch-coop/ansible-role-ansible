@@ -22,4 +22,5 @@
     - rsync
     - screen
     - mutt
+    - scripts
 ...
