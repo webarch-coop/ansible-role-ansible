@@ -13,8 +13,4 @@
   src: https://git.coop/webarch/apt.git
   version: master
   scm: git
-
-- name: munin-node
-  src: https://git.coop/webarch/munin-node.git
-  version: master
-  scm: git
+...
