@@ -37,16 +37,6 @@
       include_tasks: debug.yml
       when: ansible_verbosity == 3
 
-    - name: Loop through the Ansible versions available to check that that the proposed Ansible version is available via pypi
-      debug:
-        msg: "Ansible version {{ ans_version }} is available via pypi"
-        verbosity: 3
-      when: ( ver | string ) is version(ans_version, '==')
-      loop: "{{ ans_versions_available }}"
-      loop_control:
-        loop_var: ver
-        label: "{{ ver }}"
-
     - name: Ensure that the proposed Ansible version is available via pypi
       assert:
         that:
