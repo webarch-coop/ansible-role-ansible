@@ -5,12 +5,12 @@
     - name: Check variables
       include_tasks: checks.yml
 
-    # - name: Uninstall Ansible
-    #   pip:
-    #     name: ansible
-    #     state: absent
-    #     executable: /usr/bin/pip3
-    #   when: ( ans_distro_version_installed | string) is not version(ans_version, '==')
+    - name: Uninstall Ansible
+      pip:
+        name: ansible
+        state: absent
+        executable: /usr/bin/pip3
+      when: ( ans_ansible_pip is defined ) and ( ans_ansible_pip == "present" )
 
   when: ans
   tags:
