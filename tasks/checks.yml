@@ -127,8 +127,8 @@
       debug:
         msg:
           - "The distro Ansible /usr/bin/ansible {% if ans_distro_version is defined %}is version {{ ans_distro_version }}{% else %} not installed{% endif %}" 
-          - "The local Ansible /usr/local/bin/ansible {% if ans_local_version is defined %}is version {{ ans_local_version }}{% else %} not installed{% endif %}" 
-          - "The default Ansible {{ ans_which_ansible.stdout }} is version {{ ans_which_ansible.stdout }}"
+          - "The local Ansible /usr/local/bin/ansible {% if ans_local_version is defined %}is version {{ ans_local_version }}{% else %}not installed{% endif %}" 
+          - "The default Ansible {{ ans_which_ansible.stdout }} is version {{ ans_default_version }}"
 
   tags:
     - ansible
