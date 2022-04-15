@@ -38,10 +38,25 @@
         var: ansible_versions_available
         verbosity: 2
 
+    - name: Debug Ansible version type
+      debug:
+        msg:
+          - "Ansible version {{ ansible_version }} is {{ ansible_version | type_debug }}"
+        verbosity: 2
+
+    - name: Loop through the Ansible versions available to check the veriable type
+      debug:
+        msg: "Ansible version {{ version }} is {{ version | type_debug }}"
+        verbosity: 2
+      loop: "{{ ansible_versions_available }}"
+      loop_control:
+        loop_var: version
+        label: "{{ version }}"
+
     - name: Loop through the Ansible versions available to check that that the proposed Ansible version is available via pypi
       debug:
         msg: "Ansible version {{ ansible_version }} is available via pypi"
-      when: version is version(ansible_version, '==')
+      when: ( version | str ) is version(ansible_version, '==')
       loop: "{{ ansible_versions_available }}"
       loop_control:
         loop_var: version
