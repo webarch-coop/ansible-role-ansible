@@ -2,23 +2,63 @@
 - name: Check variables
   block:
 
-    - name: Check the distro version of Ansible
-      command: /usr/bin/ansible --version
+    - name: Check which the default version of Ansible is
+      command: which ansible
       check_mode: false
       changed_when: false
-      register: ans_distro_version_installed
+      register: ans_which_ansible
+      failed_when: ans_which_ansible.rc is not regex('^0|1$')
 
-    - name: Set a fact for the distro version of Ansible
-      set_fact:
-        ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
-
-    - name: Ansible distro version"
-      debug:
-        var: ans_distro_version
-
-    - name: Assert that this role is not being asked to install a local version of Ansible that matches the distro version
+    - name: Ansible needs to be installed
       assert:
-        that: ( ans_version | string ) is not version(ans_distro_version, '==')
+        that:
+          - ans_which_ansible.rc == 0
+        fail_msg: "Please install Ansible!"
+
+    - name: Set a variable for the path for the default version of Ansible
+      set_fact:
+        ansible_default: "{{ ans_which_ansible.stdout }}"
+
+    - name: Set a fact for the default version of Ansible
+      set_fact:
+        ans_default_version: "{{ ans_which_version.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+
+    - name: Ansible default version
+      debug:
+        var: ans_default_version
+
+    - name: "Check that the default version of Ansible {{ ans_default_version }} is greater than or equal to 2.10"
+      assert:
+        that:
+          - ans_default_version is version('2.10', '>=')
+
+    - name: Check if a distro version of Ansible is installed
+      stat:
+        path: /usr/bin/ansible
+      register: ans_distro_version_path
+
+    - name: Check the distro version of Ansible
+      block:
+
+        - name: Check the distro version of Ansible
+          command: /usr/bin/ansible --version
+          check_mode: false
+          changed_when: false
+          register: ans_distro_version_installed
+
+        - name: Set a fact for the distro version of Ansible
+          set_fact:
+            ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+
+        - name: Ansible distro version"
+          debug:
+            var: ans_distro_version
+
+        - name: Assert that this role is not being asked to install a local version of Ansible that matches the distro version
+          assert:
+            that: ( ans_version | string ) is not version(ans_distro_version, '==')
+
+      when: ( ans_distro_version_path.stat.exists is defined ) and ( ans_distro_version_path.stat.exists ) 
 
     - name: Check if a local version of Ansible is installed
       stat:
@@ -42,7 +82,7 @@
           debug:
             var: ans_local_version
 
-      when: ( ans_local_version_installed.stat.exists is defined ) and ( ans_local_version_installed.stat.exists )
+      when: ( ans_local_version_path.stat.exists is defined ) and ( ans_local_version_path.stat.exists )
 
     - name: Get a list of available pypi Ansible core versions
       uri:
@@ -61,10 +101,6 @@
         loop_var: ver
         label: "{{ ver.key }}"
 
-    - name: Include verbose debugging
-      include_tasks: debug.yml
-      when: ansible_verbosity == 3
-
     - name: "Check that that the proposed Ansible core version {{ ans_version }} is available via pypi"
       assert:
         that:
@@ -80,29 +116,6 @@
     - name: Set a variable to indicate that Ansible has been installed using pip
       set_fact:
         ans_ansible_pip: "{% if ans_show_ansible.rc == 0 %}present{% else %}absent{% endif %}"
-
-    - name: Check which the default version of Ansible is
-      command: which ansible
-      check_mode: false
-      changed_when: false
-      register: ans_which_ansible
-
-    - name: Set a variable for the path for the default version of Ansible
-      set_fact:
-        ansible_default: "{{ ans_which_ansible.stdout }}"
-
-    - name: Set a fact for the default version of Ansible
-      set_fact:
-        ans_default_version: "{{ ans_which_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
-
-    - name: Ansible default version
-      debug:
-        var: ans_default_version
-
-    - name: "Check that the default version of Ansible {{ ans_default_version }} is greater than or equal to 2.10"
-      assert:
-        that:
-          - ans_default_version is version('2.10', '>=')
 
   tags:
     - ansible
