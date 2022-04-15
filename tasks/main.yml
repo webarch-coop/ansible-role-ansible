@@ -20,7 +20,7 @@
         method: GET
         return_content: true
       register: ansible_pypi
- 
+
     - name: Debug available versions
       debug:
         var: ansible_pypi.releases()
