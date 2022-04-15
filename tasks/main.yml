@@ -16,9 +16,9 @@
 
     - name: Install Ansible
       pip:
-        name: ansible-core
+        name: "ansible-core=={{ ans_version }}"
         state: present
-        version: ans_version
+        # version: ans_version
         executable: /usr/bin/pip3
       when:
         - ( ans_local_version_installed.stat.exists is not defined ) or ( ans_local_version_installed.stat.exists )
