@@ -41,7 +41,7 @@
     - name: Loop through the Ansible versions available to check the veriable type
       debug:
         msg: "Ansible version {{ version }} is {{ version | type_debug }}"
-        verbosity: 2
+        verbosity: 3
       loop: "{{ ans_versions_available }}"
       loop_control:
         loop_var: version
