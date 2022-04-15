@@ -21,19 +21,29 @@
         that:
           - ( ans_version | string ) is not version(ans_distro_version, '==')
 
-    - name: Check the local version of Ansible
-      command: "/usr/local/bin/ansible --version"
-      check_mode: false
-      changed_when: false
-      register: ans_local_version_installed
+    - name: Check if a local version of Ansible is installed
+      stat:
+        path: /usr/local/bin/ansible
+      register: ans_local_version_path
 
-    - name: Set a fact for the local version of Ansible
-      set_fact:
-        ans_local_version: "{{ ans_local_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+    - name: Check the local version of Ansible when present
+      block:
 
-    - name: "Ansible /usr/bin/ansible version"
-      debug:
-        var: ans_local_version
+        - name: Check the local version of Ansible
+          command: "/usr/local/bin/ansible --version"
+          check_mode: false
+          changed_when: false
+          register: ans_local_version_installed
+
+        - name: Set a fact for the local version of Ansible
+          set_fact:
+            ans_local_version: "{{ ans_local_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+
+        - name: "Ansible /usr/bin/ansible version"
+          debug:
+            var: ans_local_version
+
+      when: ans_local_version_installed.stat.exists
 
     - name: Get a list of available pypi Ansible versions
       uri:
