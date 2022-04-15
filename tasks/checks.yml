@@ -45,16 +45,16 @@
 
       when: ( ans_local_version_installed.stat.exists is defined ) and ( ans_local_version_installed.stat.exists )
 
-    - name: Get a list of available pypi Ansible versions
+    - name: Get a list of available pypi Ansible core versions
       uri:
-        url: https://pypi.org/pypi/ansible/json
+        url: https://pypi.org/pypi/ansible-core/json
         method: GET
         return_content: true
       check_mode: false
       changed_when: false
       register: ans_pypi
 
-    - name: Create an array of the Ansible versions available
+    - name: Create an array of the Ansible core versions available
       set_fact:
         ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
       loop: "{{ ans_pypi.json.releases | dict2items }}"
@@ -66,7 +66,7 @@
       include_tasks: debug.yml
       when: ansible_verbosity == 3
 
-    - name: "Check that that the proposed Ansible version {{ ans_version }} is available via pypi"
+    - name: "Check that that the proposed Ansible core version {{ ans_version }} is available via pypi"
       assert:
         that:
           - ans_version in ans_versions_available

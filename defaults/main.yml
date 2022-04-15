@@ -1,4 +1,7 @@
 ---
 ans: true
-ans_version: "5.6.0"
+# Choose a version from here https://pypi.org/project/ansible-core/#history
+ans_version: "2.12.4"
+# ans_alternative can be set to "distro" or "pip"
+ans_alternative: pip
 ...
