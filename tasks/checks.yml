@@ -3,7 +3,7 @@
   block:
 
     - name: Check the distro version of Ansible
-      command: "/usr/bin/ansible --version"
+      command: /usr/bin/ansible --version
       check_mode: false
       changed_when: false
       register: ans_distro_version_installed
@@ -29,7 +29,7 @@
       block:
 
         - name: Check the local version of Ansible
-          command: "/usr/local/bin/ansible --version"
+          command: /usr/local/bin/ansible --version
           check_mode: false
           changed_when: false
           register: ans_local_version_installed
@@ -93,7 +93,7 @@
 
     - name: Set a fact for the default version of Ansible
       set_fact:
-        ans_default_version: "{{ ans_default_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+        ans_default_version: "{{ ans_which_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
 
     - name: Ansible default version
       debug:
