@@ -41,7 +41,7 @@
     - name: Ensure that the proposed Ansible version is available via pypi
       assert:
         that:
-          - ansible_version is in ansible_versions_available
+          - ansible_version in ansible_versions_available
 
   tags:
     - ansible
