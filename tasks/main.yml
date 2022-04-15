@@ -27,7 +27,7 @@
 
     - name: Create an array of the Ansible versions available
       set_fact:
-        ansible_versions_available: "{{ ansible_versions_available | default([]) }} + [ '{{ version.key | str }}' ]"
+        ansible_versions_available: "{{ ansible_versions_available | default([]) }} + [ '{{ version.key | string }}' ]"
       loop: "{{ ansible_pypi.json.releases | dict2items }}"
       loop_control:
         loop_var: version
@@ -56,7 +56,7 @@
     - name: Loop through the Ansible versions available to check that that the proposed Ansible version is available via pypi
       debug:
         msg: "Ansible version {{ ansible_version }} is available via pypi"
-      when: ( version | str ) is version(ansible_version, '==')
+      when: ( version | string ) is version(ansible_version, '==')
       loop: "{{ ansible_versions_available }}"
       loop_control:
         loop_var: version
