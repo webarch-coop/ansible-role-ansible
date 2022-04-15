@@ -7,7 +7,7 @@
 
     - name: Uninstall Ansible
       pip:
-        name: ansible
+        name: ansible-core
         state: absent
         executable: /usr/bin/pip3
       when:
@@ -16,7 +16,7 @@
 
     - name: Install Ansible
       pip:
-        name: ansible
+        name: ansible-core
         state: present
         version: ans_version
         executable: /usr/bin/pip3
