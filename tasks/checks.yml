@@ -87,9 +87,9 @@
       changed_when: false
       register: ans_which_ansible
 
-   - name: Set a variable for the path for the default version of Ansible
-     set_fact:
-       ansible_default: "{{ ans_which_ansible.stdout }}"
+    - name: Set a variable for the path for the default version of Ansible
+      set_fact:
+        ansible_default: "{{ ans_which_ansible.stdout }}"
 
     - name: Set a fact for the default version of Ansible
       set_fact:
