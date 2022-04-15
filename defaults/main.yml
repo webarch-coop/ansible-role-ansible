@@ -1,5 +1,5 @@
 ---
-ansible: true
-ansible_distro_path: /usr/bin/ansible
-ansible_version: "5.6.0"
+ans: true
+ans_distro_path: /usr/bin/ansible
+ans_version: "5.6.0"
 ...
