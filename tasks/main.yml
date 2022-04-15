@@ -33,7 +33,7 @@
     - name: Create an array of the Ansible versions available
       set_fact:
         ansible_versions_available: "{{ ansible_versions_available | default([]) }} + [ '{{ version.key }}' ]"
-      loop: "{{ ansible_pypi.json.releases }}"
+      loop: "{{ ansible_pypi.json.releases | dict2items }}"
       loop_control:
         loop_var: version
         label: "{{ version.key }}"
