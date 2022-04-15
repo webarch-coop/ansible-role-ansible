@@ -64,7 +64,7 @@
           assert:
             that: ( ans_version | string ) is not version(ans_distro_version, '==')
 
-      when: ( ans_distro_version_path.stat.exists is defined ) and ( ans_distro_version_path.stat.exists ) 
+      when: ( ans_distro_version_path.stat.exists is defined ) and ( ans_distro_version_path.stat.exists )
 
     - name: Check if a local version of Ansible is installed
       stat:
