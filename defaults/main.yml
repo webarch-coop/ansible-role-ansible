@@ -2,6 +2,7 @@
 ans: true
 # Choose a version from here https://pypi.org/project/ansible-core/#history
 ans_version: "2.12.4"
-# ans_alternative can be set to "distro" or "pip"
-ans_alternative: pip
+ans_collections:
+  - name: community.general
+    version: latest
 ...

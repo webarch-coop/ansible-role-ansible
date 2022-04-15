@@ -5,25 +5,6 @@
     - name: Check variables
       include_tasks: checks.yml
 
-    - name: Uninstall Ansible
-      pip:
-        name: ansible-core
-        state: absent
-        executable: /usr/bin/pip3
-      when:
-        - ( ans_local_version_installed.stat.exists is defined ) and ( ans_local_version_installed.stat.exists )
-        - ( ans_local_version is defined ) and ( ans_local_version is version(ans_version, '!=') )
-
-    - name: Install Ansible
-      pip:
-        name: "ansible-core=={{ ans_version }}"
-        state: present
-        # version: ans_version
-        executable: /usr/bin/pip3
-      when:
-        - ( ans_local_version_installed.stat.exists is not defined ) or ( ans_local_version_installed.stat.exists )
-        - ( ans_local_version is not defined ) or ( ans_local_version is version(ans_version, '!=') )
-
   when: ans
   tags:
     - ansible
