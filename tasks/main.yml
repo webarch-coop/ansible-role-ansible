@@ -4,6 +4,8 @@
 
     - name: Check the distro version of Ansible
       command: "{{ ansible_distro_path }} --version"
+      check_mode: false
+      changed_when: false
       register: ansible_distro_version_installed
 
     - name: Set a fact for the ansible_distro_version
