@@ -33,29 +33,8 @@
         loop_var: ver
         label: "{{ ver.key }}"
 
-    - name: Verbose debugging
-      block:
-
-        - name: Debug available versions
-          debug:
-            var: ans_versions_available
-            verbosity: 3
-
-        - name: Loop through the Ansible versions available to check the veriable type
-          debug:
-            msg: "Ansible version {{ version }} is {{ version | type_debug }}"
-            verbosity: 3
-          loop: "{{ ans_versions_available }}"
-          loop_control:
-            loop_var: version
-            label: "{{ version }}"
-
-        - name: Debug Ansible version type
-          debug:
-            msg:
-              - "Ansible version {{ ans_version }} is {{ ans_version | type_debug }}"
-            verbosity: 3
-
+    - name: Include verbose debugging
+      include_tasks: debug.yml
       when: ansible_verbosity == 3
 
     - name: Loop through the Ansible versions available to check that that the proposed Ansible version is available via pypi
