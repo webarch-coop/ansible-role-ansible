@@ -33,10 +33,10 @@
       debug:
         var: ans_default_version
 
-    - name: "Check that the default version of Ansible {{ ans_default_version }} is greater than or equal to 2.10"
+    - name: "Check that the default version of Ansible {{ ans_default_version }} is greater than or equal to 2.9"
       assert:
         that:
-          - ans_default_version is version('2.10', '>=')
+          - ans_default_version is version('2.9', '>=')
 
     - name: Check if a distro version of Ansible is installed
       stat:
@@ -56,7 +56,7 @@
           set_fact:
             ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
 
-        - name: Ansible distro version"
+        - name: Ansible distro version
           debug:
             var: ans_distro_version
 
@@ -122,6 +122,13 @@
     - name: Set a variable to indicate that Ansible has been installed using pip
       set_fact:
         ans_ansible_pip: "{% if ans_show_ansible.rc == 0 %}present{% else %}absent{% endif %}"
+
+    - name: Debug Ansible versions
+      debug:
+        msg:
+          - "The distro Ansible /usr/bin/ansible {% if ans_distro_version is defined %}is version {{ ans_distro_version }}{% else %} not installed{% endif %}" 
+          - "The local Ansible /usr/local/bin/ansible {% if ans_local_version is defined %}is version {{ ans_local_version }}{% else %} not installed{% endif %}" 
+          - "The default Ansible {{ ans_which_ansible.stdout }} is version {{ ans_which_ansible.stdout }}"
 
   tags:
     - ansible
