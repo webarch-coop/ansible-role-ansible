@@ -55,7 +55,7 @@
       changed_when: false
       register: ans_show_ansible
       failed_when: ans_show_ansible.rc is not regex('^0|1$')
-       
+
     - name: Set a variable to indicate that Ansible has been installed using pip
       set_fact:
         ans_ansible_pip: "{% if ans_show_ansible.rc == 0 %}present{% else %}absent{% endif %}"
