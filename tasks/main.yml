@@ -57,7 +57,7 @@
       debug:
         msg: "Ansible version {{ ans_version }} is available via pypi"
         verbosity: 3
-      when: ( ver | string ) is ver(ans_version, '==')
+      when: ( ver | string ) is version(ans_version, '==')
       loop: "{{ ans_versions_available }}"
       loop_control:
         loop_var: ver
