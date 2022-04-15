@@ -27,16 +27,16 @@
 
     - name: Create an array of the Ansible versions available
       set_fact:
-        ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ version.key | string }}' ]"
+        ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
       loop: "{{ ans_pypi.json.releases | dict2items }}"
       loop_control:
-        loop_var: version
-        label: "{{ version.key }}"
+        loop_var: ver
+        label: "{{ ver.key }}"
 
     - name: Debug available versions
       debug:
         var: ans_versions_available
-        verbosity: 2
+        verbosity: 3
 
     - name: Loop through the Ansible versions available to check the veriable type
       debug:
@@ -51,16 +51,17 @@
       debug:
         msg:
           - "Ansible version {{ ans_version }} is {{ ans_version | type_debug }}"
-        verbosity: 2
+        verbosity: 3
 
     - name: Loop through the Ansible versions available to check that that the proposed Ansible version is available via pypi
       debug:
         msg: "Ansible version {{ ans_version }} is available via pypi"
-      when: ( version | string ) is version(ans_version, '==')
+        verbosity: 3
+      when: ( ver | string ) is ver(ans_version, '==')
       loop: "{{ ans_versions_available }}"
       loop_control:
-        loop_var: version
-        label: "{{ version }}"
+        loop_var: ver
+        label: "{{ ver }}"
 
     - name: Ensure that the proposed Ansible version is available via pypi
       assert:
