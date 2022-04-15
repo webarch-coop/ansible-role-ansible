@@ -43,7 +43,7 @@
           debug:
             var: ans_local_version
 
-      when: ans_local_version_installed.stat.exists
+      when: ( ans_local_version_installed.stat.exists is defined ) and ( ans_local_version_installed.stat.exists )
 
     - name: Get a list of available pypi Ansible versions
       uri:
