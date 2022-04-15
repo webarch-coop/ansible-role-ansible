@@ -25,7 +25,8 @@
 
     - name: Debug available versions
       debug:
-        var: ansible_pypi.json.releases()
+        # var: ansible_pypi.json.releases()
+        var: ansible_pypi
 
   tags:
     - ansible
