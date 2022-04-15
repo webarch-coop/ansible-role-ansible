@@ -41,7 +41,7 @@
     - name: Loop through the Ansible versions available to check that that the proposed Ansible version is available via pypi
       debug:
         msg: "Ansible version {{ ansible_version }} is available via pypi"
-      when: version version(ansible_version, '==')
+      when: version is version(ansible_version, '==')
       loop: "{{ ansible_versions_available }}"
       loop_control:
         loop_var: version
