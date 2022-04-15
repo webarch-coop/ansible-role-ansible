@@ -25,11 +25,6 @@
       changed_when: false
       register: ansible_pypi
 
-    - name: Debug available versions
-      debug:
-        var: ansible_pypi.json.releases
-        verbosity: 3
-
     - name: Create an array of the Ansible versions available
       set_fact:
         ansible_versions_available: "{{ ansible_versions_available | default([]) }} + [ '{{ version.key }}' ]"
@@ -37,6 +32,11 @@
       loop_control:
         loop_var: version
         label: "{{ version.key }}"
+
+    - name: Debug available versions
+      debug:
+        var: ansible_versions_available
+        verbosity: 2
 
   tags:
     - ansible
