@@ -1,0 +1,65 @@
+---
+- name: Check variables
+  block:
+
+    - name: Check the distro version of Ansible
+      command: "/usr/bin/ansible --version"
+      check_mode: false
+      changed_when: false
+      register: ans_distro_version_installed
+
+    - name: Set a fact for the ans_distro_version
+      set_fact:
+        ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim }}"
+
+    - name: "Ansible /usr/bin/ansible version"
+      debug:
+        var: ans_distro_version
+
+    - name: Get a list of available pypi Ansible versions
+      uri:
+        url: https://pypi.org/pypi/ansible/json
+        method: GET
+        return_content: true
+      check_mode: false
+      changed_when: false
+      register: ans_pypi
+
+    - name: Create an array of the Ansible versions available
+      set_fact:
+        ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
+      loop: "{{ ans_pypi.json.releases | dict2items }}"
+      loop_control:
+        loop_var: ver
+        label: "{{ ver.key }}"
+
+    - name: Include verbose debugging
+      include_tasks: debug.yml
+      when: ansible_verbosity == 3
+
+    - name: "Check that that the proposed Ansible version {{ ans_version }} is available via pypi"
+      assert:
+        that:
+          - ans_version in ans_versions_available
+
+    # See https://stackoverflow.com/questions/122327/how-do-i-find-the-location-of-my-python-site-packages-directory
+    # - name: Get the path for locally installed python3 packages
+    #   command: /usr/bin/python3 -c "import site; print(site.getsitepackages())"
+    #   check_mode: false
+    #   changed_when: false
+    #   register: ans_python3_site_packages_path_check
+
+    - name: Check if Ansible has been installed using pip
+      command: /usr/bin/pip3 --no-color -q show ansible
+      check_mode: false
+      changed_when: false
+      register: ans_show_ansible
+      failed_when: ans_show_ansible is not regex('^0|1$')
+       
+    - name: Set a variable to indicate that Ansible has been installed using pip
+      set_fact:
+        ans_ansible_pip: present
+
+  tags:
+    - ansible
+...
