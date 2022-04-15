@@ -21,6 +21,8 @@
         url: https://pypi.org/pypi/ansible/json
         method: GET
         return_content: true
+      check_mode: false
+      changed_when: false
       register: ansible_pypi
 
     - name: Debug available versions
