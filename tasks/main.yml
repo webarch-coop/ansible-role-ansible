@@ -22,7 +22,7 @@
         executable: /usr/bin/pip3
       when:
         - ( ans_local_version_installed.stat.exists is not defined ) or ( ans_local_version_installed.stat.exists )
-        - ( ans_local_version is not defined ) or ( ( ans_local_version | string ) is ( version(ans_version, '!=') )
+        - ( ans_local_version is not defined ) or ( ( ans_local_version | string ) is ( version(ans_version, '!=') ) )
 
   when: ans
   tags:
