@@ -1,0 +1,30 @@
+---
+- name: Use the distro version of Ansible to install another version using pip
+  block:
+
+    - name: Check the distro version of Ansible
+      command: "{{ ansible_distro_path }} --version"
+      register: ansible_distro_version_installed
+
+    - name: Set a fact for the ansible_distro_version
+      set_fact:
+        ansible_distro_version: "{{ ansible_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim }}"
+
+    - name: "Ansible {{ ansible_distro_path }} version"
+      debug:
+        var: ansible_distro_version
+
+    - name: Get a list of available pypi Ansible versions
+      uri:
+        url: https://pypi.org/pypi/ansible/json
+        method: GET
+        return_content: true
+      register: ansible_pypi
+ 
+    - name: Debug available versions
+      debug:
+        var: ansible_pypi.releases()
+
+  tags:
+    - ansible
+...
