@@ -8,13 +8,32 @@
       changed_when: false
       register: ans_distro_version_installed
 
-    - name: Set a fact for the ans_distro_version
+    - name: Set a fact for the distro version of Ansible
       set_fact:
-        ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim }}"
+        ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
 
     - name: "Ansible /usr/bin/ansible version"
       debug:
         var: ans_distro_version
+
+    - name: Assert that this role is not being asked to install a local version of Ansible that matches the distro version
+      assert:
+        that:
+          - ( ans_version | string ) is not version(ans_distro_version, '==')
+
+    - name: Check the local version of Ansible
+      command: "/usr/local/bin/ansible --version"
+      check_mode: false
+      changed_when: false
+      register: ans_local_version_installed
+
+    - name: Set a fact for the local version of Ansible
+      set_fact:
+        ans_local_version: "{{ ans_local_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+
+    - name: "Ansible /usr/bin/ansible version"
+      debug:
+        var: ans_local_version
 
     - name: Get a list of available pypi Ansible versions
       uri:

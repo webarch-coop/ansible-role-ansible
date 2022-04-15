@@ -10,7 +10,15 @@
         name: ansible
         state: absent
         executable: /usr/bin/pip3
-      when: ( ans_ansible_pip is defined ) and ( ans_ansible_pip == "present" )
+      when: ( ans_local_version is defined ) and ( ( ans_local_version | string ) is ( not version(ans_version, '==') ) )
+
+    - name: Install Ansible
+      pip:
+        name: ansible
+        state: present
+        version: ans_version
+        executable: /usr/bin/pip3
+      when: ( ans_local_version is not defined ) or ( ( ans_local_version | string ) is ( not version(ans_version, '==') )
 
   when: ans
   tags:
