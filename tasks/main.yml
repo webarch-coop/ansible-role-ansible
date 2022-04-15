@@ -25,13 +25,13 @@
       changed_when: false
       register: ans_pypi
 
-    # - name: Create an array of the Ansible versions available
-    #   set_fact:
-    #     ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
-    #   loop: "{{ ans_pypi.json.releases | dict2items }}"
-    #   loop_control:
-    #     loop_var: ver
-    #     label: "{{ ver.key }}"
+    - name: Create an array of the Ansible versions available
+      set_fact:
+        ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
+      loop: "{{ ans_pypi.json.releases | dict2items }}"
+      loop_control:
+        loop_var: ver
+        label: "{{ ver.key }}"
 
     - name: Include verbose debugging
       include_tasks: debug.yml
@@ -40,8 +40,7 @@
     - name: "Check that that the proposed Ansible version {{ ans_version }} is available via pypi"
       assert:
         that:
-          # - ans_version in ans_versions_available
-          - ans_version in ans_pypi.json.releases()
+          - ans_version in ans_versions_available
 
   tags:
     - ansible
