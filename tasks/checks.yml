@@ -79,7 +79,7 @@
     #   register: ans_python3_site_packages_path_check
 
     - name: Check if Ansible has been installed using pip
-      command: /usr/bin/pip3 --no-color -q show ansible
+      command: /usr/bin/pip3 --no-color -q show ansible-core
       check_mode: false
       changed_when: false
       register: ans_show_ansible
