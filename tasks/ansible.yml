@@ -10,7 +10,7 @@
 
     - name: Ansible present using pip
       pip:
-        name: "ansible=={{ ans_version }}"
+        name: "ansible-core=={{ ans_version }}"
         state: present
         executable: /usr/bin/pip3
 
