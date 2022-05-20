@@ -33,10 +33,10 @@
       debug:
         var: ans_default_version
 
-    - name: "Check that the default version of Ansible {{ ans_default_version }} is greater than or equal to 2.9"
+    - name: "Check that the default version of Ansible {{ ans_default_version }} is greater than or equal to 2.9.0"
       assert:
         that:
-          - ( ans_default_version | string ) is version('2.9', '>=')
+          - ( ans_default_version | string ) is version('2.9.0', '>=')
 
     - name: Check if a distro version of Ansible is installed
       stat:
