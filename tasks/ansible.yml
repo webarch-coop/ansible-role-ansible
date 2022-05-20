@@ -1,0 +1,22 @@
+---
+- name: Install Ansible and modules
+  block:
+
+    - name: Packages present
+      apt:
+        pkg:
+          - python3-argcomplete
+          - python3-pip
+
+    - name: Ansible present using pip
+      pip:
+        name: "ansible=={{ ans_version }}"
+        state: present
+        executable: /usr/bin/pip3
+
+    - name: Bash completion present using argcomplete
+      command: activate-global-python-argcomplete
+
+  tags:
+    - ans
+...

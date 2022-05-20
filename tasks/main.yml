@@ -5,6 +5,16 @@
     - name: Check variables
       include_tasks: checks.yml
 
+    - name: Install Ansible
+      include_tasks: ansible.yml
+
+    - name: Install Ansible collections
+      include_tasks: collection.yml
+      loop: "{{ ans_collections }}"
+      loop_control:
+        loop_var: col
+        label: "{{ col.name }}"
+
   when: ans
   tags:
     - ansible
