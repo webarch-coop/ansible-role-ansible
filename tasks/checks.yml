@@ -19,15 +19,15 @@
       set_fact:
         ans_default: "{{ ans_which_ansible.stdout | string }}"
 
-    - name: Check the installed version of Ansible
-      command: "{{ ans_installed }} --version"
+    - name: Check the default version of Ansible
+      command: "{{ ans_default }} --version"
       check_mode: false
       changed_when: false
-      register: ans_installed_version_installed
+      register: ans_installed_version_check
 
     - name: Set a fact for the installed version of Ansible
       set_fact:
-        ans_installed_version: "{{ ans_installed_version_installed.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
+        ans_installed_version: "{{ ans_installed_version_check.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
 
     - name: Ansible installed version
       debug:
@@ -71,10 +71,9 @@
       set_fact:
         ans_ansible_pip: "{% if ans_show_ansible.rc == 0 %}present{% else %}absent{% endif %}"
 
-    - name: Debug Ansible versions
+    - name: Debug Ansible version
       debug:
-        msg:
-          - "The installed Ansible {{ ans_which_ansible.stdout }} is version {{ ans_installed_version }}"
+        msg: "The default version of Ansible is installed at {{ ans_which_ansible.stdout }} and is version {{ ans_installed_version }}"
 
   tags:
     - ansible
