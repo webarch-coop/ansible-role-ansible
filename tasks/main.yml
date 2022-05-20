@@ -5,8 +5,9 @@
     - name: Check variables
       include_tasks: checks.yml
 
-    - name: Install Ansible
+    - name: Install Ansible when the proposed version is greater than the installed version
       include_tasks: ansible.yml
+      when: ans_version is version(ans_installed_version, '>')
 
     - name: Install Ansible collections
       include_tasks: collection.yml
