@@ -27,7 +27,7 @@
 
     - name: Set a fact for the default version of Ansible
       set_fact:
-        ans_default_version: "{{ ans_default_version_installed.stdout_lines[0] | regex_replace('ansible') | regex_replace('[core') | regex_replace(']') | trim | string }}"
+        ans_default_version: "{{ ans_default_version_installed.stdout_lines[0] | regex_replace('ansible') | regex_replace('\[core') | regex_replace('\]') | trim | string }}"
 
     - name: Ansible default version
       debug:
