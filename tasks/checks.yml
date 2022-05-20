@@ -28,7 +28,6 @@
     - name: Set a fact for the default version of Ansible
       set_fact:
         ans_default_version: "{{ ans_default_version_installed.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
-        # ans_default_version: "{{ ans_default_version_installed.stdout_lines[0] | regex_search('[0-9]+[.][0-9]+[.][0-9]+') | trim | string }}"
 
     - name: Ansible default version
       debug:
@@ -55,7 +54,7 @@
 
         - name: Set a fact for the distro version of Ansible
           set_fact:
-            ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+            ans_distro_version: "{{ ans_distro_version_installed.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
 
         - name: Ansible distro version
           debug:
@@ -83,7 +82,7 @@
 
         - name: Set a fact for the local version of Ansible
           set_fact:
-            ans_local_version: "{{ ans_local_version_installed.stdout_lines[0] | regex_replace('^ansible ') | trim | string }}"
+            ans_local_version: "{{ ans_local_version_installed.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
 
         - name: "Ansible /usr/bin/ansible version"
           debug:
