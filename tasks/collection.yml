@@ -22,7 +22,7 @@
 
         - name: Set a fact for the latest version
           ansible.builtin.set_fact:
-            ans_collection_proposed: "{{ ans_latest_headers.location | urlsplit('path') | string }}"
+            ans_collection_proposed: "{{ ans_latest_headers.location | urlsplit('path') | basename | string }}"
 
       when: col.version == "latest"
 
