@@ -28,6 +28,7 @@
 
     - name: Install collection
       command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
+      become: false
 
   tags:
     - ans
