@@ -15,7 +15,7 @@
         executable: /usr/bin/pip3
 
     - name: Bash completion present using argcomplete
-      command: activate-global-python-argcomplete
+      command: activate-global-python-argcomplete3
 
   tags:
     - ans
