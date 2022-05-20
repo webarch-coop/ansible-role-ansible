@@ -19,7 +19,7 @@
       set_fact:
         ans_default: "{{ ans_which_ansible.stdout | string }}"
 
-    - name: Check the distro version of Ansible
+    - name: Check the default version of Ansible
       command: "{{ ans_default }} --version"
       check_mode: false
       changed_when: false
