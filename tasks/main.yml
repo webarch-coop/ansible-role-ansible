@@ -2,6 +2,17 @@
 - name: Use the distro version of Ansible to install another version using pip
   block:
 
+    - name: Requirements present
+      apt:
+        pkg:
+          - python3-argcomplete
+          - python3-pip
+
+    - name: JC present
+      pip:
+        name: jc
+        executable: /usr/bin/pip3
+
     - name: Check variables
       include_tasks: checks.yml
 

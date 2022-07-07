@@ -5,7 +5,7 @@ ans_version: "2.13.0"
 ans_collections:
   # https://github.com/ansible-collections/ansible.posix
   - name: ansible.posix
-    version: 1.3.0
+    version: latest
   # https://github.com/ansible-collections/community.docker/releases
   - name: community.docker
     version: latest
