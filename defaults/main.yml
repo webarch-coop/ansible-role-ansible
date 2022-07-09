@@ -3,6 +3,9 @@ ans: true
 # Choose a version from here https://pypi.org/project/ansible-core/#history
 ans_version: "2.11.12"
 ans_collections:
+  # https://github.com/ansible-collections/ansible.netcommon
+  - name: ansible.netcommon
+    version: latest
   # https://github.com/ansible-collections/ansible.posix
   - name: ansible.posix
     version: latest
