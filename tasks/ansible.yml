@@ -8,6 +8,17 @@
         state: present
         executable: /usr/bin/pip3
 
+    - name: Ansible dependances present
+      pip:
+        name: "{{ pkg }]"
+        state: present
+        executable: /usr/bin/pip3
+      loop:
+        - jc
+        - jmespath
+      loop_control:
+        loop_var: pkg
+
     - name: Bash completion present using argcomplete
       command: activate-global-python-argcomplete3
 
