@@ -16,6 +16,7 @@
       loop:
         - jc
         - jmespath
+        - netaddr
       loop_control:
         loop_var: pkg
 
