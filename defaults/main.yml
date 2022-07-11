@@ -24,4 +24,10 @@ ans_collections:
   # https://github.com/ansible-collections/community.postgresql/releases
   - name: community.postgresql
     version: latest
+  # https://github.com/ansible-collections/community.postgresql/releases
+  - name: community.postgresql
+    version: latest
+  # https://github.com/ansible-collections/community.rabbitmq/tags
+  - name: community.rabbitmq
+    version: 1.2.1
 ...
