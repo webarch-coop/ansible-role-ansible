@@ -36,6 +36,8 @@
       debug:
         var: ans_galaxy_collection_list.stdout
 
+    # TODO Only install new versions if needed
+
     - name: Install collection
       command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
       become: false
