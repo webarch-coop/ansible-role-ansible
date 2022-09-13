@@ -3,17 +3,9 @@
 skip_list:
   # The metadata schema validation fails as it expect the versions of Debian to be intergers and not strings
   - schema[meta]
-  # Lines should be no longer than 160 chars
-  - "204"
   # Commands should not change things if nothing needs doing
-  # - "301"
-  # chown used in place of argument owner to file module
-  # - "302"
-  # Using command rather than module
-  # - "303"
-  # Shells that use pipes should set the pipefail option
-  # - "306"
-  # Tasks that run when changed should likely be handlers
-  # - "503"
+  - no-changed-when
+  # Use FQCN for builtin actions
+  - fqcn-builtins
 # vim: syntax=yaml
 ...
