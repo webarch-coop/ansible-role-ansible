@@ -6,6 +6,7 @@
       apt:
         pkg:
           - python3-argcomplete
+          - python3-jmespath
           - python3-pip
       when: ansible_effective_user_id != 0
 
@@ -18,7 +19,7 @@
 
     - name: Python pip3 is required
       fail:
-        msg: "Please run `sudo apt install python3-pip python3-argcomplete` and then re-run this role"
+        msg: "Please run `sudo apt install python3-pip python3-jmespath python3-argcomplete` and then re-run this role"
       when: ans_which_pip.rc != 0
 
     - name: JC present
@@ -34,6 +35,22 @@
       when:
         - ans_install | bool
         - ans_version is version(ans_installed_version, '>')
+
+    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1010345
+    # https://github.com/ansible/ansible/issues/77624
+    - name: Install resolvelib 0.5.3 for Ansible older than 2.13.1
+      pip:
+        name: resolvelib==0.5.3
+        state: present
+        executable: /usr/bin/pip3
+      when: ans_installed_version is version('2.13.1', '<')
+
+    - name: Remove resolvelib for Ansible newer than 2.13.1
+      pip:
+        name: resolvelib
+        state: absent
+        executable: /usr/bin/pip3
+      when: ans_installed_version is version('2.13.1', '>=')
 
     - name: Install Ansible collections
       include_tasks: collection.yml
