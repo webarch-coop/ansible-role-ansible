@@ -36,21 +36,22 @@
         - ans_install | bool
         - ans_version is version(ans_installed_version, '>')
 
-    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1010345
     # https://github.com/ansible/ansible/issues/77624
-    - name: Install resolvelib 0.5.3 for Ansible older than 2.13.1
+    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1007907
+    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1010345
+    - name: Install resolvelib 0.5.3 for Ansible older than 2.13.3
       pip:
         name: resolvelib==0.5.3
         state: present
         executable: /usr/bin/pip3
-      when: ans_installed_version is version('2.13.1', '<')
+      when: ans_installed_version is version('2.13.3', '<')
 
-    - name: Remove resolvelib for Ansible newer than 2.13.1
+    - name: Remove resolvelib for Ansible newer than 2.13.3
       pip:
         name: resolvelib
         state: absent
         executable: /usr/bin/pip3
-      when: ans_installed_version is version('2.13.1', '>=')
+      when: ans_installed_version is version('2.13.3', '>=')
 
     - name: Install Ansible collections
       include_tasks: collection.yml

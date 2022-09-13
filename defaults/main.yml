@@ -4,7 +4,7 @@ ans: true
 ans_install: false
 ans_version: "2.13.4"
 ans_collections:
-  # Debian Bookworm Ansible has 2.5.1 
+  # Debian Bookworm Ansible has 2.5.1
   # https://github.com/ansible-collections/ansible.netcommon
   # - name: ansible.netcommon
   #   version: latest
