@@ -34,7 +34,7 @@
 
     - name: Debug the installed versions
       debug:
-        var: ans_galaxy_collection_list
+        var: ans_galaxy_collection_list.stdout
 
     - name: Install collection
       command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
