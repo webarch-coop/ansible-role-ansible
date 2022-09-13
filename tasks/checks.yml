@@ -83,7 +83,19 @@
 
     - name: Set a fact for the version of Ansible Galaxy installed
       set_fact:
-        ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core 2') | regex_replace('\\]$') }}"
+        ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core ') | regex_replace('\\]$') }}"
+
+    - name: Get the Ansible Galaxy configured module search paths
+      set_fact:
+        ans_galaxy_module_search_paths: "{{ line | regex_replace('^  configured module search path = \\[') | regex_replace('\\]$') | item.split(' ') | list }}"
+      when: line is regex('^  configured module search path')
+      loop: "{{ ans_galaxy_check_version.stdout_lines }}"
+      loop_control:
+        loop_var: line
+
+    - name: Debug Ansible Galaxy configured module search paths
+      debug:
+        var: ans_galaxy_module_search_paths
 
   tags:
     - ansible
