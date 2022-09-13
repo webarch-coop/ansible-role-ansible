@@ -1,5 +1,5 @@
 ---
-- name: Use the distro version of Ansible to install another version using pip
+- name: Ansible tasks
   block:
 
     - name: Requirements present
@@ -7,6 +7,19 @@
         pkg:
           - python3-argcomplete
           - python3-pip
+      when: ansible_effective_user_id != 0
+
+    - name: Check that pip3 is present
+      ansible.builtin.command: which pip3
+      check_mode: false
+      changed_when: false
+      register: ans_which_pip
+      failed_when: ans_which_pip.rc is not regex('0|1')
+
+    - name: Python pip3 is required
+      fail:
+        msg: "Please run `sudo apt install python3-pip python3-argcomplete` and then re-run this role"
+      when: ans_which_pip.rc != 0
 
     - name: JC present
       pip:
@@ -18,7 +31,9 @@
 
     - name: Install Ansible when the proposed version is greater than the installed version
       include_tasks: ansible.yml
-      when: ans_version is version(ans_installed_version, '>')
+      when:
+        - ans_install | bool
+        - ans_version is version(ans_installed_version, '>')
 
     - name: Install Ansible collections
       include_tasks: collection.yml

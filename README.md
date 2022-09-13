@@ -2,7 +2,9 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This role contains an Ansible role for installing Ansible and Ansible Galaxy collections via `pip3`, see the [defaults/main.yml](defaults/main.yml) file for the versions that are installed. 
+This role contains an Ansible role for installing Ansible Galaxy collections via `pip3`, see the [defaults/main.yml](defaults/main.yml) file for the versions that are installed. 
+
+It can also optionally install Ansible, however this isn't done by default and it is being tested and developed using [the Debian Bookworm version of Ansible](https://packages.debian.org/bookworm/ansible-core).
 
 ## TODO
 
