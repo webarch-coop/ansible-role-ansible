@@ -8,7 +8,7 @@
           - python3-argcomplete
           - python3-jmespath
           - python3-pip
-      when: ansible_effective_user_id != 0
+      when: ansible_effective_user_id == 0
 
     - name: Check that pip3 is present
       ansible.builtin.command: which pip3
