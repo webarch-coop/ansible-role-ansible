@@ -28,7 +28,7 @@
 
     - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
       command: "ansible-galaxy collection list {{ col.name }} --format json"
-      check_moide: false
+      check_mode: false
       changed_when: false
       register: ans_galaxy_collection_list
 
