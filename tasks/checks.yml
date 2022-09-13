@@ -83,7 +83,7 @@
 
     - name: Set a fact for the version of Ansible Galaxy installed
       set_fact:
-        ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy [core 2') | regex_replace(']$') }}"
+        ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core 2') | regex_replace('\\]$') }}"
 
   tags:
     - ansible
