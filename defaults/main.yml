@@ -4,6 +4,9 @@ ans: true
 ans_install: false
 ans_version: "2.13.4"
 ans_collections:
+  # https://github.com/ansible-collections/ansible.netcommon
+  - name: ansible.netcommon
+    version: latest
   # https://github.com/ansible-collections/ansible.posix
   - name: ansible.posix
     version: latest
@@ -22,4 +25,10 @@ ans_collections:
   # https://github.com/ansible-collections/community.postgresql/releases
   - name: community.postgresql
     version: latest
+  # https://github.com/ansible-collections/community.postgresql/releases
+  - name: community.postgresql
+    version: latest
+  # https://github.com/ansible-collections/community.rabbitmq/tags
+  - name: community.rabbitmq
+    version: 1.2.1
 ...
