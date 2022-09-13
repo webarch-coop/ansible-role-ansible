@@ -26,8 +26,13 @@
 
       when: col.version == "latest"
 
-    # TODO check the installed version using ansible-galaxy collection list {{ col.name }}
-    #      ansible-galaxy collection list --format json
+    - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
+      command: "ansible-galaxy collection list {{ col.name }} --format json"
+      register: ans_galaxy_collection_list
+
+    - name: Debug the installed versions
+      debug:
+        var: ans_galaxy_collection_list
 
     - name: Install collection
       command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
