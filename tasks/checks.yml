@@ -75,6 +75,16 @@
       debug:
         msg: "The default version of Ansible is installed at {{ ans_which_ansible.stdout }} and is version {{ ans_installed_version }}"
 
+    - name: Check the Ansible Galaxy version
+      command: ansible-galaxy --version
+      check_mode: false
+      changed_when: false
+      register: ans_galaxy_check_version
+
+    - name: Set a fact for the version of Ansible Galaxy installed
+      set_fact:
+        ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy [core 2') | regex_replace(']$') }}"
+
   tags:
     - ansible
 ...
