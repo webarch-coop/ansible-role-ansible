@@ -1,0 +1,35 @@
+---
+- name: Install Ansible Molecule
+  block:
+
+    - name: Check the latest version of Ansible Molecule
+      ansible.builtin.uri:
+        url: https://github.com/ansible-community/molecule/releases/latest
+        method: HEAD
+        status_code: 302
+        follow_redirects: none
+      check_mode: false
+      changed_when: false
+      register: ans_molecule_headers
+
+    - name: Debug Ansible Molecule latest headers
+      ansible.builtin.debug:
+        msg:
+          - "Location: {{ ans_molecule_headers.location }}"
+          - "Path: {{ ans_molecule_headers.location | urlsplit('path') }}"
+          - "Version: {{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
+        verbosity: 2
+
+    - name: Set a fact for the latest version of Ansible Molecule
+      ansible.builtin.set_fact:
+        ans_molecule_version_latest: "{{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
+
+    - name: Ansible Molecule present
+      pip:
+        name: "molecule=={{ ans_molecule_version_latest }}"
+        state: present
+        executable: /usr/bin/pip3
+
+  tags:
+    - ans
+...

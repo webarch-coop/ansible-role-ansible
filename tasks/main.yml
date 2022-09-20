@@ -56,6 +56,9 @@
     - name: Install Ansible Lint
       include_tasks: lint.yml
 
+    - name: Install Ansible Molecule
+      include_tasks: molecule.yml
+
     - name: Install Ansible collections
       include_tasks: collection.yml
       loop: "{{ ans_collections }}"
