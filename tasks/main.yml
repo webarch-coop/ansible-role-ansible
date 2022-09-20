@@ -53,6 +53,9 @@
         executable: /usr/bin/pip3
       when: ans_installed_version is version('2.13.3', '>=')
 
+    - name: Install Ansible Lint
+      include_tasks: lint.yml
+
     - name: Install Ansible collections
       include_tasks: collection.yml
       loop: "{{ ans_collections }}"
