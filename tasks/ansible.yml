@@ -10,7 +10,7 @@
 
     - name: Ansible dependances present
       pip:
-        name: "{{ pkg }]"
+        name: "{{ pkg }}"
         state: present
         executable: /usr/bin/pip3
       loop:

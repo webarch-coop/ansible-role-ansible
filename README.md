@@ -2,13 +2,9 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This role contains an Ansible role for installing Ansible Galaxy collections via `pip3`, see the [defaults/main.yml](defaults/main.yml) file for the versions that are installed. 
+This role contains an Ansible role for installing Ansible Galaxy collections and [Ansible Lint](https://github.com/ansible/ansible-lint) and [Molecule](https://github.com/ansible-community/molecule) via `pip3`, see the [defaults/main.yml](defaults/main.yml) file for the versions that are installed. 
 
 It can also optionally install [a version Ansible](https://pypi.org/project/ansible-core/#history) using `pip3`, however this isn't done by default as this role is being tested and developed using [the Debian Bookworm version of Ansible](https://packages.debian.org/bookworm/ansible-core).
-
-## TODO
-
-* Install [Ansible Lint](https://ansible-lint.readthedocs.io/en/latest/)
 
 ## Links
 
