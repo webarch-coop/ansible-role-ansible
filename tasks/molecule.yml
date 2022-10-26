@@ -25,7 +25,7 @@
         ans_molecule_version_latest: "{{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
 
     - name: Ansible Molecule present
-      pip:
+      ansible.builtin.pip:
         name: "molecule=={{ ans_molecule_version_latest }}"
         state: present
         executable: /usr/bin/pip3

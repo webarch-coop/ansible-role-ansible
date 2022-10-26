@@ -1,11 +1,11 @@
 ---
 # https://docs.ansible.com/ansible-lint/rules/default_rules.html
 skip_list:
+  # You can improve the task key order
+  - key-order[task]
   # The metadata schema validation fails as it expect the versions of Debian to be intergers and not strings
   - schema[meta]
   # Commands should not change things if nothing needs doing
   - no-changed-when
-  # Use FQCN for builtin actions
-  - fqcn-builtins
 # vim: syntax=yaml
 ...

@@ -3,7 +3,7 @@
   block:
 
     - name: Requirements present
-      apt:
+      ansible.builtin.apt:
         pkg:
           - python3-argcomplete
           - python3-jmespath
@@ -19,20 +19,20 @@
       failed_when: ans_which_pip.rc is not regex('0|1')
 
     - name: Python pip3 is required
-      fail:
+      ansible.builtin.fail:
         msg: "Please run `sudo apt install python3-pip python3-jmespath python3-argcomplete` and then re-run this role"
       when: ans_which_pip.rc != 0
 
     - name: JC present
-      pip:
+      ansible.builtin.pip:
         name: jc
         executable: /usr/bin/pip3
 
     - name: Check variables
-      include_tasks: checks.yml
+      ansible.builtin.include_tasks: checks.yml
 
     - name: Upgrade Ansible when the proposed version is greater than the installed version
-      include_tasks: ansible.yml
+      ansible.builtin.include_tasks: ansible.yml
       when:
         - ans_install | bool
         - ans_version is version(ans_installed_version, '>')
@@ -41,34 +41,34 @@
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1007907
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1010345
     - name: Install resolvelib 0.5.3 for Ansible older than 2.13.3
-      pip:
+      ansible.builtin.pip:
         name: resolvelib==0.5.3
         state: present
         executable: /usr/bin/pip3
       when: ans_installed_version is version('2.13.3', '<')
 
     - name: Remove resolvelib for Ansible newer than 2.13.3
-      pip:
+      ansible.builtin.pip:
         name: resolvelib
         state: absent
         executable: /usr/bin/pip3
       when: ans_installed_version is version('2.13.3', '>=')
 
     - name: Install Ansible Lint
-      include_tasks: lint.yml
+      ansible.builtin.include_tasks: lint.yml
 
     - name: Install Ansible Molecule
-      include_tasks: molecule.yml
+      ansible.builtin.include_tasks: molecule.yml
 
     - name: Install Ansible collections
-      include_tasks: collection.yml
+      ansible.builtin.include_tasks: collection.yml
       loop: "{{ ans_collections }}"
       loop_control:
         loop_var: col
         label: "{{ col.name }}"
 
     - name: Check variables
-      include_tasks: checks.yml
+      ansible.builtin.include_tasks: checks.yml
 
   when: ans
   tags:

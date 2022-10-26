@@ -25,7 +25,7 @@
         ans_lint_version_latest: "{{ ans_lint_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
 
     - name: Ansible Lint present
-      pip:
+      ansible.builtin.pip:
         name: "ansible-lint=={{ ans_lint_version_latest }}"
         state: present
         executable: /usr/bin/pip3

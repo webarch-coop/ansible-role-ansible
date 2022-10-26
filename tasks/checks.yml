@@ -3,43 +3,45 @@
   block:
 
     - name: Check which the default version of Ansible is
-      command: which ansible
+      ansible.builtin.command: which ansible
       check_mode: false
       changed_when: false
       register: ans_which_ansible
       failed_when: ans_which_ansible.rc is not regex('^0|1$')
 
     - name: Ansible needs to be installed
-      assert:
+      ansible.builtin.assert:
         that:
           - ans_which_ansible.rc == 0
         fail_msg: "Please install Ansible!"
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Set a variable for the path for the default version of Ansible
-      set_fact:
+      ansible.builtin.set_fact:
         ans_default: "{{ ans_which_ansible.stdout | string }}"
 
     - name: Check the default version of Ansible
-      command: "{{ ans_default }} --version"
+      ansible.builtin.command: "{{ ans_default }} --version"
       check_mode: false
       changed_when: false
       register: ans_installed_version_check
 
     - name: Set a fact for the installed version of Ansible
-      set_fact:
+      ansible.builtin.set_fact:
         ans_installed_version: "{{ ans_installed_version_check.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
 
     - name: Ansible installed version
-      debug:
+      ansible.builtin.debug:
         var: ans_installed_version
 
-    - name: "Check that the installed version of Ansible {{ ans_installed_version }} is greater than or equal to 2.9.0"
-      assert:
+    - name: Check that the installed version of Ansible is greater than or equal to 2.9.0
+      ansible.builtin.assert:
         that:
           - ( ans_installed_version | string ) is version('2.9.0', '>=')
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Get a list of available pypi Ansible core versions
-      uri:
+      ansible.builtin.uri:
         url: https://pypi.org/pypi/ansible-core/json
         method: GET
         return_content: true
@@ -48,45 +50,46 @@
       register: ans_pypi
 
     - name: Create an array of the Ansible core versions available
-      set_fact:
+      ansible.builtin.set_fact:
         ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
       loop: "{{ ans_pypi.json.releases | dict2items }}"
       loop_control:
         loop_var: ver
         label: "{{ ver.key }}"
 
-    - name: "Check that that the proposed Ansible core version {{ ans_version }} is available via pypi"
-      assert:
+    - name: Check that that the proposed Ansible core version is available via pypi
+      ansible.builtin.assert:
         that:
           - ans_version in ans_versions_available
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check if Ansible has been installed using pip
-      command: /usr/bin/pip3 --no-color -q show ansible-core
+      ansible.builtin.command: /usr/bin/pip3 --no-color -q show ansible-core
       check_mode: false
       changed_when: false
       register: ans_show_ansible
       failed_when: ans_show_ansible.rc is not regex('^0|1$')
 
     - name: Set a variable to indicate that Ansible has been installed using pip
-      set_fact:
+      ansible.builtin.set_fact:
         ans_ansible_pip: "{% if ans_show_ansible.rc == 0 %}present{% else %}absent{% endif %}"
 
     - name: Debug Ansible version
-      debug:
+      ansible.builtin.debug:
         msg: "The default version of Ansible is installed at {{ ans_which_ansible.stdout }} and is version {{ ans_installed_version }}"
 
     - name: Check the Ansible Galaxy version
-      command: ansible-galaxy --version
+      ansible.builtin.command: ansible-galaxy --version
       check_mode: false
       changed_when: false
       register: ans_galaxy_check_version
 
     - name: Set a fact for the version of Ansible Galaxy installed
-      set_fact:
+      ansible.builtin.set_fact:
         ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core ') | regex_replace('\\]$') }}"
 
     - name: Get the Ansible Galaxy configured module search paths
-      set_fact:
+      ansible.builtin.set_fact:
         ans_galaxy_module_search_paths: "{{ line | regex_replace('^  configured module search path = \\[') | regex_replace('\\]$') | regex_replace(\"'\") | split(', ') | list }}"
       when: line is regex('^  configured module search path')
       loop: "{{ ans_galaxy_check_version.stdout_lines }}"
@@ -94,7 +97,7 @@
         loop_var: line
 
     - name: Debug Ansible Galaxy configured module search paths
-      debug:
+      ansible.builtin.debug:
         var: ans_galaxy_module_search_paths
 
   tags:

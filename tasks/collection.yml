@@ -27,19 +27,19 @@
       when: col.version == "latest"
 
     - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
-      command: "ansible-galaxy collection list {{ col.name }} --format json"
+      ansible.builtin.command: "ansible-galaxy collection list {{ col.name }} --format json"
       check_mode: false
       changed_when: false
       register: ans_galaxy_collection_list
 
     - name: Debug the installed versions
-      debug:
+      ansible.builtin.debug:
         var: ans_galaxy_collection_list.stdout
 
     # TODO Only install new versions if needed
 
     - name: Install collection
-      command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
+      ansible.builtin.command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
       become: false
 
   tags:
