@@ -26,7 +26,7 @@ ans_collections:
   # https://github.com/ansible-collections/community.postgresql/releases
   - name: community.postgresql
     version: latest
-  # https://github.com/ansible-collections/community.rabbitmq/tags
+  # https://github.com/ansible-collections/community.rabbitmq/releases
   - name: community.rabbitmq
-    version: 1.2.2
+    version: latest
 ...
