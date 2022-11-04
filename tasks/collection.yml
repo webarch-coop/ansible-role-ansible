@@ -34,7 +34,7 @@
 
     - name: Set a fact for the results of ansible-galaxy collection list
       ansible.builtin.set_fact:
-        ans_galaxy_collection: "{{ ans_galaxy_collection_list | from_json }}"
+        ans_galaxy_collection: "{{ ans_galaxy_collection_list.stdout | from_json }}"
 
     - name: Debug the installed collection version
       ansible.builtin.debug:
