@@ -40,16 +40,17 @@
     - name: Debug the installed collection list
       ansible.builtin.debug:
         var: ans_galaxy_collection
+        verbosity: 2
 
     - name: Debug the installed collection versions
       ansible.builtin.debug:
         var: ans_galaxy_collection_versions
-
-    # TODO Only install new versions if needed
+        verbosity: 2
 
     - name: Install collection
       ansible.builtin.command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
       become: false
+      when: ans_collection_proposed not in ans_galaxy_collection_versions
 
   tags:
     - ans
