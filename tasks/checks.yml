@@ -50,6 +50,11 @@
       changed_when: false
       register: ans_pypi
 
+    - name: Debug available Ansible versions
+      ansible.builtin.debug:
+        var: ans_pypi
+        verbosity: 2
+
     - name: Create an array of the Ansible core versions available
       ansible.builtin.set_fact:
         ans_versions_available: "{{ ans_versions_available | default([]) }} + [ '{{ ver.key | string }}' ]"
