@@ -32,9 +32,13 @@
       changed_when: false
       register: ans_galaxy_collection_list
 
-    - name: Debug the installed versions
+    - name: Set a fact for the results of ansible-galaxy collection list
+      ansible.builtin.set_fact:
+        ans_galaxy_collection: "{{ ans_galaxy_collection_list | from_json }}"
+
+    - name: Debug the installed collection version
       ansible.builtin.debug:
-        var: ans_galaxy_collection_list.stdout
+        var: ans_galaxy_collection
 
     # TODO Only install new versions if needed
 
