@@ -1,5 +1,5 @@
 ---
-- name: Install Ansible and modules
+- name: Install Ansible dependencies and auto-completion
   block:
 
     - name: Ansible present using pip
@@ -8,7 +8,7 @@
         state: present
         executable: /usr/bin/pip3
 
-    - name: Ansible dependances present
+    - name: Ansible dependencies present
       ansible.builtin.pip:
         name: "{{ pkg }}"
         state: present
@@ -20,8 +20,17 @@
       loop_control:
         loop_var: pkg
 
-    - name: Bash completion present using argcomplete
+    - name: Bash completion present using argcomplete present system-wide
       ansible.builtin.command: activate-global-python-argcomplete3
+      args:
+        creates: /etc/bash_completion.d/python-argcomplete.sh
+      when: ansible_effective_user_id == 0
+
+    - name: Bash completion present using argcomplete present locally
+      ansible.builtin.command: activate-global-python-argcomplete3
+      args:
+        creates: ~/.bash_completion.d/python-argcomplete.sh
+      when: ansible_effective_user_id != 0
 
   tags:
     - ans
