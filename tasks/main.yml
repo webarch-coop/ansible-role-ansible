@@ -22,6 +22,7 @@
               - "The {{ ans_pkg }} is required"
               - "You can install all the requirements using:"
               - "sudo apt install{% for ans_pkg_missing in ans_requirements %} {{ ans_pkg_missing }}{% endfor %}"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
           loop: "{{ ans_requirements }}"
           loop_control:
             loop_var: ans_pkg
