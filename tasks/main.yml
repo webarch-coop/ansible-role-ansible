@@ -18,13 +18,13 @@
           ansible.builtin.assert:
             that:
               - ans_pkg in ansible_facts.packages.keys()
+            fail_msg:
+              - "The {{ ans_pkg }} is required"
+              - "You can install all the requirements using:"
+              - "sudo apt install{% for ans_pkg_missing in ans_requirements %} {{ ans_pkg_missing }}{% endfor %}"
           loop: "{{ ans_requirements }}"
           loop_control:
             loop_var: ans_pkg
-          fail_msg:
-            - "The {{ ans_pkg }} is required"
-            - "You can install all the requirements using:"
-            - "sudo apt install{% for ans_pkg_missing in ans_requirements %} {{ ans_pkg_missing }}{% endfor %}"
 
       when: ansible_effective_user_id != 0
 
