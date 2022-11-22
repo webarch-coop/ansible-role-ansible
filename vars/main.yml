@@ -1,0 +1,9 @@
+---
+ans_requirements:
+  - python3-argcomplete
+  - python3-dnspython
+  - python3-jmespath
+  - python3-lxml
+  - python3-netaddr
+  - python3-pip
+...

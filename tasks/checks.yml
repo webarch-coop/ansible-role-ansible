@@ -91,6 +91,8 @@
       ansible.builtin.set_fact:
         ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core ') | regex_replace('\\]$') }}"
 
+    # This could probably be better, a cli version
+    # ansible-galaxy --version | tail -n+2 | jc --ini | jp '"configured module search path"' | sed 's/^"//' | sed 's/"$//' | yq -o json -
     - name: Get the Ansible Galaxy configured module search paths
       ansible.builtin.set_fact:
         ans_galaxy_module_search_paths: "{{ line | ansible.builtin.regex_replace('^  configured module search path = \\[') | ansible.builtin.regex_replace('\\]$') | ansible.builtin.regex_replace(\"'\") | ansible.builtin.split(', ') | list }}"
