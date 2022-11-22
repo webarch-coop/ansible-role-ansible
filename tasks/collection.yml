@@ -59,7 +59,7 @@
             verbosity: 2
 
         - name: Install collection using ansible_galaxy_install module
-          ansible.builtin.include_tasks: collection_install.yml 
+          ansible.builtin.include_tasks: collection_install.yml
           when:
             - ans_collection_proposed not in ans_galaxy_collection_versions
 
