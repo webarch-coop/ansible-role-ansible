@@ -31,7 +31,7 @@
       check_mode: false
       changed_when: false
       register: ans_galaxy_json
-      failed_when: ans_galaxy_json.rc is not ansible.bulitin.regex('^0|2$')
+      failed_when: ans_galaxy_json.rc is not ansible.builtin.regex('^0|2$')
 
     - name: Query Ansible Galaxy collection when JSON output is supported
       block:
