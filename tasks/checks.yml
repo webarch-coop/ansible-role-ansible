@@ -53,11 +53,11 @@
     - name: Debug available Ansible versions
       ansible.builtin.debug:
         var: ans_pypi.json.releases
-        verbosity: 2
+        verbosity: 3
 
     - name: Create an array of the stable Ansible core versions available
       ansible.builtin.set_fact:
-        ans_versions_available: "{{ ans_pypi.json.releases.keys() | reject('regex', '[a-z]') }}"
+        ans_versions_available: "{{ ans_pypi.json.releases.keys() | ansible.builtin.reject('regex', '[a-z]') }}"
 
     - name: Check that that the proposed Ansible core version is available via pypi
       ansible.builtin.assert:
