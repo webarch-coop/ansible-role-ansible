@@ -91,7 +91,7 @@
       ansible.builtin.set_fact:
         ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core ') | regex_replace('\\]$') }}"
 
-    - name: Work around template error while templating string: no filter named 'ansible.builtin.split'
+    - name: "Work around template error while templating string: no filter named 'ansible.builtin.split'"
       block:
 
         - name: Get the Ansible Galaxy configured module search paths
