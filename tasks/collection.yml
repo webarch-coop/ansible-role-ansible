@@ -58,23 +58,18 @@
             var: ans_galaxy_collection_versions
             verbosity: 2
 
+        - name: Install collection using ansible_galaxy_install module
+          ansible.builtin.include_tasks: collection_install.yml 
+          when:
+            - ans_collection_proposed not in ans_galaxy_collection_versions
+
       when: ans_galaxy_json.rc == 0
 
     - name: Install collection using command module
       ansible.builtin.command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
       become: false
-      when: >-
-        ( ans_collection_proposed not in ans_galaxy_collection_versions ) or
-        ( ans_galaxy_json.rc == 2 )
-
-    - name: Install collection using ansible_galaxy_install module
-      community.general.ansible_galaxy_install:
-        name: "{{ col.name }}:{{ ans_collection_proposed }}"
-        type: collection 
-      become: false
-      when: >-
-        ( ans_collection_proposed not in ans_galaxy_collection_versions ) or
-        ( ans_galaxy_json.rc == 0 )
+      when:
+        - ans_galaxy_json.rc == 2
 
   tags:
     - ans
