@@ -68,6 +68,7 @@
     #     ( ans_galaxy_json.rc == 2 )
 
     - name: Install collection
+      community.general.ansible_galaxy_install:
         name: "{{ col.name }}:{{ ans_collection_proposed }}"
         type: collection 
       when: >-
