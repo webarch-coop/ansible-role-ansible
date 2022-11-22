@@ -2,45 +2,33 @@
 - name: Install Ansible Molecule
   block:
 
-    - name: Latest Ansible Molecule present 
-      block:
+    - name: Check the latest version of Ansible Molecule
+      ansible.builtin.uri:
+        url: https://github.com/ansible-community/molecule/releases/latest
+        method: HEAD
+        status_code: 302
+        follow_redirects: none
+      check_mode: false
+      changed_when: false
+      register: ans_molecule_headers
 
-        - name: Check the latest version of Ansible Molecule
-          ansible.builtin.uri:
-            url: https://github.com/ansible-community/molecule/releases/latest
-            method: HEAD
-            status_code: 302
-            follow_redirects: none
-          check_mode: false
-          changed_when: false
-          register: ans_molecule_headers
+    - name: Debug Ansible Molecule latest headers
+      ansible.builtin.debug:
+        msg:
+          - "Location: {{ ans_molecule_headers.location }}"
+          - "Path: {{ ans_molecule_headers.location | urlsplit('path') }}"
+          - "Version: {{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
+        verbosity: 2
 
-        - name: Debug Ansible Molecule latest headers
-          ansible.builtin.debug:
-            msg:
-              - "Location: {{ ans_molecule_headers.location }}"
-              - "Path: {{ ans_molecule_headers.location | urlsplit('path') }}"
-              - "Version: {{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
-            verbosity: 2
+    - name: Set a fact for the latest version of Ansible Molecule
+      ansible.builtin.set_fact:
+        ans_molecule_version_latest: "{{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
 
-        - name: Set a fact for the latest version of Ansible Molecule
-          ansible.builtin.set_fact:
-            ans_molecule_version_latest: "{{ ans_molecule_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
-
-        - name: Ansible Molecule present
-          ansible.builtin.pip:
-            name: "molecule=={{ ans_molecule_version_latest }}"
-            state: present
-            executable: /usr/bin/pip3
-
-      when: ans_installed_version is ansible.builtin.version('2.10.17', '>')
-
-    - name: Legacy Ansible Molecule present
+    - name: Ansible Molecule present
       ansible.builtin.pip:
-        name: "molecule==3.6.1"
+        name: "molecule=={{ ans_molecule_version_latest }}"
         state: present
         executable: /usr/bin/pip3
-      when: ans_installed_version is ansible.builtin.version('2.10.17', '<=')
 
   tags:
     - ans
