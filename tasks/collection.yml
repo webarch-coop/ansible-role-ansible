@@ -26,31 +26,53 @@
 
       when: col.version == "latest"
 
-    - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
-      ansible.builtin.command: "ansible-galaxy collection list {{ col.name }} --format json"
+    - name: Check if the installed version of ansible-galaxy supports JSON output
+      ansible.builtin.command: ansible-galaxy collection list --format json
       check_mode: false
       changed_when: false
-      register: ans_galaxy_collection_list
+      register: ans_galaxy_json
+      failed_when: ans_galaxy_json.rc is not ansible.bulitin.regex('^0|2$')
 
-    - name: Set facts for the results of ansible-galaxy collection list
-      ansible.builtin.set_fact:
-        ans_galaxy_collection: "{{ ans_galaxy_collection_list.stdout | from_json }}"
-        ans_galaxy_collection_versions: "{{ ans_galaxy_collection_list.stdout | from_json | community.general.json_query('*.*.version[]') }}"
+    - name: Query Ansible Galaxy collection when JSON output is supported
+      block:
 
-    - name: Debug the installed collection list
-      ansible.builtin.debug:
-        var: ans_galaxy_collection
-        verbosity: 2
+        - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
+          ansible.builtin.command: "ansible-galaxy collection list {{ col.name }} --format json"
+          become: false
+          check_mode: false
+          changed_when: false
+          register: ans_galaxy_collection_list
 
-    - name: Debug the installed collection versions
-      ansible.builtin.debug:
-        var: ans_galaxy_collection_versions
-        verbosity: 2
+        - name: Set facts for the results of ansible-galaxy collection list
+          ansible.builtin.set_fact:
+            ans_galaxy_collection: "{{ ans_galaxy_collection_list.stdout | from_json }}"
+            ans_galaxy_collection_versions: "{{ ans_galaxy_collection_list.stdout | from_json | community.general.json_query('*.*.version[]') }}"
+
+        - name: Debug the installed collection list
+          ansible.builtin.debug:
+            var: ans_galaxy_collection
+            verbosity: 2
+
+        - name: Debug the installed collection versions
+          ansible.builtin.debug:
+            var: ans_galaxy_collection_versions
+            verbosity: 2
+
+      when: ans_galaxy_json.rc == 0
+
+    # - name: Install collection
+    #   ansible.builtin.command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
+    #   become: false
+    #   when: >-
+    #     ( ans_collection_proposed not in ans_galaxy_collection_versions ) or
+    #     ( ans_galaxy_json.rc == 2 )
 
     - name: Install collection
-      ansible.builtin.command: "ansible-galaxy collection install {{ col.name }}:=={{ ans_collection_proposed }}"
-      become: false
-      when: ans_collection_proposed not in ans_galaxy_collection_versions
+        name: "{{ col.name }}:{{ ans_collection_proposed }}"
+        type: collection 
+      when: >-
+        ( ans_collection_proposed not in ans_galaxy_collection_versions ) or
+        ( ans_galaxy_json.rc == 2 )
 
   tags:
     - ans
