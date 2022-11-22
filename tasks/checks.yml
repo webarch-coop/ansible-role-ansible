@@ -94,8 +94,6 @@
     - name: Work around template error while templating string: no filter named 'ansible.builtin.split'
       block:
 
-    # This could probably be better, a cli version
-    # ansible-galaxy --version | tail -n+2 | jc --ini | jp '"configured module search path"' | sed 's/^"//' | sed 's/"$//' | yq -o json -
         - name: Get the Ansible Galaxy configured module search paths
           ansible.builtin.set_fact:
             ans_galaxy_module_search_paths: "{{ line | ansible.builtin.regex_replace('^  configured module search path = \\[') | ansible.builtin.regex_replace('\\]$') | ansible.builtin.regex_replace(\"'\") | ansible.builtin.split(', ') | list }}"
@@ -116,9 +114,9 @@
           changed_when: false
           register: ans_galaxy_module_search_paths_command
 
-       - name: Set a fact for the Ansible Galaxy configured module search paths
-         ansible.builtin.set_fact:
-           ans_galaxy_module_search_paths: "{{ ans_galaxy_module_search_paths_command.stdout | from_json }}"
+        - name: Set a fact for the Ansible Galaxy configured module search paths
+          ansible.builtin.set_fact:
+            ans_galaxy_module_search_paths: "{{ ans_galaxy_module_search_paths_command.stdout | from_json }}"
 
     - name: Debug Ansible Galaxy configured module search paths
       ansible.builtin.debug:
