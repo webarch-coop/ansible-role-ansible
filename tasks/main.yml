@@ -41,7 +41,7 @@
       ansible.builtin.include_tasks: ansible.yml
       when:
         - ans_install | bool
-        - ans_version is version(ans_installed_version, '>')
+        - ans_version is ansible.builtin.version(ans_installed_version, '>')
 
     # https://github.com/ansible/ansible/issues/77624
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1007907
@@ -51,20 +51,21 @@
         name: resolvelib==0.5.3
         state: present
         executable: /usr/bin/pip3
-      when: ans_installed_version is version('2.13.3', '<')
+      when: ans_installed_version is ansible.builtin.version('2.13.3', '<')
 
     - name: Remove resolvelib for Ansible newer than 2.13.3
       ansible.builtin.pip:
         name: resolvelib
         state: absent
         executable: /usr/bin/pip3
-      when: ans_installed_version is version('2.13.3', '>=')
+      when: ans_installed_version is ansible.builtin.version('2.13.3', '>=')
 
     - name: Install Ansible Lint
       ansible.builtin.include_tasks: lint.yml
 
     - name: Install Ansible Molecule
       ansible.builtin.include_tasks: molecule.yml
+      when: ans_installed_version is ansible.builtin.version('2.10.17', '>')
 
     - name: Install Ansible collections
       ansible.builtin.include_tasks: collection.yml

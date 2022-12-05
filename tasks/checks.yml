@@ -28,7 +28,7 @@
 
     - name: Set a fact for the installed version of Ansible
       ansible.builtin.set_fact:
-        ans_installed_version: "{{ ans_installed_version_check.stdout_lines[0] | regex_replace('ansible ') | regex_replace('^\\[core ') | regex_replace('\\]$') | trim | string }}"
+        ans_installed_version: "{{ ans_installed_version_check.stdout_lines[0] | ansible.builtin.regex_replace('ansible ') | ansible.builtin.regex_replace('^\\[core ') | ansible.builtin.regex_replace('\\]$') | trim | string }}"
 
     - name: Ansible installed version
       ansible.builtin.debug:
@@ -53,7 +53,7 @@
     - name: Debug available Ansible versions
       ansible.builtin.debug:
         var: ans_pypi.json.releases
-        verbosity: 2
+        verbosity: 3
 
     - name: Create an array of the stable Ansible core versions available and set a variables for the latest version
       ansible.builtin.set_fact:
@@ -92,15 +92,32 @@
       ansible.builtin.set_fact:
         ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core ') | regex_replace('\\]$') }}"
 
-    # This could probably be better, a cli version
-    # ansible-galaxy --version | tail -n+2 | jc --ini | jp '"configured module search path"' | sed 's/^"//' | sed 's/"$//' | yq -o json -
-    - name: Get the Ansible Galaxy configured module search paths
-      ansible.builtin.set_fact:
-        ans_galaxy_module_search_paths: "{{ line | regex_replace('^  configured module search path = \\[') | regex_replace('\\]$') | regex_replace(\"'\") | split(', ') | list }}"
-      when: line is regex('^  configured module search path')
-      loop: "{{ ans_galaxy_check_version.stdout_lines }}"
-      loop_control:
-        loop_var: line
+    - name: "Work around template error while templating string: no filter named 'ansible.builtin.split'"
+      block:
+
+        - name: Get the Ansible Galaxy configured module search paths
+          ansible.builtin.set_fact:
+            ans_galaxy_module_search_paths: "{{ line | ansible.builtin.regex_replace('^  configured module search path = \\[') | ansible.builtin.regex_replace('\\]$') | ansible.builtin.regex_replace(\"'\") | ansible.builtin.split(', ') | list }}"
+          when: line is regex('^  configured module search path')
+          loop: "{{ ans_galaxy_check_version.stdout_lines }}"
+          loop_control:
+            loop_var: line
+
+      rescue:
+
+        - name: Use the shell module to get the Ansible Galaxy configured module search paths
+          ansible.builtin.shell: |
+            set -e -o pipefail
+            ansible-galaxy --version | tail -n+2 | jc --ini | jp '"configured module search path"' | sed 's/^"//' | sed 's/"$//' | yq -o json -
+          args:
+            executable: /bin/bash
+          check_mode: false
+          changed_when: false
+          register: ans_galaxy_module_search_paths_command
+
+        - name: Set a fact for the Ansible Galaxy configured module search paths
+          ansible.builtin.set_fact:
+            ans_galaxy_module_search_paths: "{{ ans_galaxy_module_search_paths_command.stdout | from_json }}"
 
     - name: Debug Ansible Galaxy configured module search paths
       ansible.builtin.debug:
