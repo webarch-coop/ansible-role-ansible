@@ -73,7 +73,7 @@
 
     - name: Debug Ansible version
       ansible.builtin.debug:
-        msg: "The default version of Ansible is installed at {{ ans_which_ansible.stdout }} and is version {{ ans_installed_version }}"
+        msg: "The version of Ansible at {{ ans_default }} is version {{ ans_installed_version }}"
         verbosity: 1
 
     - name: Check the Ansible Galaxy version
