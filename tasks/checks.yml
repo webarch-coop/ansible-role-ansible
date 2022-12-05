@@ -2,23 +2,17 @@
 - name: Check variables
   block:
 
-    - name: Check which the default version of Ansible is
-      ansible.builtin.command: which ansible
-      check_mode: false
-      changed_when: false
-      register: ans_which_ansible
-      failed_when: ans_which_ansible.rc is not regex('^0|1$')
+    - name: Stat ansible 
+      ansible.builtin.stat:
+        path: "{{ ans_default }}"
+      register: ans_stat_ansible
 
     - name: Ansible needs to be installed
       ansible.builtin.assert:
         that:
-          - ans_which_ansible.rc == 1
+          - ans_stat_ansible.stat.exists | bool
         fail_msg: "Please install Ansible!"
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-
-    - name: Set a variable for the path for the default version of Ansible
-      ansible.builtin.set_fact:
-        ans_default: "{{ ans_which_ansible.stdout | string }}"
 
     - name: Check the default version of Ansible
       ansible.builtin.command: "{{ ans_default }} --version"

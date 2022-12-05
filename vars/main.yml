@@ -1,5 +1,7 @@
 ---
+ans_default: /usr/bin/ansible
 ans_deb_req:
+  - ansible
   - python3-argcomplete
   - python3-dnspython
   - python3-jmespath
