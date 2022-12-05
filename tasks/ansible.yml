@@ -2,23 +2,23 @@
 - name: Install Ansible dependencies and auto-completion
   block:
 
+    - name: Ansible dependencies present
+      ansible.builtin.pip:
+        name: "{{ ans_pip_pkg }}"
+        state: present
+        executable: /usr/bin/pip3
+      loop: "{{ ans_pip_req }}"
+        - jc
+        - jmespath
+        - netaddr
+      loop_control:
+        loop_var: ans_pip_pkg
+
     - name: Ansible present using pip
       ansible.builtin.pip:
         name: "ansible-core=={{ ans_version }}"
         state: present
         executable: /usr/bin/pip3
-
-    - name: Ansible dependencies present
-      ansible.builtin.pip:
-        name: "{{ pkg }}"
-        state: present
-        executable: /usr/bin/pip3
-      loop:
-        - jc
-        - jmespath
-        - netaddr
-      loop_control:
-        loop_var: pkg
 
     - name: Bash completion present using argcomplete present system-wide
       ansible.builtin.command: activate-global-python-argcomplete3
