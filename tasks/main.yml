@@ -4,7 +4,7 @@
 
     - name: Requirements present when root
       ansible.builtin.apt:
-        pkg: "{{ ans_requirements }}"
+        pkg: "{{ ans_deb_req }}"
       when: ansible_effective_user_id == 0
 
     - name: Check requirements when not root
@@ -21,7 +21,7 @@
             fail_msg:
               - "The {{ ans_deb_pkg }} is required"
               - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_requirements %} {{ ans_pkg_missing }}{% endfor %}"
+              - "sudo apt install{% for ans_pkg_missing in ans_deb_req %} {{ ans_pkg_missing }}{% endfor %}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
           loop: "{{ ans_deb_req }}"
           loop_control:
