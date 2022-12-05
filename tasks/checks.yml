@@ -2,7 +2,7 @@
 - name: Check variables
   block:
 
-    - name: Stat ansible 
+    - name: Stat ansible
       ansible.builtin.stat:
         path: "{{ ans_default }}"
       register: ans_stat_ansible
