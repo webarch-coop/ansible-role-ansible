@@ -52,7 +52,7 @@
     - name: Create an array of the stable Ansible core versions available and set a variables for the latest version
       ansible.builtin.set_fact:
         ans_versions_available: "{{ ans_pypi.json.releases.keys() | reject('regex', '[a-z]') }}"
-        ans_version_latest: "{{ ans_pypi.json.requires_dist.version }}"
+        ans_version_latest: "{{ ans_pypi.json.info.requires_dist.version }}"
 
     - name: Check that that the proposed Ansible core version is available via pypi
       ansible.builtin.assert:
