@@ -3,6 +3,9 @@
   community.general.ansible_galaxy_install:
     name: "{{ col.name }}:{{ ans_collection_proposed }}"
     type: collection
+  environment:
+    LC_ALL: "en_US.UTF-8"
+    LC_CTYPE: "en_US.UTF-8"
   become: false
   tags:
     - ans
