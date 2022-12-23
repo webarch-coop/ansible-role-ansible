@@ -1,4 +1,5 @@
 ---
+# See https://github.com/ansible-collections/community.general/issues/5661 for env settings
 - name: Install collection using ansible_galaxy_install module
   community.general.ansible_galaxy_install:
     name: "{{ col.name }}:{{ ans_collection_proposed }}"
