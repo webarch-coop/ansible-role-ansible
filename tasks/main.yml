@@ -32,7 +32,7 @@
     - name: Check variables
       ansible.builtin.include_tasks: checks.yml
 
-    - name: Upgrade Ansible when the proposed version is greater than the installed version
+    - name: Install Ansible when the proposed version is greater than the installed version
       ansible.builtin.include_tasks: ansible.yml
       when:
         - ans_install | bool

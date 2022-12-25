@@ -1,6 +1,11 @@
 ---
 ans_bash: /usr/bin/bash
 ans_default: /usr/bin/ansible
+# Jammy has 2.12.0
+# https://packages.ubuntu.com/jammy-updates/ansible-core
+# Bookworm has 2.14.1
+# https://packages.debian.org/bookworm/ansible-core
+ans_default_min_version: "2.12.0"
 ans_galaxy_default: /usr/bin/ansible-galaxy
 ans_deb_req:
   - ansible

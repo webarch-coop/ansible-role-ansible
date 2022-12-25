@@ -1,8 +1,9 @@
 ---
 ans: true
-# Choose a version from here https://pypi.org/project/ansible-core/#history
 ans_install: false
-# Follow the Bookworm version here https://packages.debian.org/bookworm/ansible-core
+# Choose a Ansible version from https://pypi.org/project/ansible-core/#history
+# Jammy version https://packages.ubuntu.com/jammy-updates/ansible-core
+# Bookworm version https://packages.debian.org/bookworm/ansible-core
 ans_version: "2.14.1"
 ans_collections:
   # https://github.com/ansible-collections/ansible.posix/releases
