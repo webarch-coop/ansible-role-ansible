@@ -61,7 +61,7 @@
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check if Ansible has been installed using pip
-      ansible.builtin.command: /usr/bin/pip3 --no-color -q show ansible-core
+      ansible.builtin.command: "{{ ans_pip3 }} --no-color -q show ansible-core"
       check_mode: false
       changed_when: false
       register: ans_show_ansible
@@ -77,7 +77,7 @@
         verbosity: 1
 
     - name: Check the Ansible Galaxy version
-      ansible.builtin.command: ansible-galaxy --version
+      ansible.builtin.command: "{{ ans_galaxy_default }} --version"
       check_mode: false
       changed_when: false
       register: ans_galaxy_check_version
@@ -104,7 +104,7 @@
             set -e -o pipefail
             ansible-galaxy --version | tail -n+2 | jc --ini | jp '"configured module search path"' | sed 's/^"//' | sed 's/"$//' | yq -o json -
           args:
-            executable: /bin/bash
+            executable: "{{ ans_bash }}"
           check_mode: false
           changed_when: false
           register: ans_galaxy_module_search_paths_command

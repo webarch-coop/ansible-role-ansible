@@ -31,7 +31,7 @@
           ansible.builtin.pip:
             name: "ansible-lint=={{ ans_lint_version_latest }}"
             state: present
-            executable: /usr/bin/pip3
+            executable: "{{ ans_pip3 }}"
 
       when: ans_installed_version is ansible.builtin.version('2.10.17', '>')
 
@@ -39,7 +39,7 @@
       ansible.builtin.pip:
         name: "ansible-lint==5.4.0"
         state: present
-        executable: /usr/bin/pip3
+        executable: "{{ ans_pip3 }}"
       when: ans_installed_version is ansible.builtin.version('2.10.17', '<=')
 
   tags:

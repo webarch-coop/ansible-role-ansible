@@ -29,11 +29,6 @@
 
       when: ansible_effective_user_id != 0
 
-    - name: JC present
-      ansible.builtin.pip:
-        name: jc
-        executable: /usr/bin/pip3
-
     - name: Check variables
       ansible.builtin.include_tasks: checks.yml
 
@@ -50,14 +45,14 @@
       ansible.builtin.pip:
         name: resolvelib==0.5.3
         state: present
-        executable: /usr/bin/pip3
+        executable: "{{ ans_pip3 }}"
       when: ans_installed_version is ansible.builtin.version('2.13.3', '<')
 
     - name: Remove resolvelib for Ansible newer than 2.13.3
       ansible.builtin.pip:
         name: resolvelib
         state: absent
-        executable: /usr/bin/pip3
+        executable: "{{ ans_pip3 }}"
       when: ans_installed_version is ansible.builtin.version('2.13.3', '>=')
 
     - name: Install Ansible Lint

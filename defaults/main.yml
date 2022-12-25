@@ -2,13 +2,10 @@
 ans: true
 # Choose a version from here https://pypi.org/project/ansible-core/#history
 ans_install: false
-ans_version: "2.13.4"
+# Follow the Bookworm version here https://packages.debian.org/bookworm/ansible-core
+ans_version: "2.14.1"
 ans_collections:
-  # Debian Bookworm Ansible has 2.5.1
-  # https://github.com/ansible-collections/ansible.netcommon
-  # - name: ansible.netcommon
-  #   version: latest
-  # https://github.com/ansible-collections/ansible.posix
+  # https://github.com/ansible-collections/ansible.posix/releases
   - name: ansible.posix
     version: latest
   # https://github.com/ansible-collections/community.docker/releases

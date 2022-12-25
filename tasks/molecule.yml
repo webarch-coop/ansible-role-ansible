@@ -28,7 +28,7 @@
       ansible.builtin.pip:
         name: "molecule=={{ ans_molecule_version_latest }}"
         state: present
-        executable: /usr/bin/pip3
+        executable: "{{ ans_pip3 }}"
 
   tags:
     - ans

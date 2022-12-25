@@ -5,9 +5,8 @@
     name: "{{ col.name }}:{{ ans_collection_proposed }}"
     type: collection
   environment:
-    LANG: "en_US.UTF-8"
-    LANGUAGE: "en_US:en"
-    LC_ALL: "en_US.UTF-8"
+    LANG: "C.utf8"
+    LC_ALL: "C.utf8"
   become: false
   tags:
     - ans

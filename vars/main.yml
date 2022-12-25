@@ -1,5 +1,7 @@
 ---
+ans_bash: /usr/bin/bash
 ans_default: /usr/bin/ansible
+ans_galaxy_default: /usr/bin/ansible-galaxy
 ans_deb_req:
   - ansible
   - python3-argcomplete
@@ -13,4 +15,5 @@ ans_pip_req:
   - jc
   - jmespath
   - netaddr
+ans_pip3: /usr/bin/pip3
 ...

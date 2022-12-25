@@ -6,7 +6,7 @@
       ansible.builtin.pip:
         name: "{{ ans_pip_pkg }}"
         state: present
-        executable: /usr/bin/pip3
+        executable: "{{ ans_pip3 }}"
       loop: "{{ ans_pip_req }}"
       loop_control:
         loop_var: ans_pip_pkg
@@ -15,7 +15,7 @@
       ansible.builtin.pip:
         name: "ansible-core=={{ ans_version }}"
         state: present
-        executable: /usr/bin/pip3
+        executable: "{{ ans_pip3 }}"
 
     - name: Bash completion present using argcomplete present system-wide
       ansible.builtin.command: activate-global-python-argcomplete3
