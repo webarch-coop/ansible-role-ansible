@@ -1,5 +1,5 @@
 ---
-# If using community.general.ansible_galaxy_install fails
+# If the community.general.ansible_galaxy_install fails
 # then fall back to using the command line see:
 # https://github.com/ansible-collections/community.general/issues/5661
 
@@ -19,7 +19,7 @@
       ansible.builtin.command: >-
         {{ ans_galaxy_default }} collection install 
         {{ col.name }}:{{ ans_collection_proposed }} --force 
-      register: ans_collection_install
+      become: false
 
   tags:
     - ans
