@@ -16,7 +16,7 @@
   rescue:
 
     - name: Install collection using command module
-      ansible.buiultin.command: >-
+      ansible.builtin.command: >-
         {{ ans_galaxy_default }} collection install 
         {{ col.name }}:{{ ans_collection_proposed }} --force 
       register: ans_collection_install
