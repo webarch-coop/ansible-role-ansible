@@ -10,16 +10,35 @@
     - name: Get the latest version number
       block:
 
-        - name: Use a HEAD request to get the latest redirect URL
-          ansible.builtin.uri:
-            url: "https://github.com/ansible-collections/{{ col.name }}/releases/latest"
-            method: HEAD
-            status_code: 302
-            follow_redirects: none
-            validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
-          check_mode: false
-          changed_when: false
-          register: ans_latest_headers
+        - name: Run the HTTP request in a block in case a rescue is needed
+          block:
+
+            - name: Use a HEAD request to get the latest redirect URL
+              ansible.builtin.uri:
+                url: "https://github.com/ansible-collections/{{ col.name }}/releases/latest"
+                method: HEAD
+                status_code: 302
+                follow_redirects: none
+              check_mode: false
+              changed_when: false
+              register: ans_latest_headers
+
+          rescue:
+
+            - name: Debug the results on the HEAD request
+              ansible.builtin.debug:
+                var: ans_latest_headers.outcome
+ 
+            - name: Use a HEAD request to get the latest redirect URL without certificate validation
+              ansible.builtin.uri:
+                url: "https://github.com/ansible-collections/{{ col.name }}/releases/latest"
+                method: HEAD
+                status_code: 302
+                follow_redirects: none
+                validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
+              check_mode: false
+              changed_when: false
+              register: ans_latest_headers
 
         - name: Set a fact for the latest version
           ansible.builtin.set_fact:
