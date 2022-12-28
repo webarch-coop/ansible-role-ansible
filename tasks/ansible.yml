@@ -21,7 +21,7 @@
       register: ans_pip_install
 
     - name: Debug the install results
-      absible.builtin.debug:
+      ansible.builtin.debug:
         var: ans_pip_install.stdout
         verbosity: 2
 
