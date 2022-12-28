@@ -128,6 +128,16 @@
         var: ans_galaxy_module_search_paths
         verbosity: 2
 
+    - name: Check the environmental variables
+      ansible.builtin.command: printenv
+      check_mode: false
+      changed_when: false
+      register: ans_printenv
+
+    - name: Set a fact for the environmental variables
+      ansible.builtin.set_fact:
+        ans_env: "{{ ans_printenv.stdout | community.general.jc('ini') }}"
+
   tags:
     - ansible
 ...
