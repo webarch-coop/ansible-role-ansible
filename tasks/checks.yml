@@ -22,6 +22,15 @@
       ansible.builtin.debug:
         var: ansible_facts.packages.ansible[0].version
 
+    - name: Set a fact for the installed Ansible version
+      ansible.builtin.set_fact:
+        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('+.*$) }}"
+
+    - name: Ansible installed version
+      ansible.builtin.debug:
+        var: ans_installed_version
+        verbosity: 1
+
     - fail:
 
     - name: Check the default version of Ansible
