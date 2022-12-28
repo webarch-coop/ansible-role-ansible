@@ -25,19 +25,24 @@
 
     - name: Set a fact for the .deb package Ansible version
       ansible.builtin.set_fact:
-        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('[+].*$') }}"
+        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('[+].*$') | string }}"
 
     - name: Ansible installed version
       ansible.builtin.debug:
         var: ans_installed_version
         verbosity: 1
 
-    - name: Debug the variable type for ans_installed_version
+    - name: Set facts for the mininum and inmstalled versions of Ansible as strings
+      ansible.builtin.set_fact:
+        ans_installed_version_string: "{{ ans_installed_version | string }}"
+        ans_default_min_version_string: "{{ ans_default_min_version | string }}"
+
+    - name: Debug the variable type for ans_installed_version_string
       ansible.builtin.debug:
         msg: "{{ ans_installed_version | type_debug }}"
         verbosity: 3
 
-    - name: Debug the variable type for ans_default_min_version
+    - name: Debug the variable type for ans_default_min_version_string
       ansible.builtin.debug:
         msg: "{{ ans_default_min_version | type_debug }}"
         verbosity: 3
@@ -47,9 +52,6 @@
         that:
           - ans_installed_version_string is version(ans_default_min_version_string, '>=')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-      vars:
-        ans_installed_version_string: "{{ ans_installed_version | string }}"
-        ans_default_min_version_string: "{{ ans_default_min_version | string }}"
 
     - name: Get a list of available pypi Ansible core versions
       ansible.builtin.uri:
