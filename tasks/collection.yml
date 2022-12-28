@@ -47,7 +47,7 @@
         - name: Set facts for the results of ansible-galaxy collection list
           ansible.builtin.set_fact:
             ans_galaxy_collection: "{{ ans_galaxy_collection_list.stdout | from_json }}"
-            ans_galaxy_collection_versions: "{{ ans_galaxy_collection_list.stdout | from_json | community.general.json_query('*.*.version[]') }}"
+            ans_galaxy_collection_versions: "{{ ans_galaxy_collection_list.stdout | from_json | json_query('*.*.version[]') }}"
 
         - name: Debug the installed collection list
           ansible.builtin.debug:
