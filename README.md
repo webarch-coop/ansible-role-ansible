@@ -2,11 +2,9 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This role contains an Ansible role for installing Ansible, [Ansible Lint](https://github.com/ansible/ansible-lint) and [Molecule](https://github.com/ansible-community/molecule) on Debian Bullseye and Ubuntu Jammy.
+This role contains an Ansible role for installing Ansible collections, [Ansible Lint](https://github.com/ansible/ansible-lint) and [Molecule](https://github.com/ansible-community/molecule) on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
 
-Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and Ubuntu Jammy provides [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible).
-
-The Ansible version this role installs matches [the Debian Bookworm version of Ansible](https://packages.debian.org/bookworm/ansible-core).
+Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and Ubuntu Jammy provides [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible), when this role is run on these distros Ansible itself will also be updated to match the Ansible version on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core).
 
 The suggested way to use this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
 
