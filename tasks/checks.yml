@@ -18,30 +18,14 @@
       ansible.builtin.package_facts:
         manager: apt
 
-    - name: Debug the installed Ansible version
+    - name: Debug the installed Ansible package version string
       ansible.builtin.debug:
         var: ansible_facts.packages.ansible[0].version
-
-    - name: Set a fact for the installed Ansible version
-      ansible.builtin.set_fact:
-        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('[+].*$') }}"
-
-    - name: Ansible installed version
-      ansible.builtin.debug:
-        var: ans_installed_version
         verbosity: 1
 
-    - fail:
-
-    - name: Check the default version of Ansible
-      ansible.builtin.command: "{{ ans_default }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_installed_version_check
-
-    - name: Set a fact for the installed version of Ansible
+    - name: Set a fact for the .deb package Ansible version
       ansible.builtin.set_fact:
-        ans_installed_version: "{{ ans_installed_version_check.stdout_lines[0] | ansible.builtin.regex_replace('ansible ') | ansible.builtin.regex_replace('^\\[core ') | ansible.builtin.regex_replace('\\]$') | trim | string }}"
+        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('[+].*$') }}"
 
     - name: Ansible installed version
       ansible.builtin.debug:
