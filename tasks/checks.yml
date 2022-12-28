@@ -58,15 +58,20 @@
             verbosity: 1
           when: ans_pypi.status == -1
 
+        - name: Fail if the GET request failure didn't occur when running the minimum Ansible version
+          ansible.builtin.fail:
+          when: ans_installed_version is version(ans_default_min_version, '>')
+
         - name: Get a list of available pypi Ansible core versions without validating certificates
           ansible.builtin.uri:
             url: https://pypi.org/pypi/ansible-core/json
             method: GET
             return_content: true
-            validate_certs: false 
+            validate_certs: false
           check_mode: false
           changed_when: false
           register: ans_pypi
+          when: ans_installed_version == ans_default_min_version
 
     - name: Debug available Ansible versions
       ansible.builtin.debug:
