@@ -7,6 +7,7 @@
         name: "{{ ans_pip_pkg }}"
         state: present
         executable: "{{ ans_pip3 }}"
+        extra_args: --user
       loop: "{{ ans_pip_req }}"
       loop_control:
         loop_var: ans_pip_pkg
@@ -16,6 +17,7 @@
         name: "ansible-core=={{ ans_version }}"
         state: present
         executable: "{{ ans_pip3 }}"
+        extra_args: --user
       register: ans_pip_install
 
     - name: Debug the install results

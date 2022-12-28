@@ -29,6 +29,7 @@
         name: "molecule=={{ ans_molecule_version_latest }}"
         state: present
         executable: "{{ ans_pip3 }}"
+        extra_args: --user
 
   tags:
     - ans

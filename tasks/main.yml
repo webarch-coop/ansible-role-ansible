@@ -46,6 +46,7 @@
         name: resolvelib==0.5.3
         state: present
         executable: "{{ ans_pip3 }}"
+        extra_args: --user
       when: ans_installed_version is ansible.builtin.version('2.13.3', '<')
 
     - name: Remove resolvelib for Ansible newer than 2.13.3
@@ -53,6 +54,7 @@
         name: resolvelib
         state: absent
         executable: "{{ ans_pip3 }}"
+        extra_args: --user
       when: ans_installed_version is ansible.builtin.version('2.13.3', '>=')
 
     - name: Install Ansible Lint
