@@ -17,8 +17,8 @@
 
     - name: Install collection using command module
       ansible.builtin.command: >-
-        {{ ans_galaxy_default }} collection install 
-        {{ col.name }}:{{ ans_collection_proposed }} --force 
+        {{ ans_galaxy_default }} collection install
+        {{ col.name }}:{{ ans_collection_proposed }} --force
       become: false
 
   tags:

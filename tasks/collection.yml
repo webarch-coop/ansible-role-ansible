@@ -68,7 +68,7 @@
 
     - name: Install collection using command module
       ansible.builtin.command: >-
-        ansible-galaxy collection install 
+        ansible-galaxy collection install
         {% if ansible_version.full == ans_default_min_version %}--ignore-certs{% endif %}
         {{ col.name }}:=={{ ans_collection_proposed }}
       become: false
