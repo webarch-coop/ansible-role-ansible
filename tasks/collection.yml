@@ -62,7 +62,6 @@
 
         - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
           ansible.builtin.command: "{{ ans_galaxy_default }} collection list {{ col.name }} --format json"
-          become: false
           check_mode: false
           changed_when: false
           register: ans_galaxy_collection_list
@@ -82,23 +81,21 @@
             var: ans_galaxy_collection_versions
             verbosity: 2
 
-        - name: Install collection using ansible_galaxy_install module
-          community.general.ansible_galaxy_install:
-            name: "{{ col.name }}:{{ ans_collection_proposed }}"
-            force: true
-            type: collection
-          become: false
-          when:
-            - ans_installed_version is version(ans_default_min_version, '>')
-            - ans_collection_proposed not in ans_galaxy_collection_versions
+        # Installing using community.general.ansible_galaxy_install isn't possible with
+        # Ansible 2.10.7
+        #
+        # - name: Install collection using ansible_galaxy_install module
+        #   ansible.builtin.include_tasks: collection_galaxy_install.yml
+        #   when:
+        #     - ans_installed_version is version(ans_default_min_version, '>')
+        #     - ans_collection_proposed not in ans_galaxy_collection_versions
 
         - name: Install collection using command module
           ansible.builtin.command: >-
             {{ ans_galaxy_default }} collection install
             {{ col.name }}:{{ ans_collection_proposed }} --force
-          become: false
           when:
-            - ans_installed_version == ans_default_min_version
+            # - ans_installed_version == ans_default_min_version
             - ans_collection_proposed not in ans_galaxy_collection_versions
 
       when: ans_galaxy_json.rc == 0
@@ -108,7 +105,6 @@
         {{ ans_galaxy_default }} collection install
         {% if ans_installed_version == ans_default_min_version %}--ignore-certs{% endif %}
         {{ col.name }}:=={{ ans_collection_proposed }}
-      become: false
       when: 
         - ans_galaxy_json.rc == 2
 
