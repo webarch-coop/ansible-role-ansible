@@ -66,12 +66,12 @@
             validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
           check_mode: false
           changed_when: false
-          when: ( "unable to get local issuer certificate" in ans_pypi.msg )
+          when: ans_pypi.msg == "Status code was -1 and not [200]: Request failed: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1123)>"
           register: ans_pypi
 
         - name: Fail as cause of failure is not known
           ansible.builtin.fail:
-          when: ( "unable to get local issuer certificate" not in ans_pypi.msg )
+          when: ans_pypi.msg == "Status code was -1 and not [200]: Request failed: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1123)>"
 
     - name: Debug available Ansible versions
       ansible.builtin.debug:
