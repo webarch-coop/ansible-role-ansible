@@ -16,6 +16,12 @@
         name: "ansible-core=={{ ans_version }}"
         state: present
         executable: "{{ ans_pip3 }}"
+      register: ans_pip_install
+
+    - name: Debug the install results
+      absible.builtin.debug:
+        var: ans_pip_install.stdout
+        verbosity: 2
 
     - name: Bash completion present using argcomplete present system-wide
       ansible.builtin.command: activate-global-python-argcomplete3
@@ -24,7 +30,7 @@
       when: ansible_effective_user_id == 0
 
     - name: Bash completion present using argcomplete present locally
-      ansible.builtin.command: activate-global-python-argcomplete3
+      ansible.builtin.command: activate-global-python-argcomplete3 --user
       args:
         creates: ~/.bash_completion.d/python-argcomplete.sh
       when: ansible_effective_user_id != 0
