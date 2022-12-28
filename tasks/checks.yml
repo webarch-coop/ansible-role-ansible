@@ -138,6 +138,8 @@
       ansible.builtin.set_fact:
         ans_env: "{{ ans_printenv.stdout | community.general.jc('ini') }}"
 
+    - fail:
+
   tags:
     - ansible
 ...
