@@ -70,7 +70,7 @@
           register: ans_pypi
 
         - ansible.builtin.debug:
-            msg: "{{ ans_pypi.msg.split }}"
+            msg: "{{ (ans_pypi.msg).split }}"
 
         - name: Fail as cause of failure is not known
           ansible.builtin.fail:
