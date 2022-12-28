@@ -51,7 +51,7 @@
       when: col.version == "latest"
 
     - name: Check if the installed version of ansible-galaxy supports JSON output
-      ansible.builtin.command: ansible-galaxy collection list --format json
+      ansible.builtin.command: "{{ ans_galaxy_default }} collection list --format json"
       check_mode: false
       changed_when: false
       register: ans_galaxy_json
@@ -61,7 +61,7 @@
       block:
 
         - name: Check the installed version using ansible-galaxy collection list {{ col.name }}
-          ansible.builtin.command: "ansible-galaxy collection list {{ col.name }} --format json"
+          ansible.builtin.command: "{{ ans_galaxy_default }} collection list {{ col.name }} --format json"
           become: false
           check_mode: false
           changed_when: false
@@ -105,7 +105,7 @@
 
     - name: Install collection using command module
       ansible.builtin.command: >-
-        ansible-galaxy collection install
+        {{ ans_galaxy_default }} collection install
         {% if ans_installed_version == ans_default_min_version %}--ignore-certs{% endif %}
         {{ col.name }}:=={{ ans_collection_proposed }}
       become: false
