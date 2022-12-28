@@ -28,7 +28,7 @@
             - name: Debug the results on the HEAD request
               ansible.builtin.debug:
                 var: ans_latest_headers.outcome
- 
+
             - name: Use a HEAD request to get the latest redirect URL without certificate validation
               ansible.builtin.uri:
                 url: "https://github.com/ansible-collections/{{ col.name }}/releases/latest"
