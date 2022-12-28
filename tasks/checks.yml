@@ -32,6 +32,16 @@
         var: ans_installed_version
         verbosity: 1
 
+    - name: Debug the variable type for ans_installed_version
+      ansible.builtin.debug:
+        msg: "{{ ans_installed_version | type_debug }}"
+        verbosity: 3
+
+    - name: Debug the variable type for ans_default_min_version
+      ansible.builtin.debug:
+        msg: "{{ ans_default_min_version | type_debug }}"
+        verbosity: 3
+
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required
       ansible.builtin.assert:
         that:
