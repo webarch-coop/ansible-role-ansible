@@ -8,14 +8,14 @@ Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/a
 
 The suggested way to use this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
 
-This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable then the suggested method for updating the `$PATH` is to add the follwoing to `~/.bash_profile`:
+This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable then the suggested method for updating the `$PATH` is to add the following to your `~/.bash_profile`:
 
 ```bash
 PATH=${HOME}/.local/bin:${PATH}
 export PATH=${PATH}
 ```
 
-And after updating or creating this file then exit the shell and reopen it or run `source ~/.bash_profile`.
+After updating or creating this file you need to either exit the shell and reopen it or run `source ~/.bash_profile`.
 
 ## Role variables
 
@@ -47,7 +47,7 @@ This role is released under [the same terms as Ansible itself](https://github.co
 
 ## Notes
 
-List the installed Ansible galaxy collactions:
+List the installed Ansible galaxy collections:
 
 ```bash
 ansible-galaxy collection list
