@@ -32,21 +32,6 @@
         var: ans_installed_version
         verbosity: 1
 
-    # - name: Set facts for the mininum and installed versions of Ansible as strings
-    #   ansible.builtin.set_fact:
-    #     ans_installed_version_string: "{{ ans_installed_version | string }}"
-    #     ans_default_min_version_string: "{{ ans_default_min_version | string }}"
-
-    # - name: Debug the variable type for ans_installed_version_string
-    #   ansible.builtin.debug:
-    #     msg: "{{ ans_installed_version | type_debug }}"
-    #     verbosity: 3
-
-    # - name: Debug the variable type for ans_default_min_version_string
-    #   ansible.builtin.debug:
-    #     msg: "{{ ans_default_min_version | type_debug }}"
-    #     verbosity: 3
-
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required
       ansible.builtin.assert:
         that:
@@ -58,7 +43,7 @@
         url: https://pypi.org/pypi/ansible-core/json
         method: GET
         return_content: true
-        validate_certs: "{% if ansible_version.full == ans_default_min_version %}false{% else %}true{% endif %}"
+        validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
       check_mode: false
       changed_when: false
       register: ans_pypi

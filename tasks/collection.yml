@@ -16,7 +16,7 @@
             method: HEAD
             status_code: 302
             follow_redirects: none
-            validate_certs: "{% if ansible_version.full == ans_default_min_version %}false{% else %}true{% endif %}"
+            validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
           check_mode: false
           changed_when: false
           register: ans_latest_headers
