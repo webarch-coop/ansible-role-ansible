@@ -143,6 +143,15 @@
         var: ans_env
         verbosity: 2
 
+    - name: Set a fact for paths in the PATH environmental variable
+      ansible.builtin.set_fact:
+        ans_path: "{{ (ans_env.PATH).split(':') }}"
+
+    - name: Debug the paths in the PATH environmental variable
+      ansible.builtin.debug:
+        var: ans_path
+        verbosity: 2
+
     - fail:
 
   tags:
