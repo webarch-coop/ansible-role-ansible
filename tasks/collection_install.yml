@@ -3,8 +3,6 @@
 # then fall back to using the command line see:
 # https://github.com/ansible-collections/community.general/issues/5661
 
-- fail:
-
 - name: Install collection
   block:
 
