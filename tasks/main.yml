@@ -34,9 +34,7 @@
 
     - name: Install Ansible when the proposed version is greater than the installed version
       ansible.builtin.include_tasks: ansible.yml
-      when:
-        - ans_install | bool
-        - ans_version is ansible.builtin.version(ans_installed_version, '>')
+      when: ans_version is ansible.builtin.version(ans_installed_version, '>')
 
     # https://github.com/ansible/ansible/issues/77624
     # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1007907

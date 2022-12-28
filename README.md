@@ -2,9 +2,41 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This role contains an Ansible role for installing Ansible Galaxy collections and [Ansible Lint](https://github.com/ansible/ansible-lint) and [Molecule](https://github.com/ansible-community/molecule) via `pip3`, see the [defaults/main.yml](defaults/main.yml) file for the versions that are installed. 
+This role contains an Ansible role for installing Ansible, [Ansible Lint](https://github.com/ansible/ansible-lint) and [Molecule](https://github.com/ansible-community/molecule) on Debian Bullseye and Ubuntu Jammy.
 
-It can also optionally install [a version Ansible](https://pypi.org/project/ansible-core/#history) using `pip3`, however this isn't done by default as this role is being tested and developed using [the Debian Bookworm version of Ansible](https://packages.debian.org/bookworm/ansible-core).
+Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and Ubuntu Jammy provides [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible).
+
+The Ansible version this role installs matches [the Debian Bookworm version of Ansible](https://packages.debian.org/bookworm/ansible-core).
+
+The suggested mathod of using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
+
+## Role variables
+
+See the [defaults/main.yml](defaults/main.yml) file for the default variables, the [vars/main.yml](vars/main.yml) file for the preset variables and [meta/argument_spacs.yml](meta/argument_specs.yml) for the variable specification.
+
+### ans
+
+Set the `ans` variable to `false` to prevent any tasks in this role being run.
+
+### ans_collections
+
+A list of Ansible collections and their versions that will be installed, each item in the list requires a `name` for the name of the collection and the `version`, the version can be a version number or `latest`, for example:
+
+```yaml
+ans_collections:
+  - name: community.general
+    version: latest
+```
+
+The versions of `community.general` that are available can be found on the [GitHub releases page](https://github.com/ansible-collections/community.general/releases).
+
+### ans_version
+
+The version of Ansible that will be installed if the packaged version is less than this version.
+
+## License
+
+This role is released under [the same terms as Ansible itself](https://github.com/ansible/ansible/blob/devel/COPYING), the [GNU GPLv3](LICENSE).
 
 ## Notes
 
