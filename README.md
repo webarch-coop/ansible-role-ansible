@@ -8,11 +8,11 @@ Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/a
 
 The Ansible version this role installs matches [the Debian Bookworm version of Ansible](https://packages.debian.org/bookworm/ansible-core).
 
-The suggested mathod of using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
+The suggested method of using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
 
 ## Role variables
 
-See the [defaults/main.yml](defaults/main.yml) file for the default variables, the [vars/main.yml](vars/main.yml) file for the preset variables and [meta/argument_spacs.yml](meta/argument_specs.yml) for the variable specification.
+See the [defaults/main.yml](defaults/main.yml) file for the default variables, the [vars/main.yml](vars/main.yml) file for the preset variables and [meta/argument_specs.yml](meta/argument_specs.yml) for the variable specification.
 
 ### ans
 

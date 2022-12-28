@@ -1,8 +1,5 @@
 ---
 ans: true
-ans_install: false
-# Choose a Ansible version from https://pypi.org/project/ansible-core/#history
-ans_version: "2.14.1"
 ans_collections:
   # https://github.com/ansible-collections/ansible.posix/releases
   - name: ansible.posix
@@ -25,4 +22,6 @@ ans_collections:
   # https://github.com/ansible-collections/community.rabbitmq/releases
   - name: community.rabbitmq
     version: latest
+# Choose a Ansible version from https://pypi.org/project/ansible-core/#history
+ans_version: "2.14.1"
 ...
