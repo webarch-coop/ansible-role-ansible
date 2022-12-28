@@ -35,7 +35,7 @@
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required
       ansible.builtin.assert:
         that:
-          - ( ans_installed_version | string ) is version(ans_default_min_version, '>=')
+          - ans_installed_version is version(ans_default_min_version, '>=')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Get a list of available pypi Ansible core versions
