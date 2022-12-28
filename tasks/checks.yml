@@ -63,11 +63,14 @@
             url: https://pypi.org/pypi/ansible-core/json
             method: GET
             return_content: true
-            validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
+            validate_certs: false 
           check_mode: false
           changed_when: false
           when: ans_pypi.msg is regex('[(]_ssl[.]c[:]1123[)]>$')
           register: ans_pypi
+
+        - ansible.builtin.debug:
+            msg: "{{ ans_pypi.msg.split }}"
 
         - name: Fail as cause of failure is not known
           ansible.builtin.fail:
