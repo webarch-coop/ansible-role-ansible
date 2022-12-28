@@ -66,12 +66,12 @@
             validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
           check_mode: false
           changed_when: false
-          when: ( "CERTIFICATE_VERIFY_FAILED" in ans_pypi.msg )
+          when: ( "unable to get local issuer certificate" in ans_pypi.msg )
           register: ans_pypi
 
         - name: Fail as cause of failure is not known
           ansible.builtin.fail:
-          when: ( "CERTIFICATE_VERIFY_FAILED" not in ans_pypi.msg )
+          when: ( "unable to get local issuer certificate" not in ans_pypi.msg )
 
     - name: Debug available Ansible versions
       ansible.builtin.debug:
