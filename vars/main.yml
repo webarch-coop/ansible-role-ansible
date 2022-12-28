@@ -1,13 +1,10 @@
 ---
 ans_bash: "{% if ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/usr/bin/bash{% endif %}"
 ans_default: /usr/bin/ansible
-# Jammy has 2.12.0
-# https://packages.ubuntu.com/jammy-updates/ansible-core
-# Bookworm has 2.14.1
-# https://packages.debian.org/bookworm/ansible-core
-# Bullseye has 2.10.8
+# Bullseye and Jammy have 2.10.7
 # https://packages.debian.org/bullseye/ansible
-ans_default_min_version: "2.10.8"
+# https://packages.ubuntu.com/jammy/ansible
+ans_default_min_version: "2.10.7"
 ans_galaxy_default: /usr/bin/ansible-galaxy
 ans_deb_req:
   - ansible

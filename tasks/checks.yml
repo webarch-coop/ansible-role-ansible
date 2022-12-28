@@ -25,14 +25,14 @@
 
     - name: Set a fact for the .deb package Ansible version
       ansible.builtin.set_fact:
-        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('[+].*$') | string }}"
+        ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
 
     - name: Ansible installed version
       ansible.builtin.debug:
         var: ans_installed_version
         verbosity: 1
 
-    - name: Set facts for the mininum and inmstalled versions of Ansible as strings
+    - name: Set facts for the mininum and installed versions of Ansible as strings
       ansible.builtin.set_fact:
         ans_installed_version_string: "{{ ans_installed_version | string }}"
         ans_default_min_version_string: "{{ ans_default_min_version | string }}"
