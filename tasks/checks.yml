@@ -66,15 +66,7 @@
             validate_certs: false 
           check_mode: false
           changed_when: false
-          when: ans_pypi.msg is regex('[(]_ssl[.]c[:]1123[)]>$')
           register: ans_pypi
-
-        - ansible.builtin.debug:
-            msg: "{{ (ans_pypi.msg).split }}"
-
-        - name: Fail as cause of failure is not known
-          ansible.builtin.fail:
-          when: ans_pypi.msg is not regex('[(]_ssl[.]c[:]1123[)]>$')
 
     - name: Debug available Ansible versions
       ansible.builtin.debug:

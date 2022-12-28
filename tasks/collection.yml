@@ -27,7 +27,7 @@
 
             - name: Debug the results on the HEAD request
               ansible.builtin.debug:
-                var: ans_latest_headers.outcome
+                var: ans_latest_headers.msg
 
             - name: Use a HEAD request to get the latest redirect URL without certificate validation
               ansible.builtin.uri:
@@ -35,7 +35,7 @@
                 method: HEAD
                 status_code: 302
                 follow_redirects: none
-                validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
+                validate_certs: false
               check_mode: false
               changed_when: false
               register: ans_latest_headers
