@@ -92,7 +92,7 @@
 
         - name: Get the Ansible Galaxy configured module search paths
           ansible.builtin.set_fact:
-            ans_galaxy_module_search_paths: "{{ line | ansible.builtin.regex_replace('^  configured module search path = \\[') | ansible.builtin.regex_replace('\\]$') | ansible.builtin.regex_replace(\"'\") | ansible.builtin.split(', ') | list }}"
+            ans_galaxy_module_search_paths: "{{ line | regex_replace('^  configured module search path = \\[') | regex_replace('\\]$') | regex_replace(\"'\") | split(', ') | list }}"
           when: line is regex('^  configured module search path')
           loop: "{{ ans_galaxy_check_version.stdout_lines }}"
           loop_control:
