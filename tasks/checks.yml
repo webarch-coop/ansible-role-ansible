@@ -138,6 +138,11 @@
       ansible.builtin.set_fact:
         ans_env: "{{ ans_printenv.stdout | community.general.jc('ini') }}"
 
+    - name: Debug the environmental variables
+      ansible.builtin.debug:
+        var: ans_env
+        verbosity: 2
+
     - fail:
 
   tags:
