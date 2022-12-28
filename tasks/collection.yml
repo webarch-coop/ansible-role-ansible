@@ -83,8 +83,22 @@
             verbosity: 2
 
         - name: Install collection using ansible_galaxy_install module
-          ansible.builtin.include_tasks: collection_install.yml
+          community.general.ansible_galaxy_install:
+            name: "{{ col.name }}:{{ ans_collection_proposed }}"
+            force: true
+            type: collection
+          become: false
           when:
+            - ans_installed_version is version(ans_default_min_version, '>')
+            - ans_collection_proposed not in ans_galaxy_collection_versions
+
+        - name: Install collection using command module
+          ansible.builtin.command: >-
+            {{ ans_galaxy_default }} collection install
+            {{ col.name }}:{{ ans_collection_proposed }} --force
+          become: false
+          when:
+            - ans_installed_version == ans_default_min_version
             - ans_collection_proposed not in ans_galaxy_collection_versions
 
       when: ans_galaxy_json.rc == 0
@@ -95,7 +109,7 @@
         {% if ans_installed_version == ans_default_min_version %}--ignore-certs{% endif %}
         {{ col.name }}:=={{ ans_collection_proposed }}
       become: false
-      when:
+      when: 
         - ans_galaxy_json.rc == 2
 
   tags:
