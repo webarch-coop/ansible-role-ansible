@@ -24,7 +24,7 @@
 
     - name: Set a fact for the installed Ansible version
       ansible.builtin.set_fact:
-        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('+.*$') }}"
+        ans_installed_version: "{{ ansible_facts.packages.ansible | regex_replace('[+].*$) }}"
 
     - name: Ansible installed version
       ansible.builtin.debug:
