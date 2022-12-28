@@ -143,16 +143,25 @@
         var: ans_env
         verbosity: 2
 
-    - name: Set a fact for paths in the PATH environmental variable
+    - name: Set a fact for paths in the PATH environmental variable and the ~/.local/bin path
       ansible.builtin.set_fact:
         ans_path: "{{ (ans_env.PATH).split(':') }}"
+        ans_local_path: "{{ ans_env.HOME }}/.local/bin"
 
     - name: Debug the paths in the PATH environmental variable
       ansible.builtin.debug:
         var: ans_path
         verbosity: 2
 
-    - fail:
+    - name: Fail if ~/.local/bin is not in the PATH environmental variable 
+      ansible.builtin.assert:
+        that:
+          - ans_local_path in ans_path
+        fail_msg:
+          - "Please add {{ ans_local_path }} to your PATH environmental variable"
+          - "For example add the following two lines to ~/.bash_profile"
+          - "PATH={{ ans_local_path }}:${PATH}"
+          - "export ${PATH}"
 
   tags:
     - ansible
