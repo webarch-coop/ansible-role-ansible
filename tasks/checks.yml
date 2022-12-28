@@ -49,13 +49,13 @@
           check_mode: false
           changed_when: false
           register: ans_pypi
+      
+      rescue:
 
         - name: Debug the outcome of the available Ansible versions check
           ansible.builtin.debug:
-            var: ans_pypi.outcome
-            verbosity: 3
-      
-      rescue:
+            var: ans_pypi.msg
+          when: ans_pypi.status == -1
 
         - name: Get a list of available pypi Ansible core versions without validating certificates
           ansible.builtin.uri:
@@ -65,9 +65,14 @@
             validate_certs: "{% if ans_installed_version == ans_default_min_version %}false{% else %}true{% endif %}"
           check_mode: false
           changed_when: false
+          when: ( "CERTIFICATE_VERIFY_FAILED" in ans_pypi.msg )
           register: ans_pypi
 
-        - fail:
+        - name: Fail as cause of failure is not known
+          ansible.builtin.fail:
+          when: ( "CERTIFICATE_VERIFY_FAILED" not in ans_pypi.msg )
+
+    - fail:
 
     - name: Debug available Ansible versions
       ansible.builtin.debug:
