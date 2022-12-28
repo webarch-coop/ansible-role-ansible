@@ -153,15 +153,16 @@
         var: ans_path
         verbosity: 2
 
-    - name: Fail if ~/.local/bin is not in the PATH environmental variable 
+    - name: Fail if ~/.local/bin is not in the PATH environmental variable
       ansible.builtin.assert:
         that:
           - ans_local_path in ans_path
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
         fail_msg:
           - "Please add {{ ans_local_path }} to your PATH environmental variable"
           - "For example add the following two lines to ~/.bash_profile"
-          - "PATH={{ ans_local_path }}:${PATH}"
-          - "export ${PATH}"
+          - "PATH={{ ans_env.HOME }}/.local/bin:${PATH}"
+          - "export PATH=${PATH}"
 
   tags:
     - ansible

@@ -105,7 +105,7 @@
         {{ ans_galaxy_default }} collection install
         {% if ans_installed_version == ans_default_min_version %}--ignore-certs{% endif %}
         {{ col.name }}:=={{ ans_collection_proposed }}
-      when: 
+      when:
         - ans_galaxy_json.rc == 2
 
   tags:
