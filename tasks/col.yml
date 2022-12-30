@@ -73,10 +73,31 @@
     #    - ans_col_version_required != ans_col_system_version_present
     #    - ans_col_version_required != ans_col_user_version_present
 
-    - name: Install collection using command module
-      ansible.builtin.command: >-
-        {{ ans_ansible_galaxy_path }} collection install
-        {{ ans_col.name }}:{{ ans_col_version_required }} --force
+    - name: Install collection in a block so failures can be rescued
+      block:
+
+        - name: "Ansible collection install using command module for {{ ans_col.name }}"
+          ansible.builtin.command: >-
+            {{ ans_ansible_galaxy_path }} collection install
+            {{ ans_col.name }}:{{ ans_col_version_required }} --force
+          register: ans_col_install
+
+      rescue:
+
+        - name: "Debug the standard error the collection install for {{ ans_pypi_pkg.name }}"
+          ansible.builtin.debug:
+            var: ans_col_install.stderr
+            verbosity: 1
+
+        - name: Fail if the collection install failure didn't occur when running the minimum Ansible version
+          ansible.builtin.fail:
+          when: ans_installed_version is version(ans_ansible_min_version, '>')
+
+        - name: "Ansible collection install using command module without certificate verification for {{ ans_col.name }}"
+          ansible.builtin.command: >-
+            {{ ans_ansible_galaxy_path }} collection install
+            {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force
+
       when:
         - ans_col_version_required != ans_col_system_version_present
         - ans_col_version_required != ans_col_user_version_present
