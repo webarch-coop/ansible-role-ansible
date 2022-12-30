@@ -49,7 +49,7 @@ ans_pypi_pkgs:
     version: "0.8.0"
   - name: resolvelib
     url: https://pypi.org/pypi/resolvelib
-    version: "0.9.0"
+    version: "0.8.1"
 # Debian / Ubuntu packages required
 ans_pkgs:
   - ansible
