@@ -15,7 +15,7 @@
           ansible.builtin.package_facts:
             manager: apt
 
-        - name: Required packages need installing
+        - name: Check the presence of the required packages
           ansible.builtin.assert:
             that:
               - ans_deb_pkg in ansible_facts.packages.keys()
