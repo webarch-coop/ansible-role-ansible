@@ -100,6 +100,7 @@
           when: ansible_effective_user_id != 0
 
       when:
+        - ans_init.stdout != "sh"
         - ansible_env.SHELL is regex('bash$')
         - ans_argcomplete_path is defined
         - ans_argcomplete_path | length > 0

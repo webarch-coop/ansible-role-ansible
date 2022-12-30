@@ -38,21 +38,13 @@
           - ans_installed_version is version(ans_ansible_min_version, '>=')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
+    # When in a docker container ans_init.stdout == "sh"
+    # otherwise it is "systemd"
     - name: Check the ini system
       ansible.builtin.command: ps -p 1 -o comm=
       changed_when: false
       check_mode: false
       register: ans_init
-
-    - name: Check init system stdout
-      ansible.builtin.debug:
-        var: ans_init.stdout
-
-    - name: Check init system stderr
-      ansible.builtin.debug:
-        var: ans_init.stderr
-
-    - fail:
 
     - name: Check the system PyPI packages
       ansible.builtin.command: python3 -m pip list --format=json
