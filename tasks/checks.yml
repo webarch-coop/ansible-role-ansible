@@ -40,7 +40,7 @@
 
     # When in a docker container ans_init.stdout == "sh"
     # otherwise it is "systemd"
-    - name: Check the ini system
+    - name: Check the init system
       ansible.builtin.command: ps -p 1 -o comm=
       changed_when: false
       check_mode: false
