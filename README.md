@@ -11,8 +11,8 @@ This role is set to match the Ansible version available on [Debian Bookworm](htt
 This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable then the suggested method for updating the `$PATH` is to add the following to your `~/.bash_profile`:
 
 ```bash
-PATH=${HOME}/.local/bin:${PATH}
-export PATH=${PATH}
+PATH="${HOME}/.local/bin:${PATH}"
+export PATH="${PATH}"
 ```
 
 After updating or creating this file you need to either exit the shell and reopen it or run `source ~/.bash_profile`.
@@ -21,7 +21,7 @@ The suggested way to use this role is via the [localhost repo](https://git.coop/
 
 ## Role variables
 
-See the [defaults/main.yml](defaults/main.yml) file for the default variables, the [vars/main.yml](vars/main.yml) file for the preset variables and [meta/argument_specs.yml](meta/argument_specs.yml) for the variable specification.
+See the [defaults/main.yml](defaults/main.yml) file for the default variables, the [vars/main.yml](vars/main.yml) file for the preset variables and the [meta/argument_specs.yml](meta/argument_specs.yml) file for the variable specification.
 
 ### ans
 
@@ -56,11 +56,11 @@ ans_pkgs:
 
 See the [defaults/main.yml](defaults/main.yml) file for the default list of packages.
 
-If this role is run suidng `sudo` or as `root` these packages will be automatically installed, when run as a non-root user the role will fail if these packages are not present.
+If this role is run usidng `sudo` or as `root` these packages will be automatically installed, when it is run as a non-root user this role will fail if these packages are not present.
 
 ### ans_pypi_pkgs
 
-A list of [Python Package Index ([PyPI[(https://pypi.org/)), package names and versions that will be installed as user packages if they are not already available as system packages or user packages.
+A list of Python Package Index ([PyPI](https://pypi.org/)), package names, URLs and versions that will be installed as user packages if they are not already available as system packages.
 
 Each item in the list requires a `name` for the name of the PyPI package, a `url` for the URL of the project on the PyPI website and a `version`, the version can be a version number or `latest`, for example:
 
@@ -74,7 +74,7 @@ ans_pypi_pkgs:
     version: latest
 ```
 
-Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, eg `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
+Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
 
 ## Notes
 
