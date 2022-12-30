@@ -44,9 +44,15 @@
       check_mode: false
       register: ans_init
 
-    - name: Check init system
-      ansible.builtin.fail:
-        fail_msg: "Init: {{ ans_init.stdout }}"
+    - name: Check init system stdout
+      ansible.builtin.debug:
+        var: ans_init.stdout
+
+    - name: Check init system stderr
+      ansible.builtin.debug:
+        var: ans_init.stderr
+
+    - fail:
 
     - name: Check the system PyPI packages
       ansible.builtin.command: python3 -m pip list --format=json
