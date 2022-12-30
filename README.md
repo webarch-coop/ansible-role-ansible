@@ -2,9 +2,11 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This role contains an Ansible role for [installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other Python Package Index (PyPI) packages on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
+This role contains an Ansible role for [installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
 
-The version of Ansible provided by Debian Bullseye [is Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and the version provided by Ubuntu Jammy is also [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible), when this role is run on these distros Ansible itself will also be updated for the user running this role, to match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file).
+The version of Ansible provided by Debian Bullseye [is Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and the version provided by Ubuntu Jammy is also [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible), when this role is run on these distros Ansible itself will be installed for the user running this role.
+
+This role is set to match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file), Ansible is not installed for users on Debian Bookworm since the Debian packaged version is fine.
 
 This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable then the suggested method for updating the `$PATH` is to add the following to your `~/.bash_profile`:
 
