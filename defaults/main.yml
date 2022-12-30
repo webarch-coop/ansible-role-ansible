@@ -1,27 +1,64 @@
 ---
+# Run the tasks in this role
 ans: true
-ans_collections:
-  # https://github.com/ansible-collections/ansible.posix/releases
+# Ansible collections required
+ans_cols:
   - name: ansible.posix
-    version: latest
-  # https://github.com/ansible-collections/community.docker/releases
+    url: https://github.com/ansible-collections/ansible.posix
+    version: "1.4.0"
   - name: community.docker
-    version: latest
-  # https://github.com/ansible-collections/community.crypto/releases
+    url: https://github.com/ansible-collections/community.docker
+    version: "3.3.1"
   - name: community.crypto
-    version: latest
-  # https://github.com/ansible-collections/community.general/releases
+    url: https://github.com/ansible-collections/community.crypto
+    version: "2.9.0"
   - name: community.general
-    version: latest
-  # https://github.com/ansible-collections/community.mysql/releases
+    url: https://github.com/ansible-collections/community.general
+    version: "6.1.0"
   - name: community.mysql
-    version: latest
-  # https://github.com/ansible-collections/community.postgresql/releases
+    url: https://github.com/ansible-collections/community.mysql
+    version: "3.5.1"
   - name: community.postgresql
-    version: latest
-  # https://github.com/ansible-collections/community.rabbitmq/releases
+    url: https://github.com/ansible-collections/community.postgresql
+    version: "2.3.2"
   - name: community.rabbitmq
-    version: latest
-# Choose a Ansible version from https://pypi.org/project/ansible-core/#history
-ans_version: "2.14.1"
+    url: https://github.com/ansible-collections/community.rabbitmq
+    version: "1.2.3"
+# Python PyPI packages required
+ans_pypi_pkgs:
+  - name: ansible-core
+    url: https://pypi.org/pypi/ansible-core
+    version: "2.14.1"
+  - name: ansible-lint
+    url: https://pypi.org/pypi/ansible-lint
+    version: "6.10.0"
+  - name: dnspython
+    url: https://pypi.org/pypi/dnspython
+    version: "2.2.1"
+  - name: jc
+    url: https://pypi.org/pypi/jc
+    version: "1.22.3"
+  - name: jmespath
+    url: https://pypi.org/pypi/jmespath
+    version: "1.0.1"
+  - name: molecule
+    url: https://pypi.org/pypi/molecule
+    version: "4.0.4"
+  - name: netaddr
+    url: https://pypi.org/pypi/netaddr
+    version: "0.8.0"
+  - name: resolvelib
+    url: https://pypi.org/pypi/resolvelib
+    version: "0.9.0"
+# Debian / Ubuntu packages required
+ans_pkgs:
+  - ansible
+  - python3-argcomplete
+  - python3-dnspython
+  - python3-jmespath
+  - python3-lxml
+  - python3-netaddr
+  - python3-pip
+  - python3-resolvelib
+  - python3-setuptools
 ...

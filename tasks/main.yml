@@ -4,7 +4,8 @@
 
     - name: Requirements present when root
       ansible.builtin.apt:
-        pkg: "{{ ans_deb_req }}"
+        pkg: "{{ ans_pkgs }}"
+        state: present
       when: ansible_effective_user_id == 0
 
     - name: Check requirements when not root
@@ -21,9 +22,9 @@
             fail_msg:
               - "The {{ ans_deb_pkg }} is required"
               - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_deb_req %} {{ ans_pkg_missing }}{% endfor %}"
+              - "sudo apt install{% for ans_pkg_missing in ans_pkgs %} {{ ans_pkg_missing }}{% endfor %}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_deb_req }}"
+          loop: "{{ ans_pkgs }}"
           loop_control:
             loop_var: ans_deb_pkg
 
@@ -32,44 +33,87 @@
     - name: Check variables
       ansible.builtin.include_tasks: checks.yml
 
-    - name: Install Ansible when the proposed version is greater than the installed version
-      ansible.builtin.include_tasks: ansible.yml
-      when: ans_version is ansible.builtin.version(ans_installed_version, '>')
-
-    # https://github.com/ansible/ansible/issues/77624
-    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1007907
-    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1010345
-    - name: Install resolvelib 0.5.3 for Ansible older than 2.13.3
-      ansible.builtin.pip:
-        name: resolvelib==0.5.3
-        state: present
-        executable: "{{ ans_pip3 }}"
-        extra_args: --user
-      when: ans_installed_version is ansible.builtin.version('2.13.3', '<')
-
-    - name: Remove resolvelib for Ansible newer than 2.13.3
-      ansible.builtin.pip:
-        name: resolvelib
-        state: absent
-        executable: "{{ ans_pip3 }}"
-      when: ans_installed_version is ansible.builtin.version('2.13.3', '>=')
-
-    - name: Install Ansible Lint
-      ansible.builtin.include_tasks: lint.yml
-
-    - name: Install Ansible Molecule
-      ansible.builtin.include_tasks: molecule.yml
-      when: ans_installed_version is ansible.builtin.version('2.10.17', '>')
-
-    - name: Install Ansible collections
-      ansible.builtin.include_tasks: collection.yml
-      loop: "{{ ans_collections }}"
+    - name: Debug existing and proposed PyPI packages
+      ansible.builtin.debug:
+        msg:
+          - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
+          - "ans_pypi_pkg.version: {{ ans_pypi_pkg.version }}"
+          - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+          - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+        verbosity: 1
+      loop: "{{ ans_pypi_pkgs }}"
       loop_control:
-        loop_var: col
-        label: "{{ col.name }}"
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
 
-    - name: Check variables
-      ansible.builtin.include_tasks: checks.yml
+    - name: PyPI packages present when not already available as system or user packages
+      ansible.builtin.include_tasks: pip.yml
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
+      when: >-
+        ( ans_pypi_pkgs is defined ) and ( ans_pypi_pkgs != [] ) and
+        ( ( ans_pypi_pkg.version == "latest" ) or
+        ( ( ans_pypi_pkg.version != ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) ) and
+        ( ans_pypi_pkg.version != ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) ) ) )
+
+    - name: Debug existing and proposed Ansible collections
+      ansible.builtin.debug:
+        msg:
+          - "ans_col.name: {{ ans_col.name }}"
+          - "ans_col.version {{ ans_col.version }}"
+          - "ans_col_system_version_present: {{ ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+          - "ans_col_user_version_present: {{ ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+        verbosity: 1
+      loop: "{{ ans_cols }}"
+      loop_control:
+        loop_var: ans_col
+        label: "{{ ans_col.name }}"
+
+    - name: Install Ansible collections when not already available as system or user collections
+      ansible.builtin.include_tasks: col.yml
+      loop: "{{ ans_cols }}"
+      loop_control:
+        loop_var: ans_col
+        label: "{{ ans_col.name }}"
+      when: >-
+        ( ans_cols is defined ) and ( ans_cols != [] ) and
+        ( ( ans_col.version == "latest" ) or
+        ( ansible_check_mode | bool ) or
+        ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
+        ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
+
+    - name: Bash completion in place
+      block:
+
+        - name: Bash completion present using argcomplete present system-wide
+          ansible.builtin.command: "{{ ans_argcomplete_path }}"
+          args:
+            creates: /etc/bash_completion.d/python-argcomplete.sh
+          when: ansible_effective_user_id == 0
+
+        - name: Bash completion present using argcomplete present locally
+          ansible.builtin.command: "{{ ans_argcomplete_path }} --user"
+          args:
+            creates: ~/.bash_completion.d/python-argcomplete.sh
+          when: ansible_effective_user_id != 0
+
+      when:
+        - ansible_env.SHELL is regex('bash$')
+        - ans_argcomplete_path is defined
+        - ans_argcomplete_path | length > 0
+
+    - name: Fail if ~/.local/bin is not in the PATH environmental variable
+      ansible.builtin.assert:
+        that:
+          - ans_local_path in ans_paths
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+        fail_msg:
+          - "Please add {{ ans_local_path }} to your PATH environmental variable"
+          - "For example add the following two lines to ~/.bash_profile"
+          - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
+          - "export PATH=${PATH}"
 
   when: ans
   tags:

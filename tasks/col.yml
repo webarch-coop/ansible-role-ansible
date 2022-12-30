@@ -1,0 +1,86 @@
+---
+- name: Install Ansible collection
+  block:
+
+    - name: Get the latest collection version running the HTTP request in a block in case a rescue is needed
+      block:
+
+        - name: "Use a HEAD request to get the latest redirect URL for {{ ans_col.name }}"
+          ansible.builtin.uri:
+            url: "{{ ans_col.url }}/releases/latest"
+            method: HEAD
+            status_code: 302
+            follow_redirects: none
+          check_mode: false
+          changed_when: false
+          register: ans_latest_headers
+
+      rescue:
+
+        - name: "Debug the results of the HEAD request for {{ ans_col.name }}"
+          ansible.builtin.debug:
+            var: ans_latest_headers.msg
+
+        - name: "Fail if the GET request failure didn't occur when running the minimum Ansible version for {{ ans_col.name }}"
+          ansible.builtin.fail:
+          when: ans_installed_version is version(ans_ansible_min_version, '>')
+
+        - name: "Use a HEAD request to get the latest redirect URL without certificate validation when using the minimum Ansible version for {{ ans_col.name }}"
+          ansible.builtin.uri:
+            url: "{{ ans_col.url }}/releases/latest"
+            method: HEAD
+            status_code: 302
+            follow_redirects: none
+            validate_certs: false
+          check_mode: false
+          changed_when: false
+          register: ans_latest_headers
+
+    - name: "Set a fact for the latest version for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_version_latest: "{{ ans_latest_headers.location | urlsplit('path') | basename | string }}"
+
+    - name: "Set a fact for the proposed version for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_version_required: "{% if ans_col.version == 'latest' %}{{ ans_col_latest }}{% else %}{{ ans_col.version }}{% endif %}"
+
+    - name: "Set a fact if the required Ansible collection version is provided by a system package for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_system_version_present: "{{ ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+
+    - name: "Set a fact if the required Ansible collection version is provided by a user package for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_user_version_present: "{{ ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+
+    - name: "Debug Ansible collection version variables for {{ ans_col.name }}"
+      ansible.builtin.debug:
+        msg:
+          - "ans_col_version_latest: {{ ans_col_version_latest }}"
+          - "ans_col_version_required: {{ ans_col_version_required }}"
+          - "ans_col_system_version_present: {{ ans_col_system_version_present }}"
+          - "ans_col_user_version_present: {{ ans_col_user_version_present }}"
+
+    # Installing using community.general.ansible_galaxy_install doesn't work with
+    # Ansible 2.10.7 which is provided by Debian Bullseye and Ubuntu Jammy, in the
+    # future community.general.ansible_galaxy_install could be used.
+    #
+    # - name: Install collection using ansible_galaxy_install module
+    #  community.general.ansible_galaxy_install:
+    #    name: "{{ col.name }}:{{ ans_col_version_required }}"
+    #    force: true
+    #    type: collection
+    #  when:
+    #    - ans_col_version_required != ans_col_system_version_present
+    #    - ans_col_version_required != ans_col_user_version_present
+
+    - name: Install collection using command module
+      ansible.builtin.command: >-
+        {{ ans_ansible_galaxy_path }} collection install
+        {{ ans_col.name }}:{{ ans_col_version_required }} --force
+      when:
+        - ans_col_version_required != ans_col_system_version_present
+        - ans_col_version_required != ans_col_user_version_present
+
+  tags:
+    - ans
+...

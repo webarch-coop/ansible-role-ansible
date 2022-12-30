@@ -1,9 +1,0 @@
----
-- name: Install collection using ansible_galaxy_install module
-  community.general.ansible_galaxy_install:
-    name: "{{ col.name }}:{{ ans_collection_proposed }}"
-    force: true
-    type: collection
-  tags:
-    - ans
-...

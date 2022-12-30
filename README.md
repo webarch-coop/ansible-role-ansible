@@ -2,9 +2,9 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This role contains an Ansible role for installing Ansible collections, [Ansible Lint](https://github.com/ansible/ansible-lint) and [Molecule](https://github.com/ansible-community/molecule) on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
+This role contains an Ansible role for installing Ansible, [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other Python Package Index (PyPI) packages on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
 
-Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and Ubuntu Jammy provides [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible), when this role is run on these distros Ansible itself will also be updated to match the Ansible version on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core).
+Debian Bullseye provides [Ansible 2.10.7](https://packages.debian.org/bullseye/ansible) and Ubuntu Jammy also provides [Ansible 2.10.7](https://packages.ubuntu.com/jammy/ansible), when this role is run on these distros Ansible itself will also be updated, to match the Ansible version on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml)).
 
 The suggested way to use this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
 
@@ -25,21 +25,48 @@ See the [defaults/main.yml](defaults/main.yml) file for the default variables, t
 
 Set the `ans` variable to `false` to prevent any tasks in this role being run.
 
-### ans_collections
+### ans_cols
 
-A list of Ansible collections and their versions that will be installed, each item in the list requires a `name` for the name of the collection and the `version`, the version can be a version number or `latest`, for example:
+A list of Ansible collections and their versions that will be installed, each item in the list requires a `name` for the name of the collection, a `url` for the GitHub repo URL of the collection and a `version`, the version can be a version number or `latest`, for example:
 
 ```yaml
-ans_collections:
+ans_cols:
   - name: community.general
+    url: https://github.com/ansible-collections/ansible.posix
     version: latest
 ```
 
-The versions of `community.general` that are available can be found on the [GitHub releases page](https://github.com/ansible-collections/community.general/releases).
+Note that the `url` of the GitHub project is appended with `/releases/latest` to get the URL of the latest release, for example `community.general` this is [the latest version](https://github.com/ansible-collections/community.general/releases/latest), see the [GitHub releases page](https://github.com/ansible-collections/community.general/releases) for all the versions available..
 
-### ans_version
+### ans_pkgs
 
-The version of Ansible that will be installed if the packaged version is less than this version.
+A list of Debian / Ubuntu packages that are required, for example;
+
+```yaml
+ans_pkgs:
+  - ansible
+  - python3-argcomplete
+  - python3-dnspython
+  - python3-jmespath
+```
+
+### ans_pypi_pkgs
+
+A list of [Python Package Index (PyPI)[(https://pypi.org/), package names and versions that will be installed as user packages if they are not already available as system packages or user packages.
+
+Each item in the list requires a `name` for the name of the PyPI package, a `url` for the URL of the project on the PyPI website and a `version`, the version can be a version number or `latest`, for example:
+
+```yaml
+ans_pypi_pkgs:
+  - name: ansible-core
+    url: https://pypi.org/pypi/ansible-core
+    version: "2.14.1"
+  - name: ansible-lint
+    url: https://pypi.org/pypi/ansible-lint
+    version: latest
+```
+
+Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, eg `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
 
 ## License
 
@@ -47,10 +74,25 @@ This role is released under [the same terms as Ansible itself](https://github.co
 
 ## Notes
 
+List the PyPI system packages present:
+
+```bash
+python3 -m pip list
+python3 -m pip list --format=json | jq
+```
+
+List the PyPI user packages present:
+
+```bash
+python3 -m pip list --user
+python3 -m pip list --user --format=json
+```
+
 List the installed Ansible galaxy collections:
 
 ```bash
 ansible-galaxy collection list
+ansible-galaxy collection list --format=json | jq
 ```
 
 ## Links

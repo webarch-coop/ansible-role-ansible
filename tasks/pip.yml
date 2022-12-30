@@ -1,0 +1,88 @@
+---
+- name: Check and install PyPI package
+  block:
+
+    - name: Get the list of available PyPI package versions in a block in case a rescue is needed
+      block:
+
+        - name: "Get a list of available PyPi versions for {{ ans_pypi_pkg.name }}"
+          ansible.builtin.uri:
+            url: "{{ ans_pypi_pkg.url }}/json/"
+            method: GET
+            return_content: true
+          check_mode: false
+          changed_when: false
+          register: ans_pypi
+
+      rescue:
+
+        - name: "Debug the outcome of the available PyPi versions check for {{ ans_pypi_pkg.name }}"
+          ansible.builtin.debug:
+            var: ans_pypi.msg
+            verbosity: 1
+          when: ans_pypi.status == -1
+
+        - name: Fail if the GET request failure didn't occur when running the minimum Ansible version
+          ansible.builtin.fail:
+          when: ans_installed_version is version(ans_ansible_min_version, '>')
+
+        - name: "Get a list of available PyPi versions without validating certificates when using the minimum Ansible version for {{ ans_pypi_pkg.name }}"
+          ansible.builtin.uri:
+            url: "{{ ans_pypi_pkg.url }}/json"
+            method: GET
+            return_content: true
+            validate_certs: false
+          check_mode: false
+          changed_when: false
+          register: ans_pypi
+          when: ans_installed_version == ans_ansible_min_version
+
+    - name: "Debug available PyPi versions for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.debug:
+        var: ans_pypi.json.releases
+        verbosity: 3
+
+    - name: "Create an array of the stable PyPi versions available and set a variable for the latest version for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_versions_available: "{{ ans_pypi.json.releases.keys() | reject('regex', '[a-z]') }}"
+        ans_pypi_version_latest: "{{ ans_pypi.json.info.version }}"
+
+    - name: "Set a fact for the PyPi version required for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_version_required: "{% if ans_pypi_pkg.version == 'latest' %}{{ ans_pypi_version_latest }}{% else %}{{ ans_pypi_pkg.version }}{% endif %}"
+
+    - name: "Check that that the required PyPi version is available via PyPi for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.assert:
+        that:
+          - ans_pypi_version_required in ans_pypi_versions_available
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+    - name: "Set a fact if the required PyPi version is provided by a system package for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_system_version_present: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+
+    - name: "Set a fact if the required PyPi version is provided by a user package for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_user_version_present: "{{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+
+    - name: "Debug PyPi version variables for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.debug:
+        msg:
+          - "ans_pypi_version_latest: {{ ans_pypi_version_latest }}"
+          - "ans_pypi_version_required: {{ ans_pypi_version_required }}"
+          - "ans_pypi_system_version_present: {{ ans_pypi_system_version_present }}"
+          - "ans_pypi_user_version_present: {{ ans_pypi_user_version_present }}"
+
+    - name: "PyPi user package present {{ ans_pypi_pkg.name }}"
+      ansible.builtin.pip:
+        name: "{{ ans_pypi_pkg.name }}=={{ ans_pypi_version_required }}"
+        state: present
+        executable: "{{ ans_pip_path }}"
+        extra_args: --user
+      when:
+        - ans_pypi_version_required != ans_pypi_system_version_present
+        - ans_pypi_version_required != ans_pypi_user_version_present
+
+  tags:
+    - ans
+...

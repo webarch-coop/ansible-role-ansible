@@ -4,7 +4,7 @@
 
     - name: Stat ansible
       ansible.builtin.stat:
-        path: "{{ ans_default }}"
+        path: "{{ ans_ansible_path }}"
       register: ans_stat_ansible
 
     - name: Ansible needs to be installed
@@ -35,134 +35,113 @@
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required
       ansible.builtin.assert:
         that:
-          - ans_installed_version is version(ans_default_min_version, '>=')
+          - ans_installed_version is version(ans_ansible_min_version, '>=')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
-    - name: Get a list of available pypi Ansible core versions in a block in case a rescue is needed
-      block:
+    - name: Check the system PyPI packages
+      ansible.builtin.command: python3 -m pip list --format=json
+      check_mode: false
+      changed_when: false
+      register: ans_pip_system_list
 
-        - name: Get a list of available pypi Ansible core versions
-          ansible.builtin.uri:
-            url: https://pypi.org/pypi/ansible-core/json
-            method: GET
-            return_content: true
-          check_mode: false
-          changed_when: false
-          register: ans_pypi
+    - name: Set a fact for the system PyPI packages present
+      ansible.builtin.set_fact:
+        ans_pip_system_existing: "{{ ans_pip_system_list.stdout | ansible.builtin.from_json }}"
 
-      rescue:
-
-        - name: Debug the outcome of the available Ansible versions check
-          ansible.builtin.debug:
-            var: ans_pypi.msg
-            verbosity: 1
-          when: ans_pypi.status == -1
-
-        - name: Fail if the GET request failure didn't occur when running the minimum Ansible version
-          ansible.builtin.fail:
-          when: ans_installed_version is version(ans_default_min_version, '>')
-
-        - name: Get a list of available pypi Ansible core versions without validating certificates when using the minimum Ansible version
-          ansible.builtin.uri:
-            url: https://pypi.org/pypi/ansible-core/json
-            method: GET
-            return_content: true
-            validate_certs: false
-          check_mode: false
-          changed_when: false
-          register: ans_pypi
-          when: ans_installed_version == ans_default_min_version
-
-    - name: Debug available Ansible versions
+    - name: Debug system PyPI packages present
       ansible.builtin.debug:
-        var: ans_pypi.json.releases
+        var: ans_pip_system_existing
+        verbosity: 2
+
+    - name: Check the user PyPI packages
+      ansible.builtin.command: python3 -m pip list --user --format=json
+      check_mode: false
+      changed_when: false
+      register: ans_pip_user_list
+
+    - name: Set a fact for the user PyPI packages present
+      ansible.builtin.set_fact:
+        ans_pip_user_existing: "{{ ans_pip_user_list.stdout | ansible.builtin.from_json }}"
+
+    - name: Debug user PyPI packages present
+      ansible.builtin.debug:
+        var: ans_pip_user_existing
+        verbosity: 2
+
+    - name: Check Ansible Galaxy collections
+      ansible.builtin.command: "{{ ans_ansible_galaxy_path }} collection list --format=json"
+      check_mode: false
+      changed_when: false
+      register: ans_galaxy_col_list
+
+    - name: Debug Ansible Galaxy collections
+      ansible.builtin.debug:
+        var: ans_galaxy_col_list.stdout
+        verbosity: 2
+
+    - name: Set a fact for the Ansible Galaxy collections present
+      ansible.builtin.set_fact:
+        ans_col_existing: "{{ ans_galaxy_col_list.stdout | from_json }}"
+
+    - name: Debug ans_col_existing
+      ansible.builtin.debug:
+        var: ans_col_existing
         verbosity: 3
 
-    - name: Create an array of the stable Ansible core versions available and set a variables for the latest version
+    - name: Set a fact for the lists of Ansible Galaxy system collections existing
       ansible.builtin.set_fact:
-        ans_versions_available: "{{ ans_pypi.json.releases.keys() | reject('regex', '[a-z]') }}"
-        ans_version_latest: "{{ ans_pypi.json.info.version }}"
+        ans_system_col_existing: "{{ ans_col_existing[ans_col_path_system] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+      when: ans_col_existing[ans_col_path_system] is defined
 
-    - name: Check that that the proposed Ansible core version is available via pypi
-      ansible.builtin.assert:
-        that:
-          - ans_version in ans_versions_available
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-
-    - name: Check if Ansible has been installed using pip
-      ansible.builtin.command: "{{ ans_pip3 }} --no-color -q show ansible-core"
-      check_mode: false
-      changed_when: false
-      register: ans_show_ansible
-      failed_when: ans_show_ansible.rc is not regex('^0|1$')
-
-    - name: Set a variable to indicate that Ansible has been installed using pip
+    - name: Set a fact for the lists of Ansible Galaxy user collections existing
       ansible.builtin.set_fact:
-        ans_ansible_pip: "{% if ans_show_ansible.rc == 0 %}present{% else %}absent{% endif %}"
+        ans_user_col_existing: "{{ ans_col_existing[ans_col_path_users] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+      when: ans_col_existing[ans_col_path_users] is defined
 
-    - name: Debug Ansible version
+    - name: Debug ans_system_col_existing
       ansible.builtin.debug:
-        msg: "The version of Ansible at {{ ans_default }} is version {{ ans_installed_version }}"
-        verbosity: 1
-
-    - name: Check the Ansible Galaxy version
-      ansible.builtin.command: "{{ ans_galaxy_default }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_galaxy_check_version
-
-    - name: Set a fact for the version of Ansible Galaxy installed
-      ansible.builtin.set_fact:
-        ans_galaxy_installed_version: "{{ ans_galaxy_check_version.stdout_lines[0] | regex_replace('^ansible-galaxy \\[core ') | regex_replace('\\]$') }}"
-
-    - name: Get the Ansible Galaxy configured module search paths
-      ansible.builtin.set_fact:
-        ans_galaxy_module_search_paths: "{{ (line | regex_replace('^  configured module search path = \\[') | regex_replace('\\]$') | regex_replace(\"'\")). split(', ') | list }}"
-      when: line is regex('^  configured module search path')
-      loop: "{{ ans_galaxy_check_version.stdout_lines }}"
-      loop_control:
-        loop_var: line
-
-    - name: Debug Ansible Galaxy configured module search paths
-      ansible.builtin.debug:
-        var: ans_galaxy_module_search_paths
+        var: ans_system_col_existing
         verbosity: 2
+      when: ans_system_col_existing is defined
 
-    - name: Check the environmental variables
-      ansible.builtin.command: printenv
-      check_mode: false
-      changed_when: false
-      register: ans_printenv
-
-    - name: Set a fact for the environmental variables
-      ansible.builtin.set_fact:
-        ans_env: "{{ ans_printenv.stdout | community.general.jc('ini') }}"
-
-    - name: Debug the environmental variables
+    - name: Debug ans_user_col_existing
       ansible.builtin.debug:
-        var: ans_env
+        var: ans_user_col_existing
         verbosity: 2
+      when: ans_user_col_existing is defined
+
+    - name: Check python3-argcomplete
+      block:
+
+        - name: Check the files in the python3-argcomplete package
+          ansible.builtin.command: dpkg -L python3-argcomplete
+          check_mode: false
+          changed_when: false
+          register: ans_dpkg_argcomplete
+
+        - name: Set a fact for the path to activate-global-python-argcomplete
+          ansible.builtin.set_fact:
+            ans_argcomplete_path: "{% if '/usr/bin/activate-global-python-argcomplete3' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/activate-global-python-argcomplete3{% elif '/usr/bin/activate-global-python-argcomplete' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/activate-global-python-argcomplete{% endif %}"
+
+        - name: Debug the path to activate-global-python-argcomplete
+          ansible.builtin.debug:
+            var: ans_argcomplete_path
+            verbosity: 2
+          when:
+            - ans_argcomplete_path is defined
+            - ans_argcomplete_path | length > 0
+
+      when: ( "python3-argcomplete" in ans_pkgs )
 
     - name: Set a fact for paths in the PATH environmental variable and the ~/.local/bin path
       ansible.builtin.set_fact:
-        ans_path: "{{ (ans_env.PATH).split(':') }}"
-        ans_local_path: "{{ ans_env.HOME }}/.local/bin"
+        ans_paths: "{{ (ansible_env.PATH).split(':') }}"
+        ans_local_path: "{{ ansible_env.HOME }}/.local/bin"
 
     - name: Debug the paths in the PATH environmental variable
       ansible.builtin.debug:
-        var: ans_path
+        var: ans_paths
         verbosity: 2
-
-    - name: Fail if ~/.local/bin is not in the PATH environmental variable
-      ansible.builtin.assert:
-        that:
-          - ans_local_path in ans_path
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-        fail_msg:
-          - "Please add {{ ans_local_path }} to your PATH environmental variable"
-          - "For example add the following two lines to ~/.bash_profile"
-          - "PATH={{ ans_env.HOME }}/.local/bin:${PATH}"
-          - "export PATH=${PATH}"
 
   tags:
     - ansible

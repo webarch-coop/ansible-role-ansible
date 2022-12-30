@@ -9,7 +9,7 @@ argument_specs:
         type: bool
         required: true
         description: Run the tasks in this role.
-      ans_collections:
+      ans_cols:
         type: list
         required: true
         description: Ansible collections to install.
@@ -18,13 +18,36 @@ argument_specs:
           name:
             type: str
             required: true
-            description: The name of the collection to install.
+            description: The name of the Ansible collection to install.
+          url:
+            type: str
+            required: true
+            description: The URL of the Ansible collection to install.
           version:
             type: str
             required: true
-            description: The version of the collection to install.
-      ans_version:
-        type: str
+            description: The version of the Ansible collection to install.
+      ans_pkgs:
+        type: list
         required: true
-        description: The version of Ansible that will be installed if the packaged version is less than this version.
+        description: A list of Debian / Ubuntu packages that are required.
+        elements: str
+      ans_pypi_pkgs:
+        type: list
+        required: true
+        description: A list of PyPI, Python Package Index packages to install.
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: The name of the PyPI package to install.
+          url:
+            type: str
+            required: true
+            description: The URL of the PyPI package to install.
+          version:
+            type: str
+            required: true
+            description: The version of PyPI package to install.
 ...
