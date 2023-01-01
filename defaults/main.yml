@@ -8,7 +8,7 @@ ans_cols:
     version: "1.4.0"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: "3.3.1"
+    version: "3.3.2"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: "2.9.0"
@@ -31,13 +31,13 @@ ans_pypi_pkgs:
     version: "2.14.1"
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
-    version: "6.10.1"
+    version: "6.10.2"
   - name: dnspython
     url: https://pypi.org/pypi/dnspython
     version: "2.2.1"
   - name: jc
     url: https://pypi.org/pypi/jc
-    version: "1.22.3"
+    version: "1.22.4"
   - name: jmespath
     url: https://pypi.org/pypi/jmespath
     version: "1.0.1"
