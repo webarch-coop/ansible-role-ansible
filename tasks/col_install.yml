@@ -1,0 +1,10 @@
+---
+- name: "Ansible collection install using ansible_galaxy_install module for {{ ans_col.name }}"
+  community.general.ansible_galaxy_install:
+    name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
+    force: true
+    type: collection
+  register: ans_col_install
+  tags:
+    - ans
+...

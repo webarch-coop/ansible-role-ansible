@@ -11,10 +11,10 @@ ans_cols:
     version: "3.3.2"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: "2.9.0"
+    version: "2.10.0"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "6.1.0"
+    version: "6.2.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: "3.5.1"
@@ -54,6 +54,7 @@ ans_pypi_pkgs:
 # Debian / Ubuntu packages required
 ans_pkgs:
   - ansible
+  - jo
   - python3-argcomplete
   - python3-dnspython
   - python3-jmespath

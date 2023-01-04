@@ -60,18 +60,17 @@
           - "ans_col_system_version_present: {{ ans_col_system_version_present }}"
           - "ans_col_user_version_present: {{ ans_col_user_version_present }}"
 
-    # Installing using community.general.ansible_galaxy_install doesn't work with
-    # Ansible 2.10.7 which is provided by Debian Bullseye and Ubuntu Jammy, in the
-    # future community.general.ansible_galaxy_install could be used.
-    #
-    # - name: Install collection using ansible_galaxy_install module
-    #  community.general.ansible_galaxy_install:
-    #    name: "{{ col.name }}:{{ ans_col_version_required }}"
-    #    force: true
-    #    type: collection
-    #  when:
-    #    - ans_col_version_required != ans_col_system_version_present
-    #    - ans_col_version_required != ans_col_user_version_present
+    - name: Debug ans_galaxy_install
+      ansible.builtin.debug:
+        var: ans_galaxy_install
+        verbosity: 2
+
+    - name: Include tasks to install Ansible collection using the ansible_galaxy_install module
+      ansible.builtin.include_tasks: col_install.yml
+      when:
+        - ans_galaxy_install | bool
+        - ans_col_version_required != ans_col_system_version_present
+        - ans_col_version_required != ans_col_user_version_present
 
     - name: Install collection in a block so failures can be rescued
       block:
@@ -99,6 +98,7 @@
             {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force
 
       when:
+        - not ans_galaxy_install | bool
         - ans_col_version_required != ans_col_system_version_present
         - ans_col_version_required != ans_col_user_version_present
 
