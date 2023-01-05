@@ -189,7 +189,7 @@
                 grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
                 sed 's/ /=/' | sed 's/ //g' | jo
               args:
-                executable: "{{ ans_bash }}" 
+                executable: "{{ ans_bash }}"
               check_mode: false
               changed_when: false
               register: ans_galaxy_col_user_list
@@ -256,7 +256,48 @@
             - ans_argcomplete_path is defined
             - ans_argcomplete_path | length > 0
 
+        - name: Check if Bash completion is present
+          block:
+
+            - name: Check ~/.bash_completion.d/python-argcomplete
+              ansible.builtin.stat:
+                path: ~/.bash_completion.d/python-argcomplete
+              register: ans_argcomplete_path_no_ext
+
+            - name: Set a fact for python-argcomplete user path without an extension
+              ansible.builtin.set_fact:
+                ans_argcomplete_user_path: ~/.bash_completion.d/python-argcomplete
+              when: ans_argcomplete_path_no_ext.stat.exists | bool
+
+            - name: Check ~/.bash_completion.d/python-argcomplete.sh
+              ansible.builtin.stat:
+                path: ~/.bash_completion.d/python-argcomplete.sh
+              register: ans_argcomplete_path_no_ext
+
+            - name: Set a fact for python-argcomplete user path with an extension
+              ansible.builtin.set_fact:
+                ans_argcomplete_user_path: ~/.bash_completion.d/python-argcomplete.sh
+              when: ans_argcomplete_path_no_ext.stat.exists | bool
+
+            - name: Debug the path to the users python-argcomplete script
+              ansible.builtin.debug:
+                var: ans_argcomplete_user_path
+                verbosity: 2
+              when:
+                - ans_argcomplete_user_path is defined
+                - ans_argcomplete_user_path | length > 0
+
+          when:
+            - ansible_env.SHELL is regex('bash$')
+            - ansible_effective_user_id != 0
+
       when: ( "python3-argcomplete" in ans_pkgs )
+
+    - name: Check ~/.bash_profile
+      ansible.builtin.stat:
+        path: ~/.bash_profile
+      register: ans_bash_profile
+      when: ansible_env.SHELL is regex('bash$')
 
     - name: Set a fact for paths in the PATH environmental variable and the ~/.local/bin path
       ansible.builtin.set_fact:
