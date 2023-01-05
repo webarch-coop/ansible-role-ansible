@@ -88,6 +88,7 @@
           ansible.builtin.command: >-
             {{ ans_ansible_galaxy_path }} collection install
             {{ ans_col.name }}:{{ ans_col_version_required }} --force
+          changed_when: true
           register: ans_col_install
 
       rescue:
@@ -105,6 +106,7 @@
           ansible.builtin.command: >-
             {{ ans_ansible_galaxy_path }} collection install
             {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force
+          changed_when: true
 
       when:
         - not ans_galaxy_install | bool
