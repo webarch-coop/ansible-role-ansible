@@ -209,15 +209,17 @@
       when:
         - ans_system_col_existing is defined
         - ans_system_col_existing != []
-        - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) is version('6.2.0', '>=')
+        - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
+        - ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('6.2.0', '>=')
 
-    - name: Set ans_galaxy_install to true when Ansible Galaxy community.general 6.2.0 or greater is installed as a user collection
+    - name: Set ans_galaxy_install to true when community.general 6.2.0 or greater is installed as a user collection
       ansible.builtin.set_fact:
         ans_galaxy_install: true
       when:
         - ans_user_col_existing is defined
         - ans_user_col_existing != []
-        - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) is version('6.2.0', '>=')
+        - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
+        - ans_user_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('6.2.0', '>=')
 
     - name: Debug ans_galaxy_install
       ansible.builtin.debug:

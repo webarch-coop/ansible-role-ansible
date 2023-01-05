@@ -6,7 +6,8 @@ ans_ansible_galaxy_path: /usr/bin/ansible-galaxy
 ans_ansible_min_version: "2.10.7"
 ans_ansible_path: /usr/bin/ansible
 ans_bash: "{% if ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/usr/bin/bash{% endif %}"
-ans_col_comgen_jmespath_query: "[?name=='community.general'].version|[0]"
+ans_col_comgen_jmespath_query: "[?name=='community.general']"
+ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
 ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
 ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
