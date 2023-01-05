@@ -10,16 +10,24 @@ This role is currently set to more-or-less match the Ansible version available o
 
 ## Usage
 
-This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable then the suggested method for updating the `$PATH` is to add the following to your `~/.bash_profile`:
+The suggested mathod for using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
+
+```bash
+git clone https://git.coop/webarch/localhost.git
+cd localhost
+./ansible.sh
+```
+
+This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
+
+To manually update the `$PATH` add the following to your `~/.bash_profile` or whichever file sets your `$PATH` environmental variable when you login:
 
 ```bash
 PATH="${HOME}/.local/bin:${PATH}"
 export PATH="${PATH}"
 ```
 
-After updating or creating this file you need to either exit the shell and reopen it or run `source ~/.bash_profile`.
-
-The suggested way to use this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it.
+After updating or creating a file containing your `$PATH` environmental variable you will need to either exit the shell and login again / reopen it or run `source ~/.bash_profile`, (replace `~/bash_profile` which which ever path contains the settings).
 
 ## Role variables
 
