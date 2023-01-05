@@ -4,9 +4,11 @@
 
 This role contains an Ansible role for [installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
 
-The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.7`, when this role is run on these distros Ansible itself will be installed for the user running this role.
+The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.7` and when this role is run on these distros Ansible itself will be installed for the user running this role.
 
-This role is set to match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file), Ansible is not installed for users on Debian Bookworm since the Debian packaged version is fine.
+This role is currently set to more-or-less match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file).
+
+## Usage
 
 This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable then the suggested method for updating the `$PATH` is to add the following to your `~/.bash_profile`:
 
@@ -103,10 +105,16 @@ ansible-galaxy collection list --format=json | jq
 
 * [Ansible Porting Guides](https://docs.ansible.com/ansible/devel/porting_guides/porting_guides.html) that can help you in updating playbooks, plugins and other parts of your Ansible infrastructure from one version of Ansible to the next
 
-## Repo history
+## Repository
+
+The primary URL of this repo is [`https://git.coop/webarch/ansible`](https://git.coop/webarch/ansible) however it is also [mirrored to GitHub](https://github.com/webarch-coop/ansible-role-ansible) and [available via Ansible Galaxy](https://galaxy.ansible.com/chriscroome/ansible).
+    
+If you use this role please use a tagged release, see [the release notes](https://git.coop/webarch/ansible/-/releases).
 
 Originally, [in 2019](https://git.coop/webarch/ansible/-/tree/archive2019), this repo contained a few roles that have since been moved to other repos.
 
-## License
+## Copyright
+
+Copyright 2019-2023 Chris Croome, &lt;[chris@webarchitects.co.uk](mailto:chris@webarchitects.co.uk).
 
 This role is released under [the same terms as Ansible itself](https://github.com/ansible/ansible/blob/devel/COPYING), the [GNU GPLv3](LICENSE).
