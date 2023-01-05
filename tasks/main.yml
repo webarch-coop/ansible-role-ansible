@@ -139,8 +139,8 @@
       when: >-
         ( ans_bash_profile_copied is not defined ) or
         ( ( ans_bash_profile_copied is defined ) and
-        ( ( ans_bash_profile_copied.changed is defined ) and
-        ( ( not ans_bash_profile_copied.changed | bool ) )
+        ( ans_bash_profile_copied.changed is defined ) and
+        ( not ans_bash_profile_copied.changed | bool ) )
 
   when: ans
   tags:
