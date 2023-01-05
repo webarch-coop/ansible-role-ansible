@@ -157,7 +157,7 @@
                 grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
                 sed 's/ /=/' | sed 's/ //g' | jo
               args:
-                executable: /usr/bin/bash
+                executable: "{{ ans_bash }}"
               check_mode: false
               changed_when: false
               register: ans_galaxy_col_system_list
@@ -189,7 +189,7 @@
                 grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
                 sed 's/ /=/' | sed 's/ //g' | jo
               args:
-                executable: /usr/bin/bash
+                executable: "{{ ans_bash }}" 
               check_mode: false
               changed_when: false
               register: ans_galaxy_col_user_list
