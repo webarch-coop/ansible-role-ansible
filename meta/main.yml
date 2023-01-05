@@ -22,7 +22,8 @@ galaxy_info:
         - bookworm
         - bullseye
     - name: ubuntu
-      versions: jammy
+      versions:
+        - jammy
   galaxy_tags:
     - ansible
     - debian
