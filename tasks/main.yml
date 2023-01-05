@@ -99,13 +99,13 @@
         - name: Bash completion present using argcomplete present system-wide
           ansible.builtin.command: "{{ ans_argcomplete_path }}"
           args:
-            creates: /etc/bash_completion.d/python-argcomplete.sh
+            creates: /etc/bash_completion.d/python-argcomplete
           when: ansible_effective_user_id == 0
 
         - name: Bash completion present using argcomplete present locally
           ansible.builtin.command: "{{ ans_argcomplete_path }} --user"
           args:
-            creates: ~/.bash_completion.d/python-argcomplete.sh
+            creates: ~/.bash_completion.d/python-argcomplete
           when: ansible_effective_user_id != 0
 
       when:
