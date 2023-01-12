@@ -21,6 +21,11 @@
       ansible.builtin.set_fact:
         ans_init: "{{ ans_ps.stdout }}"
 
+    - name: Debug the ini system when it is not systemd
+      ansible.builtin.debug:
+        var: ans_init
+      when: ans_init != "systemd"
+
     - name: Stat ansible
       ansible.builtin.stat:
         path: "{{ ans_ansible_path }}"
