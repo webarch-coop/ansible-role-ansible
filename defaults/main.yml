@@ -46,7 +46,7 @@ ans_pypi_pkgs:
     version: "2.2.1"
   - name: jc
     url: https://pypi.org/pypi/jc
-    version: "1.22.4"
+    version: "1.22.5"
   - name: jmespath
     url: https://pypi.org/pypi/jmespath
     version: "1.0.1"
