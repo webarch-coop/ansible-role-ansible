@@ -298,9 +298,6 @@
       ansible.builtin.stat:
         path: ~/.bash_profile
       register: ans_bash_profile
-      when:
-        - ansible_env.SHELL is defined
-        - ansible_env.SHELL is regex('bash$')
 
     - name: Set a fact for paths in the PATH environmental variable and the ~/.local/bin path
       ansible.builtin.set_fact:

@@ -123,10 +123,10 @@
         force: false
         mode: 0640
       register: ans_bash_profile_copied
-      when:
-        - ans_local_path not in ans_paths
-        - not ans_bash_profile.stat.exists | bool
-        - ( ansible_env.SHELL is defined is not defined ) or ( ansible_env.SHELL is regex('bash$') )
+      when: >-
+        ( ans_local_path is not defined ) or
+        ( ans_local_path not in ans_paths ) or
+        ( not ans_bash_profile.stat.exists | bool )
 
     - name: Fail if ~/.local/bin is not in the PATH environmental variable
       ansible.builtin.assert:
@@ -139,6 +139,8 @@
           - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
           - "export PATH=${PATH}"
       when: >-
+        ( ( ans_local_path is defined ) and
+        ( ans_paths is defined ) ) or
         ( ans_bash_profile_copied is not defined ) or
         ( ( ans_bash_profile_copied is defined ) and
         ( ans_bash_profile_copied.changed is defined ) and
