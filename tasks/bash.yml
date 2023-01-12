@@ -29,8 +29,6 @@
       when:
         - ansible_env.SHELL is defined
         - ansible_env.SHELL is regex('bash$')
-        - ans_init.stdout != "sh"
-        - ansible_env.SHELL is regex('bash$')
         - ans_argcomplete_path is defined
         - ans_argcomplete_path | length > 0
 
