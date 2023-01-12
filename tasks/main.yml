@@ -109,6 +109,8 @@
           when: ansible_effective_user_id != 0
 
       when:
+        - ansible_env.SHELL is defined
+        - ansible_env.SHELL is regex('bash$')
         - ans_init.stdout != "sh"
         - ansible_env.SHELL is regex('bash$')
         - ans_argcomplete_path is defined
@@ -123,8 +125,8 @@
       register: ans_bash_profile_copied
       when:
         - ans_local_path not in ans_paths
-        - ansible_env.SHELL is regex('bash$')
         - not ans_bash_profile.stat.exists | bool
+        - ( ansible_env.SHELL is defined is not defined ) or ( ansible_env.SHELL is regex('bash$') )
 
     - name: Fail if ~/.local/bin is not in the PATH environmental variable
       ansible.builtin.assert:

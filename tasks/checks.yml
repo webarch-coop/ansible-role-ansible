@@ -288,6 +288,7 @@
                 - ans_argcomplete_user_path | length > 0
 
           when:
+            - ansible_env.SHELL is defined
             - ansible_env.SHELL is regex('bash$')
             - ansible_effective_user_id != 0
 
@@ -297,17 +298,21 @@
       ansible.builtin.stat:
         path: ~/.bash_profile
       register: ans_bash_profile
-      when: ansible_env.SHELL is regex('bash$')
+      when:
+        - ansible_env.SHELL is defined
+        - ansible_env.SHELL is regex('bash$')
 
     - name: Set a fact for paths in the PATH environmental variable and the ~/.local/bin path
       ansible.builtin.set_fact:
         ans_paths: "{{ (ansible_env.PATH).split(':') }}"
         ans_local_path: "{{ ansible_env.HOME }}/.local/bin"
+      when: ansible_env.PATH is defined
 
     - name: Debug the paths in the PATH environmental variable
       ansible.builtin.debug:
         var: ans_paths
         verbosity: 2
+      when: ans_paths is defined
 
   tags:
     - ansible
