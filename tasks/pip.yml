@@ -82,17 +82,6 @@
           - "ans_pypi_system_version_present: {{ ans_pypi_system_version_present }}"
           - "ans_pypi_user_version_present: {{ ans_pypi_user_version_present }}"
 
-    - name: "PyPi user package present {{ ans_pypi_pkg.name }}"
-      ansible.builtin.pip:
-        name: "{{ ans_pypi_pkg.name }}=={{ ans_pypi_version_required }}"
-        state: present
-        executable: "{{ ans_pip_path }}"
-        extra_args: --user
-      when:
-        - ansible_effective_user_id != 0
-        - ans_pypi_version_required != ans_pypi_system_version_present
-        - ans_pypi_version_required != ans_pypi_user_version_present
-
     - name: "PyPi system package present {{ ans_pypi_pkg.name }}"
       ansible.builtin.pip:
         name: "{{ ans_pypi_pkg.name }}=={{ ans_pypi_version_required }}"
@@ -100,6 +89,16 @@
         executable: "{{ ans_pip_path }}"
       when:
         - ansible_effective_user_id == 0
+        - ans_pypi_version_required != ans_pypi_system_version_present
+        - ans_pypi_version_required != ans_pypi_user_version_present
+
+    - name: "PyPi user package present {{ ans_pypi_pkg.name }}"
+      ansible.builtin.pip:
+        name: "{{ ans_pypi_pkg.name }}=={{ ans_pypi_version_required }}"
+        state: present
+        executable: "{{ ans_pip_path }}"
+        extra_args: --user
+      when:
         - ans_pypi_version_required != ans_pypi_system_version_present
         - ans_pypi_version_required != ans_pypi_user_version_present
 
