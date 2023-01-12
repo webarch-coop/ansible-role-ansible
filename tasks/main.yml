@@ -93,58 +93,9 @@
         ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
         ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
 
-    - name: Bash completion in place
-      block:
-
-        - name: Bash completion present using argcomplete present system-wide
-          ansible.builtin.command: "{{ ans_argcomplete_path }}"
-          args:
-            creates: /etc/bash_completion.d/python-argcomplete
-          when: ansible_effective_user_id == 0
-
-        - name: Bash completion present using argcomplete present locally
-          ansible.builtin.command: "{{ ans_argcomplete_path }} --user"
-          args:
-            creates: "{{ ans_argcomplete_user_path | default('~/.bash_completion.d/python-argcomplete.sh') }}"
-          when: ansible_effective_user_id != 0
-
-      when:
-        - ansible_env.SHELL is defined
-        - ansible_env.SHELL is regex('bash$')
-        - ans_init.stdout != "sh"
-        - ansible_env.SHELL is regex('bash$')
-        - ans_argcomplete_path is defined
-        - ans_argcomplete_path | length > 0
-
-    - name: File ~/.bash_profile present
-      ansible.builtin.copy:
-        src: bash_profile.sh
-        dest: ~/.bash_profile
-        force: false
-        mode: 0640
-      register: ans_bash_profile_copied
-      when: >-
-        ( ans_local_path is not defined ) or
-        ( ans_local_path not in ans_paths ) or
-        ( not ans_bash_profile.stat.exists | bool )
-
-    - name: Fail if ~/.local/bin is not in the PATH environmental variable
-      ansible.builtin.assert:
-        that:
-          - ans_local_path in ans_paths
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-        fail_msg:
-          - "Please add {{ ans_local_path }} to your PATH environmental variable"
-          - "For example add the following two lines to ~/.bash_profile"
-          - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
-          - "export PATH=${PATH}"
-      when: >-
-        ( ( ans_local_path is defined ) and
-        ( ans_paths is defined ) ) or
-        ( ans_bash_profile_copied is not defined ) or
-        ( ( ans_bash_profile_copied is defined ) and
-        ( ans_bash_profile_copied.changed is defined ) and
-        ( not ans_bash_profile_copied.changed | bool ) )
+    - name: Include the Bash PATH and python-argcomplete tasks when the init system is not sh
+      ansible.builtin.include_tasks: bash.yml
+      when: ans_init != "sh"
 
   when: ans
   tags:
