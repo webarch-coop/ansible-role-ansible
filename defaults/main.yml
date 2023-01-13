@@ -53,6 +53,9 @@ ans_pypi_pkgs:
   - name: molecule
     url: https://pypi.org/pypi/molecule
     version: "4.0.4"
+  - name: "molecule-plugins[docker]"
+    url: https://pypi.org/pypi/molecule-plugins
+    version: "23.0.0"
   - name: netaddr
     url: https://pypi.org/pypi/netaddr
     version: "0.8.0"
