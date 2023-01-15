@@ -55,12 +55,8 @@
           - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
           - "export PATH=${PATH}"
       when: >-
-        ( ( ans_local_path is defined ) and
-        ( ans_paths is defined ) ) or
-        ( ans_bash_profile_copied is not defined ) or
-        ( ( ans_bash_profile_copied is defined ) and
-        ( ans_bash_profile_copied.changed is defined ) and
-        ( not ans_bash_profile_copied.changed | bool ) )
+         ( ( ans_local_path is defined ) and ( ans_paths is defined ) and ( ans_local_path not in ans_paths ) ) or
+         ( ( ans_bash_profile_copied is defined ) and ( not ans_bash_profile_copied.changed | bool ) )
 
   tags:
     - ansible
