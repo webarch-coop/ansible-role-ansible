@@ -32,31 +32,36 @@
         - ans_argcomplete_path is defined
         - ans_argcomplete_path | length > 0
 
-    - name: File ~/.bash_profile present
-      ansible.builtin.copy:
-        src: bash_profile.sh
-        dest: ~/.bash_profile
-        force: false
-        mode: 0640
-      register: ans_bash_profile_copied
-      when: >-
-        ( ans_local_path is not defined ) or
-        ( ans_local_path not in ans_paths ) or
-        ( not ans_bash_profile.stat.exists | bool )
+    - name: Congigure ~/.bash_profile and check PATH when not root
+      block:
 
-    - name: Fail if ~/.local/bin is not in the PATH environmental variable
-      ansible.builtin.assert:
-        that:
-          - ans_local_path in ans_paths
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-        fail_msg:
-          - "Please add {{ ans_local_path }} to your PATH environmental variable"
-          - "For example add the following two lines to ~/.bash_profile"
-          - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
-          - "export PATH=${PATH}"
-      when: >-
-         ( ( ans_local_path is defined ) and ( ans_paths is defined ) and ( ans_local_path not in ans_paths ) ) or
-         ( ( ans_bash_profile_copied is defined ) and ( not ans_bash_profile_copied.changed | bool ) )
+        - name: File ~/.bash_profile present
+          ansible.builtin.copy:
+            src: bash_profile.sh
+            dest: ~/.bash_profile
+            force: false
+            mode: 0640
+          register: ans_bash_profile_copied
+          when: >-
+            ( ans_local_path is not defined ) or
+            ( ans_local_path not in ans_paths ) or
+            ( not ans_bash_profile.stat.exists | bool )
+
+        - name: Fail if ~/.local/bin is not in the PATH environmental variable
+          ansible.builtin.assert:
+            that:
+              - ans_local_path in ans_paths
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+            fail_msg:
+              - "Please add {{ ans_local_path }} to your PATH environmental variable"
+              - "For example add the following two lines to ~/.bash_profile"
+              - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
+              - "export PATH=${PATH}"
+          when: >-
+             ( ( ans_local_path is defined ) and ( ans_paths is defined ) and ( ans_local_path not in ans_paths ) ) or
+             ( ( ans_bash_profile_copied is defined ) and ( not ans_bash_profile_copied.changed | bool ) )
+
+      when: ansible_effective_user_id != 0
 
   tags:
     - ansible
