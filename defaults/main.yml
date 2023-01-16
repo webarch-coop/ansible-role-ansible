@@ -36,6 +36,9 @@ ans_cols:
   - name: hetzner.hcloud
     url: https://github.com/ansible-collections/hetzner.hcloud
     version: "1.9.1"
+  - name: kubernetes.core
+    url: https://github.com/ansible-collections/kubernetes.core
+    version: "2.3.2"
 # Python PyPI packages required
 ans_pypi_pkgs:
   - name: ansible-core

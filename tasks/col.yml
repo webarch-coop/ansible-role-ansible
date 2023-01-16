@@ -45,13 +45,34 @@
           changed_when: false
           register: ans_latest_headers
 
-    - name: "Set a fact for the latest version for {{ ans_col.name }}"
-      ansible.builtin.set_fact:
-        ans_col_version_latest: "{{ ans_latest_headers.location | urlsplit('path') | basename | string }}"
+    - name: Setting the latest variable is not possible
+      block:
 
-    - name: "Set a fact for the proposed version for {{ ans_col.name }}"
-      ansible.builtin.set_fact:
-        ans_col_version_required: "{% if ans_col.version == 'latest' %}{{ ans_col_latest }}{% else %}{{ ans_col.version }}{% endif %}"
+        - name: Fail if the latest version has been requested but it cannot be determined
+          ansible.builtin.fail:
+            msg: "The URL {{ ans_col.url }}/releases/latest does not redirect to a release version so 'latest' cannot be used for {{ ans_col.name }}, please use a taged version number from {{ ans_col.url }}/tags"
+          when:
+            - ans_col.version == "latest"
+
+        - name: "Set a fact for the latest and proposed version for {{ ans_col.name }}"
+          ansible.builtin.set_fact:
+            ans_col_version_latest: null
+            ans_col_version_required: "{{ ans_col.version }}"
+
+      when: ans_latest_headers.location is regex('releases$')
+
+    - name: Set latest variables when possible
+      block:
+
+        - name: "Set a fact for the latest version for {{ ans_col.name }}"
+          ansible.builtin.set_fact:
+            ans_col_version_latest: "{{ ans_latest_headers.location | urlsplit('path') | basename | string }}"
+
+        - name: "Set a fact for the proposed version for {{ ans_col.name }}"
+          ansible.builtin.set_fact:
+            ans_col_version_required: "{% if ans_col.version == 'latest' %}{{ ans_col_latest }}{% else %}{{ ans_col.version }}{% endif %}"
+
+      when: ans_latest_headers.location is not regex('releases$')
 
     - name: "Set a fact if the required Ansible collection version is provided by a system package for {{ ans_col.name }}"
       ansible.builtin.set_fact:
