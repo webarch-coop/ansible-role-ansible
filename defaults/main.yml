@@ -33,6 +33,9 @@ ans_cols:
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
     version: "1.2.3"
+  - name: hetzner.hcloud
+    url: https://github.com/ansible-collections/hetzner.hcloud
+    version: "1.9.1"
 # Python PyPI packages required
 ans_pypi_pkgs:
   - name: ansible-core
