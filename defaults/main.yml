@@ -63,6 +63,9 @@ ans_pypi_pkgs:
   - name: resolvelib
     url: https://pypi.org/pypi/resolvelib
     version: "0.8.1"
+  - name: yamllint
+    url: https://pypi.org/project/yamllint
+    version: "1.29.0"
 # Debian / Ubuntu packages required
 ans_pkgs:
   - ansible
