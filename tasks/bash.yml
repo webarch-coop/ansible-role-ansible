@@ -17,14 +17,20 @@
         - name: Bash completion present using argcomplete present system-wide
           ansible.builtin.command: "{{ ans_argcomplete_path }}"
           args:
-            creates: "{{ ans_argcomplete_root_path | default('/etc/bash_completion.d/python-argcomplete.sh') }}"
-          when: ansible_effective_user_id == 0
+            creates: "{{ ans_argcomplete_root_path }}"
+          when:
+            - ansible_effective_user_id == 0
+            - ans_argcomplete_root_path is defined
+            - ans_argcomplete_root_path | length > 0
 
         - name: Bash completion present using argcomplete present locally
           ansible.builtin.command: "{{ ans_argcomplete_path }} --user"
           args:
-            creates: "{{ ans_argcomplete_user_path | default('~/.bash_completion.d/python-argcomplete.sh') }}"
-          when: ansible_effective_user_id != 0
+            creates: "{{ ans_argcomplete_user_path }}"
+          when:
+            - ansible_effective_user_id != 0
+            - ans_argcomplete_user_path is defined
+            - ans_argcomplete_user_path | length > 0
 
       when:
         - ansible_env.SHELL is defined
