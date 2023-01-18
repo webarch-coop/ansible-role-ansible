@@ -32,7 +32,7 @@
             - ans_argcomplete_path is defined
             - ans_argcomplete_path | length > 0
 
-        - name: Check if Bash completion is present
+        - name: Check if Bash completion is present for the user when not root
           block:
 
             - name: Check ~/.bash_completion.d/python-argcomplete
@@ -67,6 +67,42 @@
             - ansible_env.SHELL is defined
             - ansible_env.SHELL is regex('bash$')
             - ansible_effective_user_id != 0
+
+        - name: Check if Bash completion is present for the root user
+          block:
+
+            - name: Check /etc/bash_completion.d/python-argcomplete
+              ansible.builtin.stat:
+                path: ~/.bash_completion.d/python-argcomplete
+              register: ans_argcomplete_path_no_ext
+
+            - name: Set a fact for python-argcomplete user path without an extension
+              ansible.builtin.set_fact:
+                ans_argcomplete_root_path: /etc/bash_completion.d/python-argcomplete
+              when: ans_argcomplete_path_no_ext.stat.exists | bool
+
+            - name: Check /etc/bash_completion.d/python-argcomplete.sh
+              ansible.builtin.stat:
+                path: /etc/bash_completion.d/python-argcomplete.sh
+              register: ans_argcomplete_path_no_ext
+
+            - name: Set a fact for python-argcomplete user path with an extension
+              ansible.builtin.set_fact:
+                ans_argcomplete_root_path: /etc/bash_completion.d/python-argcomplete.sh
+              when: ans_argcomplete_path_no_ext.stat.exists | bool
+
+            - name: Debug the path to the users python-argcomplete script
+              ansible.builtin.debug:
+                var: ans_argcomplete_root_path
+                verbosity: 2
+              when:
+                - ans_argcomplete_root_path is defined
+                - ans_argcomplete_root_path | length > 0
+
+          when:
+            - ansible_env.SHELL is defined
+            - ansible_env.SHELL is regex('bash$')
+            - ansible_effective_user_id == 0
 
       when: ( "python3-argcomplete" in ans_pkgs )
 
