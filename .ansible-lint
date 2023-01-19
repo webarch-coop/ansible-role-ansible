@@ -1,5 +1,5 @@
 ---
-# https://docs.ansible.com/ansible-lint/rules/default_rules.html
+# https://ansible-lint.readthedocs.io/rules/
 skip_list:
   # You can improve the task key order
   - key-order[task]
