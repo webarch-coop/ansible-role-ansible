@@ -96,7 +96,7 @@ Only `present` (the default) and `forcereinstall` are currently supported for `s
 See the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation, multiple extras are seperated by commas if manually installing, for example:
 
 ```bash
-pip install molecule-plugins[containers,docker]==23.0.0
+python3 -m pip install molecule-plugins[containers,docker]==23.0.0
 ```
 
 Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
@@ -115,6 +115,12 @@ List the PyPI user packages present:
 ```bash
 python3 -m pip list --user
 python3 -m pip list --user --format=json | jq
+```
+
+List the PyPI package extras present:
+
+```bash
+python3 -m pip inspect | jq '.installed[]|select(.metadata.name=="molecule-plugins").metadata.provides_extra'
 ```
 
 List the installed Ansible galaxy collections:
