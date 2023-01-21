@@ -14,7 +14,7 @@ ans: false
 ans_cols:
   - name: ansible.posix
     url: https://github.com/ansible-collections/ansible.posix
-    version: "1.4.0"
+    version: "1.5.1"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
     version: "3.4.0"
@@ -59,7 +59,10 @@ ans_pypi_pkgs:
   - name: molecule
     url: https://pypi.org/pypi/molecule
     version: "4.0.4"
-  - name: "molecule-plugins[docker]"
+  - name: "molecule-plugins"
+    extras:
+      - containers
+      - docker
     url: https://pypi.org/pypi/molecule-plugins
     version: "23.0.0"
   - name: netaddr

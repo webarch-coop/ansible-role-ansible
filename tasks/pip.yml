@@ -84,7 +84,7 @@
 
     - name: "PyPi system package present {{ ans_pypi_pkg.name }}"
       ansible.builtin.pip:
-        name: "{{ ans_pypi_pkg.name }}=={{ ans_pypi_version_required }}"
+        name: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
         state: present
         executable: "{{ ans_pip_path }}"
       when:

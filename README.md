@@ -72,7 +72,7 @@ If this role is run usidng `sudo` or as `root` these packages will be automatica
 
 A list of Python Package Index ([PyPI](https://pypi.org/)), package names, URLs and versions that will be installed as user packages if they are not already available as system packages.
 
-Each item in the list requires a `name` for the name of the PyPI package, a `url` for the URL of the project on the PyPI website and a `version`, the version can be a version number or `latest`, for example:
+Each item in the list requires a `name` for the name of the PyPI package, a `url` for the URL of the project on the PyPI website and a `version`, the version can be a version number or `latest`, the `extras` list is optional, for example:
 
 ```yaml
 ans_pypi_pkgs:
@@ -82,6 +82,17 @@ ans_pypi_pkgs:
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     version: latest
+  - name: "molecule-plugins"
+    extras:
+      - docker
+    url: https://pypi.org/pypi/molecule-plugins
+    version: "23.0.0"
+```
+
+See the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation, multiple extras are seperated by commas for the install, for example:
+
+```bash
+pip install molecule-plugins[docker,podman]
 ```
 
 Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
