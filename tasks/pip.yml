@@ -82,25 +82,30 @@
           - "ans_pypi_system_version_present: {{ ans_pypi_system_version_present }}"
           - "ans_pypi_user_version_present: {{ ans_pypi_user_version_present }}"
 
-    - name: "PyPi system package present {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
+    - name: "PyPi system package present {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
       ansible.builtin.pip:
         name: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
-        state: present
+        state: "{{ ans_pypi_pkg.state | default('present') }}"
         executable: "{{ ans_pip_path }}"
-      when:
-        - ansible_effective_user_id == 0
-        - ans_pypi_version_required != ans_pypi_system_version_present
-        - ans_pypi_version_required != ans_pypi_user_version_present
+      when: >-
+        ( ( ansible_effective_user_id == 0 ) and
+        ( ans_pypi_version_required != ans_pypi_system_version_present ) and
+        ( ans_pypi_version_required != ans_pypi_user_version_present ) ) or
+        ( ( ansible_effective_user_id == 0 ) and
+        ( ans_pypi_pkg.state is defined ) and
+        ( ans_pypi_pkg.state == "forcereinstall" ) )
 
-    - name: "PyPi user package present {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
+    - name: "PyPi user package present {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
       ansible.builtin.pip:
         name: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
-        state: present
+        state: "{{ ans_pypi_pkg.state | default('present') }}"
         executable: "{{ ans_pip_path }}"
         extra_args: --user
-      when:
-        - ans_pypi_version_required != ans_pypi_system_version_present
-        - ans_pypi_version_required != ans_pypi_user_version_present
+      when: >-
+        ( ( ans_pypi_version_required != ans_pypi_system_version_present ) and
+        ( ans_pypi_version_required != ans_pypi_user_version_present ) ) or
+        ( ( ans_pypi_pkg.state is defined ) and
+        ( ans_pypi_pkg.state == "forcereinstall" ) )
 
   tags:
     - ans

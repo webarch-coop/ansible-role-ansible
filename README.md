@@ -84,10 +84,14 @@ ans_pypi_pkgs:
     version: latest
   - name: "molecule-plugins"
     extras:
+      - containers
       - docker
+    state: forcereinstall
     url: https://pypi.org/pypi/molecule-plugins
     version: "23.0.0"
 ```
+
+Only `present` (the default) and `forcereinstall` are currebtly supported for the `state`, `forcereinstall` is required if the list of `extras` is changed.
 
 See the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation, multiple extras are seperated by commas for the install, for example:
 
