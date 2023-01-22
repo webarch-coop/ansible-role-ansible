@@ -62,8 +62,9 @@
         loop_var: ans_pypi_pkg
         label: "{{ ans_pypi_pkg.name }}"
       when: >-
-        ( ans_pypi_pkgs is defined ) and ( ans_pypi_pkgs != [] ) and
-        ( ( ans_pypi_pkg.version == "latest" ) or
+        ( ansible_verbosity > 0 ) or
+        ( ansible_check_mode | bool ) or
+        ( ans_pypi_pkgs is defined ) and ( ans_pypi_pkgs != [] ) and ( ( ans_pypi_pkg.version == "latest" ) or
         ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "forcereinstall" ) ) or
         ( ( ans_pypi_pkg.version != ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) ) and
         ( ans_pypi_pkg.version != ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) ) ) )
@@ -88,9 +89,9 @@
         loop_var: ans_col
         label: "{{ ans_col.name }}"
       when: >-
-        ( ans_cols is defined ) and ( ans_cols != [] ) and
-        ( ( ans_col.version == "latest" ) or
+        ( ansible_verbosity > 0 ) or
         ( ansible_check_mode | bool ) or
+        ( ans_cols is defined ) and ( ans_cols != [] ) and ( ( ans_col.version == "latest" ) or
         ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
         ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
 

@@ -63,6 +63,31 @@
           - ans_installed_version is version(ans_ansible_min_version, '>=')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
+    - name: Check the version of pip
+      ansible.builtin.command: python3 -m pip --version
+      check_mode: false
+      changed_when: false
+      register: ans_pip_version_check
+
+    - name: Set a fact for the version of pip
+      ansible.builtin.set_fact:
+        ans_pip_version: "{{ ans_pip_version_check.stdout | ansible.builtin.split | community.general.json_query('[1]') }}"
+
+    - name: Pip inspect metadata
+      block:
+
+        - name: Run pip inspect
+          ansible.builtin.command: python3 -m pip inspect
+          check_mode: false
+          changed_when: false
+          register: ans_pip_inspect
+
+        - name: Set a fact for the pip metadata
+          ansible.builtin.set_fact:
+            ans_pip_metadata: "{{ ans_pip_inspect.stdout | from_json | community.general.json_query('installed[].metadata') }}"
+
+      when: ans_pip_version is version('22.2', '>=')
+
     - name: Check the system PyPI packages
       ansible.builtin.command: python3 -m pip list --format=json
       check_mode: false

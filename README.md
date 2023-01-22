@@ -117,7 +117,7 @@ python3 -m pip list --user
 python3 -m pip list --user --format=json | jq
 ```
 
-List the PyPI package extras present:
+List the PyPI package extras present, this `jq` query has been [copied from GitHub](https://github.com/pypa/pip/issues/4824#issuecomment-1298200394):
 
 ```bash
 python3 -m pip inspect | jq '.installed[]|select(.metadata.name=="molecule-plugins").metadata.provides_extra'

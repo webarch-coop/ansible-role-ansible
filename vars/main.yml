@@ -26,4 +26,5 @@ ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collecti
 ans_galaxy_install: false
 ans_pip_path: /usr/bin/pip3
 ans_pypi_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
+ans_pypi_extras_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].provides_extra[]"
 ...
