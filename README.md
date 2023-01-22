@@ -10,7 +10,7 @@ This role is currently set to more-or-less match the Ansible version available o
 
 ## Usage
 
-The suggested mathod for using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
+The suggested method for using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
 
 ```bash
 git clone https://git.coop/webarch/localhost.git
