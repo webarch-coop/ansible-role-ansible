@@ -15,8 +15,8 @@ The suggested method for using this role is via the [localhost repo](https://git
 ```bash
 git clone https://git.coop/webarch/localhost.git
 cd localhost
-./ansible.sh --check # check what versions are installed
-./ansible.sh         # update ansible
+./ansible.sh --check # check what versions are available and installed
+./ansible.sh         # update pypi packages and ansible collections
 ```
 
 This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
