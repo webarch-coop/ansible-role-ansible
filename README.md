@@ -84,20 +84,14 @@ ans_pypi_pkgs:
     version: latest
   - name: "molecule-plugins"
     extras:
-      - containers
       - docker
+      - podman
     state: forcereinstall
     url: https://pypi.org/pypi/molecule-plugins
     version: "23.0.0"
 ```
 
-Only `present` (the default) and `forcereinstall` are currently supported for `state`, `forcereinstall` is necessary if the list of `extras` is changed as there isn't currently a check run to see if a `forcereinstall` is required.
-
-See the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation, multiple extras are seperated by commas if manually installing, for example:
-
-```bash
-python3 -m pip install molecule-plugins[containers,docker]==23.0.0
-```
+Only `present` (the default) and `forcereinstall` are currently supported for `state`, `forcereinstall` is necessary if the list of `extras` is changed, see the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation.
 
 Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
 

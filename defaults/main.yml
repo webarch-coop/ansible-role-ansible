@@ -61,10 +61,7 @@ ans_pypi_pkgs:
     version: "4.0.4"
   - name: "molecule-plugins"
     extras:
-      - containers
       - docker
-    # forcereinstall can be removed for versions > 23.0.0
-    state: forcereinstall
     url: https://pypi.org/pypi/molecule-plugins
     version: "23.0.0"
   - name: netaddr
