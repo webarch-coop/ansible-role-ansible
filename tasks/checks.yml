@@ -73,6 +73,11 @@
       ansible.builtin.set_fact:
         ans_pip_version: "{{ ans_pip_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
 
+    - name: Pip installed version
+      ansible.builtin.debug:
+        var: ans_pip_version
+        verbosity: 1
+
     - name: Pip inspect metadata
       block:
 
