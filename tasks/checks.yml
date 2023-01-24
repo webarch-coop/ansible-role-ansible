@@ -71,7 +71,7 @@
 
     - name: Set a fact for the version of pip for old versions of Ansible
       ansible.builtin.set_fact:
-        ans_pip_version: "{{ ans_pip_version_check.stdout.split[1] }}"
+        ans_pip_version: "{{ ans_pip_version_check.stdout.split(' ')[1] }}"
       when: ans_installed_version is version(ans_ansible_min_version)
 
     - name: Set a fact for the version of pip for new versions of Ansible
