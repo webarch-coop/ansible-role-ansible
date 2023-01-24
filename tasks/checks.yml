@@ -69,15 +69,9 @@
       changed_when: false
       register: ans_pip_version_check
 
-    - name: Set a fact for the version of pip for old versions of Ansible
+    - name: Set a fact for the version of pip
       ansible.builtin.set_fact:
         ans_pip_version: "{{ ans_pip_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
-      when: ans_installed_version is version(ans_ansible_min_version)
-
-    - name: Set a fact for the version of pip for new versions of Ansible
-      ansible.builtin.set_fact:
-        ans_pip_version: "{{ ans_pip_version_check.stdout_lines[0] | ansible.builtin.split | community.general.json_query('[1]') }}"
-      when: ans_installed_version is version(ans_ansible_min_version, '>')
 
     - name: Pip inspect metadata
       block:
