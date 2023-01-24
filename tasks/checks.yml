@@ -55,7 +55,7 @@
     - name: Ansible installed version
       ansible.builtin.debug:
         var: ans_installed_version
-        verbosity: 1
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required
       ansible.builtin.assert:
@@ -76,7 +76,7 @@
     - name: Pip installed version
       ansible.builtin.debug:
         var: ans_pip_version
-        verbosity: 1
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Pip inspect metadata
       block:
