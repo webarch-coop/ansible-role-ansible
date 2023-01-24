@@ -68,6 +68,8 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/netaddr
     version: "0.8.0"
   # ansible-galaxy requires resolvelib<0.9.0,>=0.5.3
+  # https://github.com/ansible/ansible/issues/74569
+  # https://github.com/ansible-community/ppa/issues/16
   - name: resolvelib
     url: https://pypi.org/pypi/resolvelib
     version: "0.8.1"
