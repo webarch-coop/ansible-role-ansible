@@ -47,9 +47,6 @@ ans_pypi_pkgs:
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     version: "6.11.0"
-  - name: python3-commonmark
-    version: "0.9.1"
-    url: https://pypi.org/pypi/commonmark
   - name: dnspython
     url: https://pypi.org/pypi/dnspython
     version: "2.2.1"
@@ -85,6 +82,7 @@ ans_pkgs:
   - jo
   - python3-argcomplete
   - python3-dnspython
+  - python3-commonmark
   - python3-jmespath
   - python3-lxml
   - python3-netaddr
