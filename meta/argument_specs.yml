@@ -61,10 +61,10 @@ argument_specs:
             required: false
             description: The state to pass to the ansible.builtin.pip module.
             choices:
-              # - absent
-              - forcereinstall
-              # - latest
-              - present
+              # - "absent"
+              - "forcereinstall"
+              # - "latest"
+              - "present"
           url:
             type: str
             required: true
