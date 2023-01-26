@@ -132,7 +132,7 @@ ansible-galaxy collection list --format=json | jq
 ## Repository
 
 The primary URL of this repo is [`https://git.coop/webarch/ansible`](https://git.coop/webarch/ansible) however it is also [mirrored to GitHub](https://github.com/webarch-coop/ansible-role-ansible) and [available via Ansible Galaxy](https://galaxy.ansible.com/chriscroome/ansible).
-    
+
 If you use this role please use a tagged release, see [the release notes](https://git.coop/webarch/ansible/-/releases).
 
 Originally, [in 2019](https://git.coop/webarch/ansible/-/tree/archive2019), this repo contained a few roles that have since been moved to other repos.
