@@ -35,7 +35,7 @@ ans_cols:
     version: "1.2.3"
   - name: hetzner.hcloud
     url: https://github.com/ansible-collections/hetzner.hcloud
-    version: "1.9.1"
+    version: "1.10.0"
   - name: kubernetes.core
     url: https://github.com/ansible-collections/kubernetes.core
     version: "2.3.2"
@@ -43,10 +43,10 @@ ans_cols:
 ans_pypi_pkgs:
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
-    version: "2.14.1"
+    version: "2.14.2"
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
-    version: "6.11.0"
+    version: "6.12.0"
   - name: dnspython
     url: https://pypi.org/pypi/dnspython
     version: "2.2.1"
