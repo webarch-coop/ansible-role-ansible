@@ -80,6 +80,7 @@ ans_pypi_pkgs:
 ans_pkgs:
   - ansible
   - jo
+  - pipx
   - python3-argcomplete
   - python3-dnspython
   - python3-commonmark
@@ -89,4 +90,5 @@ ans_pkgs:
   - python3-pip
   - python3-resolvelib
   - python3-setuptools
+  - python3-venv
 ...
