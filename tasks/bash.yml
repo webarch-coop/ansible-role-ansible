@@ -46,7 +46,7 @@
             src: bash_profile.sh
             dest: ~/.bash_profile
             force: false
-            mode: 0640
+            mode: "0640"
           register: ans_bash_profile_copied
           when: not ans_bash_profile.stat.exists | bool
 
