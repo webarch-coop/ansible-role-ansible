@@ -51,9 +51,9 @@
         var: ans_pypi.json.releases
         verbosity: 3
 
-    - name: "Create an array of the stable PyPi versions available and set a variable for the latest version for {{ ans_pypi_pkg.name }}"
+    - name: "Create an array of the PyPi versions available and set a variable for the latest version for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:
-        ans_pypi_versions_available: "{{ ans_pypi.json.releases.keys() | reject('regex', '[a-z]') }}"
+        ans_pypi_versions_available: "{{ ans_pypi.json.releases.keys() }}"
         ans_pypi_version_latest: "{{ ans_pypi.json.info.version }}"
 
     - name: "Set a fact for the PyPi version required for {{ ans_pypi_pkg.name }}"
