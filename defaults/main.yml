@@ -79,6 +79,8 @@ ans_pypi_pkgs:
 # Debian / Ubuntu packages required
 ans_pkgs:
   - ansible
+  - ansible-core
+  - jc
   - jo
   - pipx
   - python3-argcomplete
@@ -88,6 +90,7 @@ ans_pkgs:
   - python3-lxml
   - python3-netaddr
   - python3-pip
+  - python3-pipx
   - python3-resolvelib
   - python3-setuptools
   - python3-venv
