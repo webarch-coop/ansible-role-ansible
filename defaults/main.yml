@@ -90,7 +90,6 @@ ans_pkgs:
   - python3-lxml
   - python3-netaddr
   - python3-pip
-  - python3-pipx
   - python3-resolvelib
   - python3-setuptools
   - python3-venv
