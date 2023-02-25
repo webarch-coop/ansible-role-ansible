@@ -73,7 +73,7 @@ If this role is run usidng `sudo` or as `root` these packages will be automatica
 
 A list of Python Package Index ([PyPI](https://pypi.org/)), package names, URLs and versions that will be installed as user packages if they are not already available as system packages.
 
-Each item in the list requires a `name` for the name of the PyPI package, a `url` for the URL of the project on the PyPI website and a `version`, the version can be a version number or `latest`, the `extras` list and `state` are optional, for example:
+Each item in the list requires a `name` for the name of the PyPI package, when the `state` is not set to `absent` a `url` for the URL of the project on the PyPI website and a `version` is also required, the version can be a version number or `latest`, the `extras` list and `state` are optional, for example:
 
 ```yaml
 ans_pypi_pkgs:
@@ -90,9 +90,11 @@ ans_pypi_pkgs:
     state: forcereinstall
     url: https://pypi.org/pypi/molecule-plugins
     version: "23.0.0"
+  - name: resolvelib
+    state: absent
 ```
 
-Only `present` (the default) and `forcereinstall` are currently supported for `state`, `forcereinstall` is necessary if the list of `extras` is changed, see the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation.
+Only `absent`, `present` (the default) and `forcereinstall` are supported for `state`, use `state: present` and `version: latest` for the latest version, `forcereinstall` is necessary if the list of `extras` is changed, see the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation.
 
 Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
 

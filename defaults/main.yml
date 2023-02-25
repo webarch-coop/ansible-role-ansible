@@ -41,15 +41,20 @@ ans_cols:
     version: "2.3.2"
 # Python PyPI packages required
 ans_pypi_pkgs:
+  - name: ansible
+    url: https://pypi.org/pypi/ansible
+    version: "7.2.0"
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     version: "2.14.2"
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     version: "6.14.0a0"
+  # An old version of dnspython is probably no longer needed
   - name: dnspython
     url: https://pypi.org/pypi/dnspython
     version: "2.2.1"
+    state: absent
   - name: jc
     url: https://pypi.org/pypi/jc
     version: "1.22.5"
@@ -67,12 +72,14 @@ ans_pypi_pkgs:
   - name: netaddr
     url: https://pypi.org/pypi/netaddr
     version: "0.8.0"
+  # An old version of ansible-galaxy is probably no longer needed
   # ansible-galaxy requires resolvelib<0.9.0,>=0.5.3
   # https://github.com/ansible/ansible/issues/74569
   # https://github.com/ansible-community/ppa/issues/16
   - name: resolvelib
     url: https://pypi.org/pypi/resolvelib
     version: "0.8.1"
+    state: absent
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     version: "1.29.0"
@@ -93,4 +100,10 @@ ans_pkgs:
   - python3-resolvelib
   - python3-setuptools
   - python3-venv
+ans_pipx_env:
+  PIPX_HOME: "{{ ansible_env.HOME }}/.local/venv"
+  PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
+  # For system-wide installation run this role as root and set the following variables:
+  # PIPX_HOME: /opt/venv
+  # PIPX_BIN_DIR: /usr/local/bin
 ...

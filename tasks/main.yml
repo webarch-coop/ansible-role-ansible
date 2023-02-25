@@ -42,32 +42,43 @@
     - name: Check variables
       ansible.builtin.include_tasks: checks.yml
 
-    - name: Debug existing and proposed PyPI packages
-      ansible.builtin.debug:
-        msg:
-          - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
-          - "ans_pypi_pkg.version: {{ ans_pypi_pkg.version }}"
-          - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
-          - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
-        verbosity: 1
-      loop: "{{ ans_pypi_pkgs }}"
-      loop_control:
-        loop_var: ans_pypi_pkg
-        label: "{{ ans_pypi_pkg.name }}"
+    - name: PyPI packages configured using pipx
+      ansible.builtin.include_tasks: pipx.yml
+      when: ans_pipx | bool
 
-    - name: PyPI packages present when not already available as system or user packages
-      ansible.builtin.include_tasks: pip.yml
-      loop: "{{ ans_pypi_pkgs }}"
-      loop_control:
-        loop_var: ans_pypi_pkg
-        label: "{{ ans_pypi_pkg.name }}"
-      when: >-
-        ( ansible_verbosity > 0 ) or
-        ( ansible_check_mode | bool ) or
-        ( ans_pypi_pkgs is defined ) and ( ans_pypi_pkgs != [] ) and ( ( ans_pypi_pkg.version == "latest" ) or
-        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "forcereinstall" ) ) or
-        ( ( ans_pypi_pkg.version != ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) ) and
-        ( ans_pypi_pkg.version != ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) ) ) )
+    - name: PyPI packages configured using pip
+      block:
+
+        - name: Debug PyPI packages
+          ansible.builtin.debug:
+            msg:
+              - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
+              - "ans_pypi_pkg.state: {{ ans_pypi_pkg.state | default('present') }}"
+              - "ans_pypi_pkg.version: {{ ans_pypi_pkg.version }}"
+              - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+              - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+            verbosity: 1
+          loop: "{{ ans_pypi_pkgs }}"
+          loop_control:
+            loop_var: ans_pypi_pkg
+            label: "{{ ans_pypi_pkg.name }}"
+
+        - name: PyPI packages configured using pip when not already available as system or user packages
+          ansible.builtin.include_tasks: pip.yml
+          loop: "{{ ans_pypi_pkgs }}"
+          loop_control:
+            loop_var: ans_pypi_pkg
+            label: "{{ ans_pypi_pkg.name }}"
+          when: >-
+            ( ansible_verbosity > 0 ) or
+            ( ansible_check_mode | bool ) or
+            ( ans_pypi_pkgs is defined ) and ( ans_pypi_pkgs != [] ) and ( ( ans_pypi_pkg.version == "latest" ) or
+            ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "absent" ) ) or
+            ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "forcereinstall" ) ) or
+            ( ( ans_pypi_pkg.version != ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) ) and
+            ( ans_pypi_pkg.version != ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) ) ) )
+
+      when: not ans_pipx | bool
 
     - name: Debug existing and proposed Ansible collections
       ansible.builtin.debug:

@@ -43,12 +43,12 @@
       ansible.builtin.package_facts:
         manager: apt
 
-    - name: Debug the installed Ansible package version string
+    - name: Debug the installed ansible package version string
       ansible.builtin.debug:
         var: ansible_facts.packages.ansible[0].version
-        verbosity: 1
+        verbosity: 2
 
-    - name: Set a fact for the .deb package Ansible version
+    - name: Set a fact for the .deb package ansible version
       ansible.builtin.set_fact:
         ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
 
@@ -57,11 +57,92 @@
         var: ans_installed_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Check that the installed version of Ansible is greater than or equal to the minimum version required
+    - name: Check ansible-core .deb version present
+      block:
+
+        - name: Debug the installed ansible-core package version string
+          ansible.builtin.debug:
+            msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
+            verbosity: 2
+
+        - name: Set a fact for the .deb package ansible-core version
+          ansible.builtin.set_fact:
+            ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | regex_replace('[-][0-9]$') | string }}"
+
+        - name: Ansible core installed version
+          ansible.builtin.debug:
+            var: ans_core_installed_version
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+      when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
+
+    - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is not present
       ansible.builtin.assert:
         that:
           - ans_installed_version is version(ans_ansible_min_version, '>=')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+      when: ans_core_installed_version is not defined
+
+    - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is present
+      ansible.builtin.assert:
+        that:
+          - ans_core_installed_version is version(ans_ansible_min_version, '>=')
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+      when: ans_core_installed_version is defined
+
+    - name: Debug the installed pipx version string
+      ansible.builtin.debug:
+        var: ansible_facts.packages.pipx[0].version
+        verbosity: 2
+
+    - name: Set a fact for the pipx version
+      ansible.builtin.set_fact:
+        ans_pipx_version: "{{ ansible_facts.packages.pipx[0].version | regex_replace('[-][0-9]$') | string }}"
+
+    - name: Pipx installed version
+      ansible.builtin.debug:
+        var: ans_pipx_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    - name: Set a fact for the required Ansible version
+      ansible.builtin.set_fact:
+        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+
+    - name: Debug the required Ansible version
+      ansible.builtin.debug:
+        var: ans_required_version
+        verbosity: 2
+
+    - name: Pipx checks
+      block:
+
+        - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
+          ansible.builtin.set_fact:
+            ans_pipx: true
+          when: ans_installed_version is version(ans_required_version, 'lt')
+
+        - name: Debug ans_pipx variable
+          ansible.builtin.debug:
+            var: ans_pipx
+            verbosity: 2
+          when: ans_pipx is defined
+
+        - name: Run pipx list
+          ansible.builtin.command: pipx list --json
+          check_mode: false
+          changed_when: false
+          register: ans_pipx_list_json
+
+        - name: Set a fact for the pipx list results
+          ansible.builtin.set_fact:
+            ans_pipx_list: "{{ ans_pipx_list_json.stdout | from_json }}"
+
+        - name: Debug pipx list results
+          ansible.builtin.debug:
+            var: ans_pipx_list
+            verbosity: 2
+
+      when: ans_pipx_version is version('1.0.0', '>=')
 
     - name: Check the version of pip
       ansible.builtin.command: python3 -m pip --version

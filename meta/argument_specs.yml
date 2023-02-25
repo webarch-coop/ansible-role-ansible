@@ -61,16 +61,17 @@ argument_specs:
             required: false
             description: The state to pass to the ansible.builtin.pip module.
             choices:
-              # - "absent"
+              - "absent"
               - "forcereinstall"
+              # Use version for latest
               # - "latest"
               - "present"
           url:
             type: str
-            required: true
+            required: false
             description: The URL of the PyPI package.
           version:
             type: str
-            required: true
+            required: false
             description: The version of PyPI package.
 ...
