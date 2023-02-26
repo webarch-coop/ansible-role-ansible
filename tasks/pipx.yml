@@ -37,7 +37,9 @@
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
-          when: ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
+          when:
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
 
       rescue:
 
@@ -50,6 +52,7 @@
             label: "{{ ans_pypi_pkg.name }}"
           when:
             - ansible_facts.python_version is version('3.11.2', '>=')
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
             - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
 
         - name: Removing package using pip as root failed
@@ -59,7 +62,9 @@
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
-          when: ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
+          when:
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
 
       when: ansible_effective_user_id == 0
 
@@ -67,8 +72,8 @@
       ansible.builtin.pip:
         name: "{{ ans_pypi_pkg.name }}"
         state: absent
-        executable: "{{ ans_pip_path }}"
         extra_args: "{% if ansible_facts.python_version is version('3.11.2', '>=') %}--break-system-packages{% endif %}"
+        executable: "{{ ans_pip_path }}"
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
@@ -76,6 +81,7 @@
       when:
         - ansible_effective_user_id != 0
         - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
+        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
 
     - name: Debug existing pipx installed Ansible version
       ansible.builtin.debug:
