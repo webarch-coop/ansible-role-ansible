@@ -129,6 +129,7 @@
 
         - name: Run pipx list
           ansible.builtin.command: pipx list --include-injected --json
+          environment: "{{ ans_pipx_env }}"
           check_mode: false
           changed_when: false
           register: ans_pipx_list_json
@@ -146,6 +147,7 @@
           community.general.pipx_info:
             include_deps: true
             include_injected: true
+          environment: "{{ ans_pipx_env }}"
           register: ans_pipx_info
 
         - name: Debug pipx info
