@@ -8,7 +8,7 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Check, install, reinstall and remove PyPI packages using pipx
+- name: PyPI packages configured using pipx
   block:
 
     - name: Debug PyPI packages
@@ -25,63 +25,10 @@
         loop_var: ans_pypi_pkg
         label: "{{ ans_pypi_pkg.name }}"
 
-    - name: Remove packages installed using pip as root
-      block:
-
-        - name: "PyPi pip system package absent {{ ans_pypi_pkg.name }}"
-          ansible.builtin.pip:
-            name: "{{ ans_pypi_pkg.name }}"
-            state: absent
-            executable: "{{ ans_pip_path }}"
-          loop: "{{ ans_pypi_pkgs }}"
-          loop_control:
-            loop_var: ans_pypi_pkg
-            label: "{{ ans_pypi_pkg.name }}"
-          when:
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
-
-      rescue:
-
-        - name: This role doesn't use --break-system-packages as root, please remove these packages manually
-          ansible.builtin.fail:
-            msg: "Please run: sudo pip remove --break-system-packages {{ ans_pypi_pkg.name }}"
-          loop: "{{ ans_pypi_pkgs }}"
-          loop_control:
-            loop_var: ans_pypi_pkg
-            label: "{{ ans_pypi_pkg.name }}"
-          when:
-            - ansible_facts.python_version is version('3.11.2', '>=')
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
-
-        - name: Removing package using pip as root failed
-          ansible.builtin.fail:
-            msg: "Please try removing these packages manually: sudo pip remove {{ ans_pypi_pkg.name }}"
-          loop: "{{ ans_pypi_pkgs }}"
-          loop_control:
-            loop_var: ans_pypi_pkg
-            label: "{{ ans_pypi_pkg.name }}"
-          when:
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
-
-      when: ansible_effective_user_id == 0
-
-    - name: PyPi pip user package absent
-      ansible.builtin.pip:
-        name: "{{ ans_pypi_pkg.name }}"
-        state: absent
-        extra_args: "{% if ansible_facts.python_version is version('3.11.2', '>=') %}--break-system-packages{% endif %}"
-        executable: "{{ ans_pip_path }}"
-      loop: "{{ ans_pypi_pkgs }}"
-      loop_control:
-        loop_var: ans_pypi_pkg
-        label: "{{ ans_pypi_pkg.name }}"
-      when:
-        - ansible_effective_user_id != 0
-        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
-        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
+    # This probebly needs to use:
+    # pip uninstall -y -r <(pip freeze)
+    # to uninstall all pip installed packages
+    # or perhaps that should be left to be done manually
 
     - name: Debug existing pipx installed Ansible version
       ansible.builtin.debug:
