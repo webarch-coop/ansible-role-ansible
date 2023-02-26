@@ -77,6 +77,11 @@
         - ansible_effective_user_id != 0
         - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
 
+    - name: Debug existing pipx installed Ansible version
+      ansible.builtin.debug:
+        var: ans_pipx_list | community.general.json_query(venvs.ansible.metadata.main_package.package_version)
+        verbosity: 1
+
     - name: Install Ansible using pipx
       community.general.pipx:
         name: ansible
