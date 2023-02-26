@@ -104,6 +104,9 @@
         - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
         - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is version(ans_required_version, 'eq')
 
+    # TODO
+    # symlink ~/.local/venvs/ansible/bin files from ~/.local/bin
+
   tags:
     - ansible
 ...
