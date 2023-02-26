@@ -131,6 +131,7 @@
         inject_packages: "{{ ans_pipx_inject }}"
         state: inject
       environment: "{{ ans_pipx_env }}"
+      when: ans_pipx_list.venv.ansible is defined
 
   tags:
     - ansible
