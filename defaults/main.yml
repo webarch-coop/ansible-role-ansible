@@ -100,9 +100,9 @@ ans_pkgs:
   - python3-setuptools
   - python3-venv
 ans_pipx_env:
-  PIPX_HOME: "{{ ansible_env.HOME }}/.local/venv"
+  PIPX_HOME: "{{ ansible_env.HOME }}/.local"
   PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
   # For system-wide installation run this role as root and set the following variables:
-  # PIPX_HOME: /opt/venv
+  # PIPX_HOME: /opt
   # PIPX_BIN_DIR: /usr/local/bin
 ...
