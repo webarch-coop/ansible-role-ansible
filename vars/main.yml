@@ -25,7 +25,7 @@ ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collecti
 # https://github.com/ansible-collections/community.general/issues/5661
 ans_galaxy_install: false
 ans_pip_path: /usr/bin/pip3
-ans_pypi_ansible_version_jmespath_query: "[?name=='ansible-core'].version|[0]"
+ans_pypi_ansible_version_jmespath_query: "[?name=='ansible'].version|[0]"
 ans_pypi_extras: []
 ans_pypi_extras_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].provides_extra[]"
 ans_pypi_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
