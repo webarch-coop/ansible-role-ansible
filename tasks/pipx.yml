@@ -79,8 +79,9 @@
 
     - name: Debug existing pipx installed Ansible version
       ansible.builtin.debug:
-        var: ans_pipx_list | community.general.json_query(venvs.ansible.metadata.main_package.package_version)
+        var: ans_pipx_list.venvs.ansible.metadata.main_package.package_version
         verbosity: 1
+      when: ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
 
     - name: Install Ansible using pipx
       community.general.pipx:
@@ -90,7 +91,7 @@
         state: present
         executable: /usr/bin/pipx
       environment: "{{ ans_pipx_env }}"
-      when: ans_pipx_list | community.general.json_query(venvs.ansible.metadata.main_package.package_version) is not defined
+      when: ans_pipx_list.venvs.ansible.metadata.main_package.package_version is not defined
 
     - name: Upgrade Ansible using pipx
       community.general.pipx:
@@ -100,7 +101,9 @@
         state: upgrade
         executable: /usr/bin/pipx
       environment: "{{ ans_pipx_env }}"
-      when: ans_pipx_list | community.general.json_query(venvs.ansible.metadata.main_package.package_version) is version(ans_required_version, 'lt')
+      when:
+        - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
+        - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is version(ans_required_version, 'lt')
 
     # - name: Inject PyPI packages into the Ansible venv
     #   loop: "{{ ans_pypi_pkgs }}"
