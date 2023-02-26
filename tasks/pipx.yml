@@ -58,6 +58,21 @@
         - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
         - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is version(ans_required_version, 'lt')
 
+    - name: Run pipx list
+      ansible.builtin.command: pipx list --include-injected --json
+      check_mode: false
+      changed_when: false
+      register: ans_pipx_list_json
+
+    - name: Set a fact for the pipx list results
+      ansible.builtin.set_fact:
+        ans_pipx_list: "{{ ans_pipx_list_json.stdout | from_json }}"
+
+    - name: Debug pipx list results
+      ansible.builtin.debug:
+        var: ans_pipx_list
+        verbosity: 2
+
     - name: Set a fact for the pipx packages to be injected
       ansible.builtin.set_fact:
         ans_pipx_inject: "{{ ans_pipx_inject + [ ans_pypi_pkg.name + '==' + ans_pypi_pkg.version ] }}"
