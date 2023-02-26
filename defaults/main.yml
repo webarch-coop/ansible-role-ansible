@@ -86,7 +86,6 @@ ans_pypi_pkgs:
 # Debian / Ubuntu packages required
 ans_pkgs:
   - ansible
-  - ansible-core
   - jc
   - jo
   - pipx
