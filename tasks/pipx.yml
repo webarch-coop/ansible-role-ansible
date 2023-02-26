@@ -15,8 +15,8 @@
       ansible.builtin.debug:
         msg:
           - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
-          - "ans_pypi_pkg.state: {{ ans_pypi_pkg.state }}"
-          - "ans_pypi_pkg.version: {{ ans_pypi_pkg.version }}"
+          - "ans_pypi_pkg.state: {% if ans_pypi_pkg.state is defined %}{{ ans_pypi_pkg.state }}{% endif %}"
+          - "ans_pypi_pkg.version: {% if ans_pypi_pkg.version is defined %}{{ ans_pypi_pkg.version }}{% endif %}"
           - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
           - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
         verbosity: 1
