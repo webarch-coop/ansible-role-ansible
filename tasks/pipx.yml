@@ -15,7 +15,7 @@
       ansible.builtin.debug:
         msg:
           - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
-          - "ans_pypi_pkg.state: {{ ans_pypi_pkg.state | default('present') }}"
+          - "ans_pypi_pkg.state: {{ ans_pypi_pkg.state }}"
           - "ans_pypi_pkg.version: {{ ans_pypi_pkg.version }}"
           - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
           - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
@@ -75,7 +75,7 @@
         label: "{{ ans_pypi_pkg.name }}"
       when:
         - ansible_effective_user_id != 0
-        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
+        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
 
     - name: Install Ansible using pipx
       community.general.pipx:
