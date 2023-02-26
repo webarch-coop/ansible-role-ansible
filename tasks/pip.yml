@@ -40,7 +40,7 @@
             name: "{{ ans_pypi_pkg.name }}"
             state: absent
             executable: "{{ ans_pip_path }}"
-            extra_args: "--user{% if ansible_facts.python_version is version('3.11.2', '>=') %} --break-system-packages{% endif %}"
+            extra_args: "{% if ansible_facts.python_version is version('3.11.2', '>=') %}--break-system-packages{% endif %}"
           when: ansible_effective_user_id != 0
 
       when:
