@@ -128,7 +128,7 @@
           when: ans_pipx is defined
 
         - name: Run pipx list
-          ansible.builtin.command: pipx list --json
+          ansible.builtin.command: pipx list --include-injected --json
           check_mode: false
           changed_when: false
           register: ans_pipx_list_json

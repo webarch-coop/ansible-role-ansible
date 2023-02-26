@@ -111,8 +111,8 @@
       when:
         - ans_pypi_pkg.version is defined
         - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state == "present" )
-        - ( ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) is not defined ) or ( ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) is version(ans_pypi_pkg.version, 'lt') )
-        - ( ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is not defined ) or ( ( ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is version(ans_pypi_pkg.version, 'lt') )
+        # - ( ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) is not defined ) or ( ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) is version(ans_pypi_pkg.version, 'lt') )
+        # - ( ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is not defined ) or ( ( ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is version(ans_pypi_pkg.version, 'lt') )
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
