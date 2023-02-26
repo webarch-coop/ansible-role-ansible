@@ -105,11 +105,30 @@
         - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
         - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is version(ans_required_version, 'lt')
 
-    # - name: Inject PyPI packages into the Ansible venv
-    #   loop: "{{ ans_pypi_pkgs }}"
-    #   loop_control:
-    #     loop_var: ans_pypi_pkg
-    #     label: "{{ ans_pypi_pkg.name }}"
+    - name: Set a fact for the pipx packages to be injected
+      ansible.builtin.set_fact:
+        ans_pipx_inject: "{{ ans_pipx_inject + [ ans_pypi_pkg.name + '==' + ans_pypi_pkg.version ] }}"
+      when:
+        - ans_pypi_pkg.version is defined
+        - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state == "present" )
+        - ( ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) is not defined ) or ( ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) is version(ans_pypi_pkg.version, 'lt') )
+        - ( ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is not defined ) or ( ( ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is version(ans_pypi_pkg.version, 'lt') )
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
+
+    - name: Debug the pipx packages to be injected
+      ansible.builtin.debug:
+        var: ans_pipx_inject
+        verbosity: 1
+      when: ans_pipx_inject is defined
+
+    - name: Inject PyPI packages into the Ansible venv
+      community.general.pipx:
+        inject_packages: "{{ ans_pipx_inject }}"
+        state: inject
+      environment: "{{ ans_pipx_env }}"
 
   tags:
     - ansible

@@ -142,6 +142,17 @@
             var: ans_pipx_list
             verbosity: 2
 
+        - name: Gather pipx_info
+          community.general.pipx_info:
+            include_deps: true
+            include_injected: true
+          register: ans_pipx_info
+
+        - name: Debug pipx info
+          ansible.builtin.debug:
+            var: ans_pipx_info
+            verbosity: 2
+
       when: ans_pipx_version is version('1.0.0', '>=')
 
     - name: Check the version of pip
