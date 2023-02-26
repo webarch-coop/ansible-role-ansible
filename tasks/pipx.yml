@@ -50,12 +50,6 @@
         verbosity: 1
       when: ans_pipx_inject is defined
 
-    - name: Debug existing pipx installed Ansible version
-      ansible.builtin.debug:
-        var: ans_pipx_list.venvs.ansible.metadata.main_package.package_version
-        verbosity: 1
-      when: ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
-
     - name: Install Ansible using pipx
       community.general.pipx:
         name: ansible
@@ -94,13 +88,21 @@
         var: ans_pipx_list
         verbosity: 2
 
+    - name: Debug existing pipx installed Ansible version
+      ansible.builtin.debug:
+        var: ans_pipx_list.venvs.ansible.metadata.main_package.package_version
+        verbosity: 1
+      when: ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
+
     - name: Inject PyPI packages into the Ansible venv
       community.general.pipx:
         name: ansible
         inject_packages: "{{ ans_pipx_inject }}"
         state: inject
       environment: "{{ ans_pipx_env }}"
-      when: ans_pipx_list.venv.ansible is defined
+      when:
+        - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is defined
+        - ans_pipx_list.venvs.ansible.metadata.main_package.package_version is version(ans_required_version, 'eq')
 
   tags:
     - ansible
