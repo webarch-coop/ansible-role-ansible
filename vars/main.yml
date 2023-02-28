@@ -30,6 +30,8 @@ ans_pypi_extras: []
 ans_pypi_extras_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].provides_extra[]"
 ans_pypi_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 ans_pipx: false
+ans_pipx_ansible_version_jmespath_query: "application[?name=='ansible'].version|[0]"
+ans_pipx_injected_packages_jmespath_query: "application[?name=='ansible'].injected|[0]"
 ans_pipx_inject: []
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'

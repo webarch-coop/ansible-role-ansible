@@ -155,6 +155,15 @@
             var: ans_pipx_info
             verbosity: 2
 
+        - name: Set a fact for the pipx Ansible version
+          ansible.builtin.set_fact:
+            ans_pipx_ansible_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) }}"
+
+        - name: Debug pipx Ansible version
+          ansible.builtin.debug:
+            var: ans_pipx_ansible_version
+            verbosity: 2
+
       when: ans_pipx_version is version('1.0.0', '>=')
 
     - name: Check the version of pip
