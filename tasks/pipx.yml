@@ -99,7 +99,7 @@
         msg:
           - "pipx package to inject: {{ ans_pypi_pkg.name }}"
           - "pipx package version to inject: {{ ans_pypi_pkg.version }}"
-          - 'pipx existing version: injected: {{ ans_pipx_injected["ans_pypi_pkg.name"]}}'
+          - 'pipx existing version: injected: {{ ans_pipx_injected[ans_pypi_pkg.name] }}'
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
