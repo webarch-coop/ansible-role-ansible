@@ -11,7 +11,7 @@
 - name: PyPI packages configured using pipx
   block:
 
-    - name: Debug PyPI packages
+    - name: Debug pip packages
       ansible.builtin.debug:
         msg:
           - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
@@ -25,10 +25,16 @@
         loop_var: ans_pypi_pkg
         label: "{{ ans_pypi_pkg.name }}"
 
-    # This probebly needs to use:
-    # pip uninstall -y -r <(pip freeze)
-    # to uninstall all pip installed packages
-    # or perhaps that should be left to be done manually
+    - name: Please manually remove these pip installed packages
+      ansible.builtin.fail:
+        msg: "pip uninstall {{ ans_pypi_pkg.name }}"
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
+      when:
+        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
+        - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
 
     - name: Set a fact for the pipx packages to be injected
       ansible.builtin.set_fact:
