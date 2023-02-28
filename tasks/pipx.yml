@@ -22,6 +22,7 @@
               - "ans_pypi_pkg.version: {% if ans_pypi_pkg.version is defined %}{{ ans_pypi_pkg.version }}{% endif %}"
               - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
               - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+              - "ans_pip_user_existing: {{ ans_pip_user_existing }}"
             verbosity: 1
           loop: "{{ ans_pypi_pkgs }}"
           loop_control:
@@ -39,8 +40,7 @@
             - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
             - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) | length > 0
 
-      when:
-        - ans_pip_user_existing is defined
+      when: ans_pip_user_existing is defined
 
     - name: Install Ansible using pipx
       community.general.pipx:
