@@ -157,9 +157,6 @@
             var: ans_pipx_injected
             verbosity: 1
 
-        - name: Debug fail
-          ansible.builtin.fail:
-
       when: ans_pipx_version is version('1.0.0', '>=')
 
     - name: Check the version of pip

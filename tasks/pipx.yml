@@ -82,7 +82,7 @@
     - name: Set a fact for the pipx Ansible version and injected packages
       ansible.builtin.set_fact:
         ans_pipx_ansible_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) }}"
-        ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) }}"
+        ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
 
     - name: Debug pipx Ansible version
       ansible.builtin.debug:
@@ -99,11 +99,14 @@
         msg:
           - "pipx package to inject: {{ ans_pypi_pkg.name }}"
           - "pipx package version to inject: {{ ans_pypi_pkg.version }}"
-          - 'pipx existing version: injected: {{ ans_pipx_injected[ans_pypi_pkg.name] }}'
+          - "pipx existing version injected: {{ ans_pipx_injected(ans_pipx_injected_jmespath_query) }}"
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
         label: "{{ ans_pypi_pkg.name }}"
+
+    - name: Debug fail
+      ansible.builtin.fail:
 
     - name: Set a fact for the pipx packages to be injected
       ansible.builtin.set_fact:
