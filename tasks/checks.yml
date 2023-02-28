@@ -148,6 +148,18 @@
             var: ans_pipx_ansible_version
             verbosity: 2
 
+        - name: Set a fact for the pipx injected packages
+          ansible.builtin.set_fact:
+            ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) | dict2items }}"
+
+        - name: Debug pipx injected packages
+          ansible.builtin.debug:
+            var: ans_pipx_injected
+            verbosity: 1
+
+        - name: Debug fail
+          ansible.builtin.fail:
+
       when: ans_pipx_version is version('1.0.0', '>=')
 
     - name: Check the version of pip
