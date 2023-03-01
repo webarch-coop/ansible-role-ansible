@@ -99,22 +99,26 @@
         msg:
           - "pipx package to inject: {{ ans_pypi_pkg.name }}"
           - "pipx package version to inject: {{ ans_pypi_pkg.version }}"
-          - "pipx existing version injected: {{ ans_pipx_injected | community.general.json_query(ans_pipx_injected_jmespath_query) }}"
+          - "pipx package extras to inject: {% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}"
+          - "pipx existing injected version: {{ ans_pipx_injected | community.general.json_query(ans_pipx_injected_jmespath_query) }}"
+      when: >-
+        ( ans_pypi_pkg.name != "ansible" ) and
+        ( ans_pypi_pkg.version is defined ) and
+        ( ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$) )
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
         label: "{{ ans_pypi_pkg.name }}"
 
-    - name: Debug fail
-      ansible.builtin.fail:
-
     - name: Set a fact for the pipx packages to be injected
       ansible.builtin.set_fact:
-        ans_pipx_inject: "{{ ans_pipx_inject + [ans_pypi_pkg.name + '==' + ans_pypi_pkg.version] }}"
+        ans_pipx_inject: "{{ ans_pipx_inject + [ans_pipx_inject_pkg] }}"
       when:
         - ans_pypi_pkg.name != "ansible"
         - ans_pypi_pkg.version is defined
-        - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state == "present" )
+        - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$) )
+      vars:
+        ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
@@ -125,6 +129,9 @@
         var: ans_pipx_inject
         verbosity: 1
       when: ans_pipx_inject is defined
+
+    - name: Debug fail
+      ansible.builtin.fail:
 
     - name: Inject PyPI packages into the Ansible venv
       community.general.pipx:
