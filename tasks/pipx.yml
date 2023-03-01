@@ -130,9 +130,6 @@
         verbosity: 1
       when: ans_pipx_inject is defined
 
-    - name: Debug fail
-      ansible.builtin.fail:
-
     - name: Inject PyPI packages into the Ansible venv
       community.general.pipx:
         name: ansible
