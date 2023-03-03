@@ -14,7 +14,7 @@
     - name: Debug PyPI package proposed state
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkg.state | default('present') }}"
-        verbosity: 1
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - fail:
 
