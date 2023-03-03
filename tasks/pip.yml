@@ -11,12 +11,10 @@
 - name: Check, install, reinstall and remove PyPI package using pip
   block:
 
-    - name: Debug PyPI package proposed state
+    - name: "Debug PyPI package proposed state for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkg.state | default('present') }}"
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-    - fail:
 
     - name: PyPI package absent using pip
       block:
