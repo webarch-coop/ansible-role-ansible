@@ -16,6 +16,8 @@
         msg: "{{ ans_pypi_pkg.state | default('present') }}"
         verbosity: 1
 
+    - fail:
+
     - name: PyPI package absent using pip
       block:
 
@@ -40,7 +42,7 @@
               ansible.builtin.fail:
                 msg: "Please try removing this package manually: sudo pip remove {{ ans_pypi_pkg.name }}"
 
-        - name: PyPi user package absent
+        - name: "PyPi user package absent {{ ans_pypi_pkg.name }}"
           ansible.builtin.pip:
             name: "{{ ans_pypi_pkg.name }}"
             state: absent
@@ -136,6 +138,7 @@
         - name: "Debug PyPi version variables for {{ ans_pypi_pkg.name }}"
           ansible.builtin.debug:
             msg:
+              - "ans_pypi_pkg.state: {% if ans_pypi_pkg.state is defined %}{{ ans_pypi_pkg.state }}{% endif %}"
               - "ans_pypi_version_latest: {{ ans_pypi_version_latest }}"
               - "ans_pypi_version_required: {{ ans_pypi_version_required }}"
               - "ans_pypi_system_version_present: {{ ans_pypi_system_version_present }}"
