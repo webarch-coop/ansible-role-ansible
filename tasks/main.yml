@@ -64,6 +64,8 @@
       ansible.builtin.include_tasks: pipx.yml
       when: ans_pipx | bool
 
+    - fail:
+
     - name: PyPI packages configured using pip
       block:
 

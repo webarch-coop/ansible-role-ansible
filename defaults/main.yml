@@ -39,6 +39,7 @@ ans_cols:
   - name: kubernetes.core
     url: https://github.com/ansible-collections/kubernetes.core
     version: "2.4.0"
+ans_downgrade: false
 # Python PyPI packages required
 ans_pypi_pkgs:
   - name: ansible
@@ -49,7 +50,7 @@ ans_pypi_pkgs:
     version: "2.14.3"
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
-    version: "6.14.2"
+    version: "6.13.1"
   # An old version of dnspython is probably no longer needed
   - name: dnspython
     url: https://pypi.org/pypi/dnspython
@@ -86,6 +87,7 @@ ans_pypi_pkgs:
 # Debian / Ubuntu packages required
 ans_pkgs:
   - ansible
+  - ansible-lint
   - jc
   - jo
   - pipx
@@ -97,12 +99,13 @@ ans_pkgs:
   - python3-netaddr
   - python3-pip
   - python3-resolvelib
+  - python3-ruamel.yaml
   - python3-setuptools
   - python3-venv
-ans_pipx_env:
+ans_pipx_root_env:
+  PIPX_HOME: /opt
+  PIPX_BIN_DIR: /usr/local/bin
+ans_pipx_user_env:
   PIPX_HOME: "{{ ansible_env.HOME }}/.local"
   PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
-  # For system-wide installation run this role as root and set the following variables:
-  # PIPX_HOME: /opt
-  # PIPX_BIN_DIR: /usr/local/bin
 ...

@@ -46,7 +46,7 @@
     - name: Debug the installed ansible package version string
       ansible.builtin.debug:
         var: ansible_facts.packages.ansible[0].version
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Set a fact for the .deb package ansible version
       ansible.builtin.set_fact:
@@ -93,7 +93,7 @@
     - name: Debug the installed pipx version string
       ansible.builtin.debug:
         var: ansible_facts.packages.pipx[0].version
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Set a fact for the pipx version
       ansible.builtin.set_fact:
@@ -111,7 +111,7 @@
     - name: Debug the required Ansible version
       ansible.builtin.debug:
         var: ans_required_version
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Pipx checks
       block:
@@ -119,7 +119,9 @@
         - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
           ansible.builtin.set_fact:
             ans_pipx: true
-          when: ans_installed_version is version(ans_required_version, 'lt')
+          when: >-
+            ( ans_installed_version is version(ans_required_version, 'lt') ) or
+            ( ansible_distribution_release == "bookworm" )
 
         - name: Debug ans_pipx variable
           ansible.builtin.debug:
@@ -137,7 +139,12 @@
         - name: Debug pipx info
           ansible.builtin.debug:
             var: ans_pipx_info
-            verbosity: 2
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        - name: Debug existing pipx venvs
+          ansible.builtin.debug:
+            msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_applications) }}"
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
         - name: Set pipx variables when Ansible is a pipx application
           block:
@@ -149,16 +156,16 @@
             - name: Debug pipx Ansible version
               ansible.builtin.debug:
                 var: ans_pipx_ansible_version
-                verbosity: 2
+                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-            - name: Set a fact for the pipx injected packages
+            - name: Set a fact for the pipx Ansible venv injected packages
               ansible.builtin.set_fact:
                 ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
 
-            - name: Debug pipx injected packages
+            - name: Debug pipx Ansible venv injected packages
               ansible.builtin.debug:
                 var: ans_pipx_injected
-                verbosity: 1
+                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
           when: ans_pipx_info.applications.ansible is defined
 
@@ -194,21 +201,6 @@
 
       when: ans_pip_version is version('22.2', '>=')
 
-    - name: Check the system PyPI packages
-      ansible.builtin.command: python3 -m pip list --format=json
-      check_mode: false
-      changed_when: false
-      register: ans_pip_system_list
-
-    - name: Set a fact for the system PyPI packages present
-      ansible.builtin.set_fact:
-        ans_pip_system_existing: "{{ ans_pip_system_list.stdout | ansible.builtin.from_json }}"
-
-    - name: Debug system PyPI packages present
-      ansible.builtin.debug:
-        var: ans_pip_system_existing
-        verbosity: 2
-
     - name: Check the user PyPI packages
       ansible.builtin.command: python3 -m pip list --user --format=json
       check_mode: false
@@ -222,7 +214,23 @@
     - name: Debug user PyPI packages present
       ansible.builtin.debug:
         var: ans_pip_user_existing
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Check the system PyPI packages
+      ansible.builtin.command: python3 -m pip list --format=json
+      check_mode: false
+      changed_when: false
+      register: ans_pip_system_list
+
+    # Omit the user packages from this list as they will be included
+    - name: Set a fact for the system PyPI packages present
+      ansible.builtin.set_fact:
+        ans_pip_system_existing: "{{ ans_pip_system_list.stdout | ansible.builtin.from_json | ansible.builtin.difference(ans_pip_user_existing) }}"
+
+    - name: Debug system PyPI packages present
+      ansible.builtin.debug:
+        var: ans_pip_system_existing
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Check if the installed version of ansible-galaxy supports JSON output
       ansible.builtin.command: "{{ ans_ansible_galaxy_path }} collection list --format json"
@@ -241,7 +249,7 @@
         - name: Debug Ansible Galaxy collections
           ansible.builtin.debug:
             var: ans_galaxy_json.stdout
-            verbosity: 2
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Set a fact for the Ansible Galaxy collections present
           ansible.builtin.set_fact:
@@ -250,7 +258,7 @@
         - name: Debug ans_col_existing
           ansible.builtin.debug:
             var: ans_col_existing
-            verbosity: 3
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
         - name: Set a fact for the lists of Ansible Galaxy system collections existing
           ansible.builtin.set_fact:
@@ -265,13 +273,13 @@
         - name: Debug ans_system_col_existing
           ansible.builtin.debug:
             var: ans_system_col_existing
-            verbosity: 2
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_system_col_existing is defined
 
         - name: Debug ans_user_col_existing
           ansible.builtin.debug:
             var: ans_user_col_existing
-            verbosity: 2
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_user_col_existing is defined
 
       when: ans_galaxy_json_output | bool
@@ -304,7 +312,7 @@
             - name: Debug Ansible Galaxy collections
               ansible.builtin.debug:
                 var: ans_galaxy_col_system_list.stdout
-                verbosity: 2
+                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
             - name: Set a fact for the Ansible Galaxy system collections existing
               ansible.builtin.set_fact:
@@ -313,7 +321,7 @@
             - name: Debug system ans_col_existing
               ansible.builtin.debug:
                 var: ans_system_col_existing
-                verbosity: 2
+                verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
           when: ans_col_path_system in ans_galaxy_txt.stdout
 
@@ -336,7 +344,7 @@
             - name: Debug Ansible Galaxy collections
               ansible.builtin.debug:
                 var: ans_galaxy_col_user_list.stdout
-                verbosity: 2
+                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
             - name: Set a fact for the Ansible Galaxy user collections existing
               ansible.builtin.set_fact:
@@ -345,7 +353,7 @@
             - name: Debug user ans_col_existing
               ansible.builtin.debug:
                 var: ans_user_col_existing
-                verbosity: 2
+                verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
           when: ans_col_path_user in ans_galaxy_txt.stdout
 
@@ -372,7 +380,7 @@
     - name: Debug ans_galaxy_install
       ansible.builtin.debug:
         var: ans_galaxy_install
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Include PATH and python-argcomplete check when the init systetem is not sh
       ansible.builtin.include_tasks: bash_checks.yml

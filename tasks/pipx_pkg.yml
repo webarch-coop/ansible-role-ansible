@@ -1,0 +1,84 @@
+# Copyright 2019-2023 Chris Croome
+#
+# This file is part of the Webarchitects Ansible role.
+#
+# The Webarchitects Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+- name: Configure pipx package
+  block:
+
+    - name: Gather pipx_info
+      community.general.pipx_info:
+        include_deps: true
+        include_injected: true
+      environment: "{{ ans_pipx_env }}"
+      register: ans_pipx_info
+
+    - name: Debug pipx info
+      ansible.builtin.debug:
+        var: ans_pipx_info
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Debug existing pipx venvs
+      ansible.builtin.debug:
+        msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_applications) }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: "Debug PyPI package proposed state for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.debug:
+        msg: "{{ ans_pypi_pkg.state | default('present') }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: The URL and version of the PyPI package are required when the state is not set to absent
+      ansible.builtin.assert:
+        that:
+          - ans_pypi_pkg.url is defined
+          - ans_pypi_pkg.version is defined
+        quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
+
+    - name: Include PyPi info tasks when URL and version of the PyPI package are defined
+      ansible.builtin.include_tasks: pypi_info.yml
+      when:
+        - ans_pypi_pkg.url is defined
+        - ans_pypi_pkg.version is defined
+
+    - name: PyPI package present using pipx
+      block:
+
+        - name: "Set the PyPI package state to reinstall for {{ ans_pypi_pkg.name }}"
+          ansible.builtin.set_fact:
+            ans_pipx_pkg_state: reinstall
+          when:
+            - ans_pypi_pkg.state is defined
+            - ans_pypi_pkg.state == "forcereinstall"
+
+#        - name: "Set the PyPI package state to upgrade for {{ ans_pypi_pkg.name }}"
+#          ansible.builtin.set_fact:
+#            ans_pipx_pkg_state: upgrade
+#          when: >-
+#            (
+#
+#        - name: "Set the PyPI package state to present for {{ ans_pypi_pkg.name }}"
+#          ansible.builtin.set_fact:
+#            ans_pipx_pkg_state: present
+#          when: >-
+#            ( ans_pypi_pkg.state is not defined ) or
+#            ( ans_pypi_pkg.state | length == 0 )
+#
+#        - name: "PyPI package configured using pipx {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
+#          community.general.pipx:
+#            name: "{{ ans_pypi_pkg.name }}"
+#            source: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
+#            install_deps: true
+#            state: "{% ans_pypi_pkg.state is not defined or ans_pypi_pkg.state | length == 0 %}present{% elif ans_pypi_pkg.state == 'forcereinstall' %}reinstall{% else %}{{ ans_pypi_pkg.state }}{% endif %}"
+#            executable: /usr/bin/pipx
+#          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
+#
+
+  tags:
+    - ansible
+...

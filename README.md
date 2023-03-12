@@ -55,6 +55,10 @@ ans_cols:
 
 Note that the `url` of the GitHub project is appended with `/releases/latest` to get the URL of the latest release, for example for `community.general` this is [the latest version](https://github.com/ansible-collections/community.general/releases/latest), see the [GitHub releases page](https://github.com/ansible-collections/community.general/releases) for all the versions available..
 
+### ans_downgrade
+
+The `ans_downgrade` variable defaults to `false`, if it is set to `true` then this role will install older versions of PyPi packages  Ansible Galaxy Collections even when newer system versions are present.
+
 ### ans_pkgs
 
 A list of Debian / Ubuntu packages that are required, for example;
@@ -114,12 +118,27 @@ List the PyPI user packages present:
 ```bash
 python3 -m pip list --user
 python3 -m pip list --user --format=json | jq
+python3 -m pip list --user --format=json | jq | jp "[].name" | yq -o=yaml -PM | awk '{ print $2 }'
+```
+
+Delete all PyPi user packages on Debian Bookworm:
+
+```bash
+python3 -m pip uninstall --break-system-packages \
+$(pip list --user --format=json | jq | jp "[].name" | yq -o=yaml -PM | awk '{ print $2 }' | xargs )
 ```
 
 List the PyPI package extras present, this `jq` query has been [copied from GitHub](https://github.com/pypa/pip/issues/4824#issuecomment-1298200394):
 
 ```bash
 python3 -m pip inspect | jq '.installed[]|select(.metadata.name=="molecule-plugins").metadata.provides_extra'
+```
+
+List the pipx packages present:
+
+```bash
+pipx list
+pipx list --json | jq
 ```
 
 List the installed Ansible galaxy collections:

@@ -36,6 +36,10 @@ argument_specs:
             type: str
             required: true
             description: The version of the Ansible collection to install.
+      ans_downgrade:
+        type: bool
+        required: true
+        description: Enable or disable the installing of older versions of packages than the system packages.
       ans_pkgs:
         type: list
         required: true
