@@ -74,8 +74,38 @@ argument_specs:
             type: str
             required: false
             description: The URL of the PyPI package.
+          venv:
+            type: str
+            required: false
+            description: The venv to inject the package into, if it exists.
           version:
             type: str
             required: false
             description: The version of PyPI package.
+      ans_pipx_root_env:
+        type: dict
+        required: false
+        description: The pipx environment variables for the root user.
+        options:
+          PIPX_HOME:
+            type: str
+            required: false
+            description: The PIPX_HOME environment variable value for pipx when run as root.
+          PIPX_BIN_DIR:
+            type: str
+            required: false
+            description: The PIPX_BIN_DIR environment variable value for pipx when run as root.
+      ans_pipx_user_env:
+        type: dict
+        required: false
+        description: The pipx environment variables for a regular user.
+        options:
+          PIPX_HOME:
+            type: str
+            required: false
+            description: The PIPX_HOME environment variable value for pipx when run as a regular user.
+          PIPX_BIN_DIR:
+            type: str
+            required: false
+            description: The PIPX_BIN_DIR environment variable value for pipx when run as a regular user.
 ...

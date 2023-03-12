@@ -29,6 +29,32 @@
         - ans_pypi_pkg.url is defined
         - ans_pypi_pkg.version is defined
 
+    - name: "Set a fact if the required PyPi version is provided by a system package for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_system_version_present: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+
+    - name: "Set a fact if the required PyPi version is provided by a user package for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_user_version_present: "{{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+
+    - name: Set a fact for the extras when present
+      ansible.builtin.set_fact:
+        ans_pypi_extras: "{{ ans_pip_metadata | community.general.json_query(ans_pypi_extras_jmespath_query) }}"
+      when: >-
+        ( ans_pip_metadata is defined ) and
+        ( ( ( ans_pypi_system_version_present is defined ) and ( ans_pypi_system_version_present | length > 0 ) ) or
+        ( ( ans_pypi_user_version_present is defined ) and ( ans_pypi_user_version_present | length > 0 ) ) )
+
+    - name: "Debug PyPi version variables for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.debug:
+        msg:
+          - "ans_pypi_pkg.state: {% if ans_pypi_pkg.state is defined %}{{ ans_pypi_pkg.state }}{% endif %}"
+          - "ans_pypi_version_latest: {{ ans_pypi_version_latest }}"
+          - "ans_pypi_version_required: {{ ans_pypi_version_required }}"
+          - "ans_pypi_system_version_present: {{ ans_pypi_system_version_present }}"
+          - "ans_pypi_user_version_present: {{ ans_pypi_user_version_present }}"
+          - "ans_pypi_extras: {% if ans_pypi_extras is defined %}{{ ans_pypi_extras }}{% endif %}"
+
     - name: PyPI package present using pip
       block:
 

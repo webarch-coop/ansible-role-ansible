@@ -133,7 +133,7 @@
           community.general.pipx_info:
             include_deps: true
             include_injected: true
-          environment: "{{ ans_pipx_env }}"
+          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_info
 
         - name: Debug pipx info
@@ -143,7 +143,7 @@
 
         - name: Debug existing pipx venvs
           ansible.builtin.debug:
-            msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_applications) }}"
+            msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_apps_jmespath_query) }}"
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
         - name: Set pipx variables when Ansible is a pipx application

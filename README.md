@@ -77,25 +77,33 @@ If this role is run usidng `sudo` or as `root` these packages will be automatica
 
 ### ans_pypi_pkgs
 
-A list of Python Package Index ([PyPI](https://pypi.org/)), package names, URLs and versions that will be installed as user packages if they are not already available as system packages.
+A list of Python Package Index ([PyPI](https://pypi.org/)), package names, URLs and versions that will be installed as user packages if they are not already available as system packages, either using `pip` or `pipx` if the distro is Debian Bookworm.
 
-Each item in the list requires a `name` for the name of the PyPI package, when the `state` is not set to `absent` a `url` for the URL of the project on the PyPI website and a `version` is also required, the version can be a version number or `latest`, the `extras` list and `state` are optional, for example:
+Each item in the list requires a `name` for the name of the PyPI package, when the `state` is not set to `absent` a `url` for the URL of the project on the PyPI website and a `version` is also required, when `pipx` (rather than `pip`) is used the optional `venv` variable is used set fo the name of the existing virtual environment that package should be injected into, the version can be a version number or `latest`, the `extras` list and `state` are optional, for example:
 
 ```yaml
 ans_pypi_pkgs:
+  - name: ansible
+    url: https://pypi.org/pypi/ansible
+    version: 7.3.0
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
-    version: "2.14.1"
+    venv: ansible
+    version: 2.14.1
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     version: latest
-  - name: "molecule-plugins"
+  - name: molecule
+    url: https://pypi.org/pypi/molecule
+    version: 4.0.4
+  - name: molecule-plugins
     extras:
       - docker
       - podman
     state: forcereinstall
     url: https://pypi.org/pypi/molecule-plugins
-    version: "23.0.0"
+    venv: molecule
+    version: 23.0.0
   - name: resolvelib
     state: absent
 ```

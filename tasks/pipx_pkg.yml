@@ -11,26 +11,47 @@
 - name: Configure pipx package
   block:
 
+    - name: Include PyPi info tasks when URL and version of the PyPI package are defined and the package is not set to be absent
+      ansible.builtin.include_tasks: pypi_info.yml
+      when:
+        - ans_pypi_pkg.url is defined
+        - ans_pypi_pkg.version is defined
+        - ( ans_pypi_pkg.state is not defined ) or ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state != "absent" ) )
+
+    - name: Debug ans_pypi_pkg
+      ansible.builtin.debug:
+        var: ans_pypi_pkg
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
     - name: Gather pipx_info
       community.general.pipx_info:
         include_deps: true
         include_injected: true
-      environment: "{{ ans_pipx_env }}"
+      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_info
 
     - name: Debug pipx info
       ansible.builtin.debug:
         var: ans_pipx_info
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Debug existing pipx venvs
       ansible.builtin.debug:
-        msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_applications) }}"
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_apps_jmespath_query) }}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: "Debug PyPI package proposed state for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkg.state | default('present') }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: "Set a fact for the existing pipx version for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pipx_existing_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_app_ver_jmespath_query) }}"
+
+    - name: "Debug the existing version for pipx package {{ ans_pypi_pkg.name }}"
+      ansible.builtin.debug:
+        var: ans_pipx_existing_version
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: The URL and version of the PyPI package are required when the state is not set to absent
@@ -39,45 +60,55 @@
           - ans_pypi_pkg.url is defined
           - ans_pypi_pkg.version is defined
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
+      when: >-
+        ( ans_pypi_pkg.state is not defined ) or
+        ( ( ans_pypi_pkg.state is defined ) and
+        ( ans_pypi_pkg.state != "absent" ) )
 
-    - name: Include PyPi info tasks when URL and version of the PyPI package are defined
-      ansible.builtin.include_tasks: pypi_info.yml
+    - name: "Set the PyPI package state to absent for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_pkg_state: absent
       when:
-        - ans_pypi_pkg.url is defined
-        - ans_pypi_pkg.version is defined
+        - ans_pypi_pkg.state is defined
+        - ans_pypi_pkg.state == "absent"
+        - ans_pipx_existing_version is defined
+        - ans_pipx_existing_version | length > 0
 
-    - name: PyPI package present using pipx
-      block:
+    - name: "Set the PyPI package state to reinstall for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_pkg_state: reinstall
+      when:
+        - ans_pypi_pkg.state is defined
+        - ans_pypi_pkg.state == "forcereinstall"
+        - ans_pipx_existing_version is defined
+        - ans_pipx_existing_version | length > 0
 
-        - name: "Set the PyPI package state to reinstall for {{ ans_pypi_pkg.name }}"
-          ansible.builtin.set_fact:
-            ans_pipx_pkg_state: reinstall
-          when:
-            - ans_pypi_pkg.state is defined
-            - ans_pypi_pkg.state == "forcereinstall"
+    - name: "Set the PyPI package state to upgrade for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_pkg_state: upgrade
+      when: >-
+        ( ans_pipx_existing_version is defined ) and
+        ( ans_pipx_existing_version | length > 0 ) and
+        ( ans_pypi_version_required is version(ans_pipx_existing_version, 'gt') )
 
-#        - name: "Set the PyPI package state to upgrade for {{ ans_pypi_pkg.name }}"
-#          ansible.builtin.set_fact:
-#            ans_pipx_pkg_state: upgrade
-#          when: >-
-#            (
-#
-#        - name: "Set the PyPI package state to present for {{ ans_pypi_pkg.name }}"
-#          ansible.builtin.set_fact:
-#            ans_pipx_pkg_state: present
-#          when: >-
-#            ( ans_pypi_pkg.state is not defined ) or
-#            ( ans_pypi_pkg.state | length == 0 )
-#
-#        - name: "PyPI package configured using pipx {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
-#          community.general.pipx:
-#            name: "{{ ans_pypi_pkg.name }}"
-#            source: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
-#            install_deps: true
-#            state: "{% ans_pypi_pkg.state is not defined or ans_pypi_pkg.state | length == 0 %}present{% elif ans_pypi_pkg.state == 'forcereinstall' %}reinstall{% else %}{{ ans_pypi_pkg.state }}{% endif %}"
-#            executable: /usr/bin/pipx
-#          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
-#
+    - name: "Set the PyPI package state to present for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_pkg_state: present
+      when: >-
+        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "present" ) ) or
+        ( ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state | length == 0 ) ) and
+        ( ( ans_pipx_existing_version is not defined ) or
+        ( ( ans_pipx_existing_version is defined ) and ( ans_pipx_existing_version | length == 0 ) ) )
+
+    - name: "PyPI package configured using pipx {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
+      community.general.pipx:
+        name: "{{ ans_pypi_pkg.name }}"
+        source: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
+        install_deps: true
+        state: "{{ ans_pypi_pkg_state }}"
+        executable: /usr/bin/pipx
+      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      when: ans_pypi_pkg_state is defined
 
   tags:
     - ansible

@@ -50,7 +50,7 @@
         install_deps: true
         state: present
         executable: /usr/bin/pipx
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
+      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_installed
       when: >-
         ( ans_pipx_ansible_version is not defined ) and
@@ -64,7 +64,7 @@
         install_deps: true
         state: upgrade
         executable: /usr/bin/pipx
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
+      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_upgraded
       when:
         - ans_pipx_ansible_version is defined
@@ -74,7 +74,7 @@
       community.general.pipx_info:
         include_deps: true
         include_injected: true
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
+      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_info
       when: >-
         ( ( ans_pipx_ansible_installed is defined ) and ( ans_pipx_ansible_installed.changed | bool ) ) or
@@ -130,7 +130,7 @@
             name: ansible
             inject_packages: "{{ ans_pipx_inject }}"
             state: inject
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
+          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           when:
             - ans_pipx_inject is defined
@@ -140,7 +140,7 @@
           community.general.pipx_info:
             include_deps: true
             include_injected: true
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env }}{% else %}{{ ans_pipx_user_env }}{% endif %}"
+          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_info
           when:
             - ans_pipx_ansible_injected is defined
