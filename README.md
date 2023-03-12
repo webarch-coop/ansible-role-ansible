@@ -8,6 +8,8 @@ The version of [Ansible provided by Debian Bullseye](https://packages.debian.org
 
 This role is currently set to more-or-less match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file).
 
+**Note** The `master` branch of this role is used for development and testing, currently it is a WIP to replace `pip` with `pipx`. 
+
 ## Usage
 
 The suggested method for using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
