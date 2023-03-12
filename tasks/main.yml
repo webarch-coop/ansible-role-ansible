@@ -20,10 +20,10 @@
           changed_when: false
           register: ans_debian_apt_cache_policy_pipx
 
-        - name: Fail if pipx is unavailable on Debian Bullseye
+        - name: Backports are required when pipx is unavailable on Debian Bullseye
           ansible.builtin.assert:
             that:
-              - ( "buster-backports" in ans_debian_apt_cache_policy_pipx.stdout )
+              - ( "bullseye-backports" in ans_debian_apt_cache_policy_pipx.stdout )
             fail_msg: "Backports need to be enabled on Debian Bullseye for pipx to be installed."
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
