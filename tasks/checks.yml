@@ -57,9 +57,14 @@
         var: ans_installed_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
+    - name: Debug ans_required_state
+      ansible.builtin.debug:
+        msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
     - name: Set a fact for the required Ansible state and version
       ansible.builtin.set_fact:
-        ans_required_state: "{% if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | length == 0 %}present{% else %}{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}{% endif %}"
+        ans_required_state: "{% if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug == 'NoneType' %}present{% else %}{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}{% endif %}"
         ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
 
     - name: Debug the required Ansible state
@@ -78,7 +83,7 @@
         - name: Debug the installed ansible-core package version string
           ansible.builtin.debug:
             msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
-            verbosity: 2
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Set a fact for the .deb package ansible-core version
           ansible.builtin.set_fact:
