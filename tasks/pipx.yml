@@ -151,12 +151,10 @@
         var: ans_pipx_info
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - fail:
-
-    - name: Debug ans_pipx_info.applications.ansible
-      ansible.builtin.debug:
-        var: ans_pipx_info.applications.ansible
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+    - name: Set a fact for the pipx Ansible version installed
+      ansible.builtin.set_fact:
+        ans_pipx_installed_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) }}"
+      when: ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) | type_debug != "NoneType"
 
     - name: Inject packages into the Ansible pipx venv when it exists
       block:
@@ -229,7 +227,9 @@
         # TODO
         # symlink ~/.local/venvs/ansible/bin files from ~/.local/bin
 
-      when: ans_pipx_info.applications.ansible is defined
+      when:
+        - ans_pipx_installed_version is defined
+        - ans_pipx_installed_version is version(ans_required_version, 'eq')
 
     - name: PyPI packages configured using pipx when not already available as system packages and not injected into the Ansible venv
       ansible.builtin.include_tasks: pipx_pkg.yml
