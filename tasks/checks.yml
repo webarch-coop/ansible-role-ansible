@@ -57,6 +57,21 @@
         var: ans_installed_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
+    - name: Set a fact for the required Ansible state and version
+      ansible.builtin.set_fact:
+        ans_required_state: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | default('present') }}"
+        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+
+    - name: Debug the required Ansible state
+      ansible.builtin.debug:
+        var: ans_required_state
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    - name: Debug the required Ansible version
+      ansible.builtin.debug:
+        var: ans_required_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
     - name: Check ansible-core .deb version present
       block:
 
@@ -90,6 +105,35 @@
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is defined
 
+    - name: Check the version of python3
+      ansible.builtin.command: python3 --version
+      check_mode: false
+      changed_when: false
+      register: ans_python_version_check
+
+    - name: Set a fact for the version of python3
+      ansible.builtin.set_fact:
+        ans_python_version: "{{ ans_python_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
+
+    - name: Debug the python3 version
+      ansible.builtin.debug:
+        var: ans_python_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
+      ansible.builtin.assert:
+        that:
+          - ans_pypi_pkg.url is defined
+          - ans_pypi_pkg.version is defined
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+      when: >-
+        ( ans_pypi_pkg.state is not defined ) or
+        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state != "absent" ) )
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
+
     - name: Debug the installed pipx version string
       ansible.builtin.debug:
         var: ansible_facts.packages.pipx[0].version
@@ -104,24 +148,13 @@
         var: ans_pipx_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Set a fact for the required Ansible version
-      ansible.builtin.set_fact:
-        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
-
-    - name: Debug the required Ansible version
-      ansible.builtin.debug:
-        var: ans_required_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
     - name: Pipx checks
       block:
 
         - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
           ansible.builtin.set_fact:
             ans_pipx: true
-          when: >-
-            ( ans_installed_version is version(ans_required_version, 'lt') ) or
-            ( ansible_distribution_release == "bookworm" )
+          when: ans_installed_version is version(ans_required_version, 'lt')
 
         - name: Debug ans_pipx variable
           ansible.builtin.debug:
@@ -158,16 +191,27 @@
                 var: ans_pipx_ansible_version
                 verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-            - name: Set a fact for the pipx Ansible venv injected packages
+            - name: Set a fact for the pipx Ansible venv existing injected packages
               ansible.builtin.set_fact:
                 ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
 
-            - name: Debug pipx Ansible venv injected packages
+            - name: Debug pipx Ansible venv existing injected packages
               ansible.builtin.debug:
                 var: ans_pipx_injected
                 verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
           when: ans_pipx_info.applications.ansible is defined
+
+        - name: Check that venv is not set to the package name when defined and that the venv is set to exist
+          ansible.builtin.assert:
+            that:
+              - ans_pypi_pkg.venv != ans_pypi_pkg.name
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          when: ans_pypi_pkg.venv is defined
+          loop: "{{ ans_pypi_pkgs }}"
+          loop_control:
+            loop_var: ans_pypi_pkg
+            label: "{{ ans_pypi_pkg.name }}"
 
       when: ans_pipx_version is version('1.0.0', '>=')
 
@@ -382,7 +426,7 @@
         var: ans_galaxy_install
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-    - name: Include PATH and python-argcomplete check when the init systetem is not sh
+    - name: Include PATH and python-argcomplete check when the init system is not sh
       ansible.builtin.include_tasks: bash_checks.yml
       when: ans_init != "sh"
 

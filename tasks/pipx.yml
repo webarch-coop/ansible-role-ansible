@@ -20,8 +20,8 @@
               - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
               - "ans_pypi_pkg.state: {% if ans_pypi_pkg.state is defined %}{{ ans_pypi_pkg.state }}{% endif %}"
               - "ans_pypi_pkg.version: {% if ans_pypi_pkg.version is defined %}{{ ans_pypi_pkg.version }}{% endif %}"
-              - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
-              - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+              - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
+              - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
             verbosity: 1
           loop: "{{ ans_pypi_pkgs }}"
           loop_control:
@@ -30,32 +30,37 @@
 
         - name: Please manually remove these pip installed packages
           ansible.builtin.fail:
-            msg: "pip uninstall {{ ans_pypi_pkg.name }}"
+            msg: "python3 -m pip uninstall {{ ans_pypi_pkg.name }}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
           loop: "{{ ans_pypi_pkgs }}"
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
           when:
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) is defined
-            - ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) != "null"
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) is defined
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) != "null"
 
       when:
         - ans_pip_user_existing is defined
         - ans_pip_user_existing != []
+
+    - name: Debug the required Ansible state
+      ansible.builtin.debug:
+        var: ans_required_state
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Install Ansible using pipx
       community.general.pipx:
         name: ansible
         source: "ansible=={{ ans_required_version }}"
         install_deps: true
-        state: present
+        state: install
         executable: /usr/bin/pipx
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_installed
-      when: >-
-        ( ans_pipx_ansible_version is not defined ) and
-        ( ( ( not ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'gt') ) ) or
-        ( ( ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'lt') ) ) )
+      when:
+        - ans_required_state == "present"
+        - ( ans_pipx_ansible_version is not defined ) or ( ( ans_pipx_ansible_version is defined ) and ( ans_pipx_ansible_version | length == 0 ) )
+        - ( ( not ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'gt') ) ) or ( ( ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'lt') ) )
 
     - name: Upgrade Ansible using pipx
       community.general.pipx:
@@ -67,10 +72,52 @@
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_upgraded
       when:
+        - ans_required_state == "present"
+        - ans_pipx_ansible_state is defined
+        - ans_pipx_ansible_state | length > 0
+        - ans_pipx_ansible_state == "present"
         - ans_pipx_ansible_version is defined
+        - ans_pipx_ansible_version | length > 0
         - ans_pipx_ansible_version is version(ans_required_version, 'lt')
 
-    - name: Gather pipx_info
+    - name: Downgrade Ansible using pipx
+      block:
+
+        - name: Remove Ansible using pipx
+          community.general.pipx:
+            name: ansible
+            state: absent
+            executable: /usr/bin/pipx
+
+        - name: Install Ansible using pipx
+          community.general.pipx:
+            name: ansible
+            source: "ansible=={{ ans_required_version }}"
+            install_deps: true
+            state: install
+            executable: /usr/bin/pipx
+          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          register: ans_pipx_ansible_installed
+
+      when:
+        - ans_downgrade | bool
+        - ans_required_version is version(ans_installed_version, 'ne')
+        - ans_pipx_ansible_version is defined
+        - ans_pipx_ansible_version | length > 0
+        - ans_required_version is version(ans_pipx_ansible_version, 'lt')
+
+    - name: Remove Ansible using pipx
+      community.general.pipx:
+        name: ansible
+        state: absent
+        executable: /usr/bin/pipx
+      register: ans_pipx_ansible_removed
+      when:
+        - ans_pipx_ansible_version is defined
+        - ans_pipx_ansible_version | length > 0
+        - ( ans_required_state == "absent" ) or ( ( ans_required_state == "present" ) and ( ans_installed_version is version(ans_required_version, 'eq') ) )
+
+    - name: Regather pipx_info
       community.general.pipx_info:
         include_deps: true
         include_injected: true
@@ -78,6 +125,7 @@
       register: ans_pipx_info
       when: >-
         ( ( ans_pipx_ansible_installed is defined ) and ( ans_pipx_ansible_installed.changed | bool ) ) or
+        ( ( ans_pipx_ansible_removed is defined ) and ( ans_pipx_ansible_removed.changed | bool ) ) or
         ( ( ans_pipx_ansible_upgraded is defined ) and ( ans_pipx_ansible_upgraded.changed | bool ) )
 
     - name: Debug pipx info
@@ -85,7 +133,7 @@
         var: ans_pipx_info
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-    - name: Inject packages into the ansible pipx even when it exists
+    - name: Inject packages into the Ansible pipx venv when it exists
       block:
 
         - name: Set a fact for the pipx Ansible version and injected packages
@@ -110,6 +158,8 @@
             ans_pipx_inject: "{{ ans_pipx_inject + [ans_pipx_inject_pkg] }}"
           when:
             - ans_pypi_pkg.name != "ansible"
+            - ans_pypi_pkg.venv is defined
+            - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
             - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
           vars:
@@ -156,19 +206,18 @@
 
       when: ans_pipx_info.applications.ansible is defined
 
-    - name: PyPI packages configured using pipx when not already available as system packages
+    - name: PyPI packages configured using pipx when not already available as system packages and not injected into the Ansible venv
       ansible.builtin.include_tasks: pipx_pkg.yml
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
         label: "{{ ans_pypi_pkg.name }}"
-      when: >-
-        ( ans_pypi_pkg != "ansible" ) and
-        ( ans_pipx_info.applications.ansible is not defined ) and
-        ( ( ( ans_pypi_pkgs is defined ) and ( ans_pypi_pkgs != [] ) and ( ans_pypi_pkg.version == "latest" ) ) or
-        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "absent" ) ) or
-        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "forcereinstall" ) ) or
-        ( ( ans_pypi_pkg.version != ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) ) ) )
+      vars:
+        ans_pypi_pkg_existing_version: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
+      when:
+        - ans_pypi_pkg.name != "ansible"
+        - ( ans_pypi_pkg.venv is not defined ) or ( ( ans_pypi_pkg.venv is defined ) and ( ans_pypi_pkg.venv != "ansible" ) )
+        - ( ans_pypi_pkg_existing_version is not defined ) or ( ans_pypi_pkg_existing_version | length == 0 ) or  ( ( ans_pypi_pkg_existing_version is defined ) and ( ans_pypi_pkg_existing_version is version(ans_pypi_pkg.version, 'ne') ) )
 
   tags:
     - ansible

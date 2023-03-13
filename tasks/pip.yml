@@ -11,31 +11,26 @@
 - name: Check, install, reinstall and remove PyPI package using pip
   block:
 
+    - name: "Set a fact for the proposed state for {{ ans_pypi_pkg.name }}"
+      ansible.builtin.set_fact:
+        ans_pypi_pkg_state: "{{ ans_pypi_pkg.state | default('present') }}"
+
     - name: "Debug PyPI package proposed state for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:
-        msg: "{{ ans_pypi_pkg.state | default('present') }}"
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+        var: ans_pypi_pkg_state
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-    - name: The URL and version of the PyPI package are required when the state is not set to absent
-      ansible.builtin.assert:
-        that:
-          - ans_pypi_pkg.url is defined
-          - ans_pypi_pkg.version is defined
-        quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
-
-    - name: Include PyPi info tasks when URL and version of the PyPI package are defined
+    - name: Include PyPi info tasks when the PyPI package is not set to be absent
       ansible.builtin.include_tasks: pypi_info.yml
-      when:
-        - ans_pypi_pkg.url is defined
-        - ans_pypi_pkg.version is defined
+      when: ans_pypi_pkg_state != "absent"
 
-    - name: "Set a fact if the required PyPi version is provided by a system package for {{ ans_pypi_pkg.name }}"
+    - name: "Set a fact for the system PyPi package version number if present for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:
-        ans_pypi_system_version_present: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+        ans_pypi_system_version_present: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
 
-    - name: "Set a fact if the required PyPi version is provided by a user package for {{ ans_pypi_pkg.name }}"
+    - name: "Set a fact for the user PyPi package version number if present for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:
-        ans_pypi_user_version_present: "{{ ans_pip_user_existing | community.general.json_query(ans_pypi_jmespath_query) }}"
+        ans_pypi_user_version_present: "{{ ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
 
     - name: Set a fact for the extras when present
       ansible.builtin.set_fact:
@@ -48,12 +43,13 @@
     - name: "Debug PyPi version variables for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:
         msg:
-          - "ans_pypi_pkg.state: {% if ans_pypi_pkg.state is defined %}{{ ans_pypi_pkg.state }}{% endif %}"
+          - "ans_pypi_pkg_state: {{ ans_pypi_pkg_state }}"
           - "ans_pypi_version_latest: {{ ans_pypi_version_latest }}"
           - "ans_pypi_version_required: {{ ans_pypi_version_required }}"
           - "ans_pypi_system_version_present: {{ ans_pypi_system_version_present }}"
           - "ans_pypi_user_version_present: {{ ans_pypi_user_version_present }}"
           - "ans_pypi_extras: {% if ans_pypi_extras is defined %}{{ ans_pypi_extras }}{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: PyPI package present using pip
       block:
@@ -64,27 +60,21 @@
             - name: "PyPi system package present {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
               ansible.builtin.pip:
                 name: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
-                state: "{{ ans_pypi_pkg.state | default('present') }}"
+                state: "{{ ans_pypi_pkg_state }}"
                 executable: "{{ ans_pip_path }}"
-              when: >-
-                ( ansible_effective_user_id == 0 ) and
-                ( ( ans_pypi_pkg.state is not defined ) or
-                ( ( ans_pypi_pkg.state is defined ) and
-                ( ans_pypi_pkg.state == "present" ) or
-                ( ans_pypi_pkg.state == "forcereinstall" ) ) )
+              when:
+                - ansible_effective_user_id == 0
+                - ans_pypi_pkg_state is regex('^forcereinstall|present$')
 
             - name: "PyPi user package present {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
               ansible.builtin.pip:
                 name: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
-                state: "{{ ans_pypi_pkg.state | default('present') }}"
+                state: "{{ ans_pypi_pkg_state }}"
                 executable: "{{ ans_pip_path }}"
                 extra_args: "--user{% if ansible_facts.python_version is version('3.11.2', '>=') %} --break-system-packages{% endif %}"
-              when: >-
-                ( ansible_effective_user_id != 0 ) and
-                ( ( ans_pypi_pkg.state is not defined ) or
-                ( ( ans_pypi_pkg.state is defined ) and
-                ( ans_pypi_pkg.state == "present" ) or
-                ( ans_pypi_pkg.state == "forcereinstall" ) ) )
+              when:
+                - ansible_effective_user_id != 0
+                - ans_pypi_pkg_state is regex('^forcereinstall|present$')
 
           when: >-
             ( ( not ans_downgrade | bool ) and
@@ -110,11 +100,10 @@
             ( ans_pypi_user_version_present is defined ) and
             ( ans_pypi_user_version_present | length == 0 ) ) ) )
 
-
       when:
         - ans_pypi_pkg.url is defined
         - ans_pypi_pkg.version is defined
-        - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state != "absent" )
+        - ans_pypi_pkg_state != "absent"
 
     - name: PyPI package absent using pip
       block:
@@ -155,7 +144,7 @@
             - ans_pypi_user_version_present | length > 0
 
       when: >-
-        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "absent" ) ) or
+        ( ans_pypi_pkg_state == "absent" ) or
         ( ( not ans_downgrade | bool ) and
         ( ans_pypi_version_required is defined ) and
         ( ans_pypi_system_version_present is defined ) and

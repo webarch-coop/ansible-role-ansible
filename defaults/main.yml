@@ -69,13 +69,14 @@ ans_pypi_pkgs:
     version: "2.14.3"
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
-    version: "6.13.1"
-  # An old version of dnspython is probably no longer needed
+    venv: ansible
+    version: "6.14.2"
+  # In the past Ansible DNS modules required
+  # dnspython<=2.2.1
   - name: dnspython
     url: https://pypi.org/pypi/dnspython
     venv: ansible
-    version: "2.2.1"
-    state: absent
+    version: "2.3.0"
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
@@ -86,6 +87,7 @@ ans_pypi_pkgs:
     version: "1.0.1"
   - name: molecule
     url: https://pypi.org/pypi/molecule
+    venv: ansible
     version: "4.0.4"
   - name: molecule-plugins
     extras:
@@ -97,22 +99,22 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/netaddr
     venv: ansible
     version: "0.8.0"
-  # An old version of ansible-galaxy is probably no longer needed
-  # ansible-galaxy requires resolvelib<0.9.0,>=0.5.3
+  # In the past ansible-galaxy required
+  # resolvelib<0.9.0,>=0.5.3
   # https://github.com/ansible/ansible/issues/74569
   # https://github.com/ansible-community/ppa/issues/16
   - name: resolvelib
     url: https://pypi.org/pypi/resolvelib
     venv: ansible
-    version: "0.8.1"
-    state: absent
+    version: "0.9.0"
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
+    venv: ansible
     version: "1.29.0"
 ans_pipx_root_env:
   PIPX_HOME: /opt
   PIPX_BIN_DIR: /usr/local/bin
 ans_pipx_user_env:
-  PIPX_HOME: "{{ ansible_env.HOME }}/.local"
+  PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
   PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
 ...

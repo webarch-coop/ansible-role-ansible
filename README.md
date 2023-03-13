@@ -104,11 +104,11 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/molecule-plugins
     venv: molecule
     version: 23.0.0
-  - name: resolvelib
-    state: absent
 ```
 
 Only `absent`, `present` (the default) and `forcereinstall` are supported for `state`, use `state: present` and `version: latest` for the latest version, `forcereinstall` is necessary if the list of `extras` is changed, see the [Installing "Extras"](https://packaging.python.org/en/latest/tutorials/installing-packages/#id29) documentation.
+
+When the `state` is not `absent` the `url` and `version` are required, when the `state` is `absent` only the `name` is required.
 
 Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
 

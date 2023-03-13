@@ -77,7 +77,7 @@ argument_specs:
           venv:
             type: str
             required: false
-            description: The venv to inject the package into, if it exists.
+            description: The pipx venv to inject the package into, if it exists and pip is not being used.
           version:
             type: str
             required: false
