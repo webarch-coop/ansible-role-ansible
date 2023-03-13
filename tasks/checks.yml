@@ -370,7 +370,9 @@
             label: "{{ ans_pypi_pkg.name }}"
 
       # TODO check that community.general is version('5.6.0', 'ge') as that is required for community.general.pipx_info
-      when: ans_pipx_version is version('1.0.0', '>=')
+      when:
+        - ans_pipx_version is version('1.0.0', '>=')
+        - ans_galaxy_install | bool
 
     - name: Check the version of pip
       ansible.builtin.command: python3 -m pip --version
