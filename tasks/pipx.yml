@@ -267,12 +267,11 @@
             loop_var: ans_venv_executable
             label: "{{ ans_venv_executable | ansible.builtin.basename }}"
 
-        - fail:
-
       when:
         - ans_pipx_installed_version is defined
         - ans_pipx_installed_version is version(ans_required_version, 'eq')
 
+    # This doesn't really work for packages like ansible-lint or molecule when venv is set to somehting other than ansible
     - name: PyPI packages configured using pipx when not already available as system packages and not injected into the Ansible venv
       ansible.builtin.include_tasks: pipx_pkg.yml
       vars:
