@@ -93,7 +93,7 @@ ans_pypi_pkgs:
     extras:
       - docker
     url: https://pypi.org/pypi/molecule-plugins
-    venv: molecule
+    venv: ansible
     version: "23.0.0"
   - name: netaddr
     url: https://pypi.org/pypi/netaddr
