@@ -34,7 +34,6 @@
             - name: Please manually remove these pip installed packages
               ansible.builtin.debug:
                 var: ans_pypi_pkg
-                msg: "python3 -m pip uninstall {{ ans_pypi_pkg.name }}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
               loop: "{{ ans_pypi_pkgs }}"
               loop_control:
                 loop_var: ans_pypi_pkg
