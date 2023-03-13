@@ -22,19 +22,34 @@
               - "ans_pypi_pkg.version: {% if ans_pypi_pkg.version is defined %}{{ ans_pypi_pkg.version }}{% endif %}"
               - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
               - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
-            verbosity: 1
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           loop: "{{ ans_pypi_pkgs }}"
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
 
-        - name: Please manually remove these pip installed packages
-          ansible.builtin.fail:
-            msg: "python3 -m pip uninstall {{ ans_pypi_pkg.name }}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
-          loop: "{{ ans_pypi_pkgs }}"
-          loop_control:
-            loop_var: ans_pypi_pkg
-            label: "{{ ans_pypi_pkg.name }}"
+        - name: PyPi pip packages need removing
+          block:
+
+            - name: Please manually remove these pip installed packages
+              ansible.builtin.debug:
+                var: ans_pypi_pkg
+                msg: "python3 -m pip uninstall {{ ans_pypi_pkg.name }}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
+              loop: "{{ ans_pypi_pkgs }}"
+              loop_control:
+                loop_var: ans_pypi_pkg
+                label: "{{ ans_pypi_pkg.name }}"
+
+            - name: The user pip packages can be removed with the following command
+              ansible.builtin.fail:
+                msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkgs %}{{ ans_pypi_pkg }}{% endfor %}"
+              when: ans_python_version is version('3.11.2', 'lt')
+
+            - name: The user pip packages can be removed with the following command
+              ansible.builtin.fail:
+                msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkgs %}{{ ans_pypi_pkg }}{% endfor %} --break-system-packages"
+              when: ans_python_version is version('3.11.2', 'ge')
+
           when:
             - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) is defined
             - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) != "null"

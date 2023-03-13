@@ -129,11 +129,17 @@ python3 -m pip list --user --format=json | jq
 python3 -m pip list --user --format=json | jq | jp "[].name" | yq -o=yaml -PM | awk '{ print $2 }'
 ```
 
-Delete all PyPi user packages on Debian Bookworm:
+Delete all PyPi user packages on Debian Bullseye or Ubuntu Jammy:
+
+```bash
+python3 -m pip uninstall $(pip list --user | grep -v -e ^P -e ^- | awk '{ print $1 }' | xargs)
+```
+
+Delete all PyPi user packages on Debian Bookworm (with `jp`, `jq` and `yq` installed):
 
 ```bash
 python3 -m pip uninstall --break-system-packages \
-$(pip list --user --format=json | jq | jp "[].name" | yq -o=yaml -PM | awk '{ print $2 }' | xargs )
+$(pip list --user --format=json | jq | jp "[].name" | yq -o=yaml -PM | awk '{ print $2 }' | xargs)
 ```
 
 List the PyPI package extras present, this `jq` query has been [copied from GitHub](https://github.com/pypa/pip/issues/4824#issuecomment-1298200394):
