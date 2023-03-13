@@ -35,6 +35,7 @@ ans_pipx: false
 ans_pipx_ansible_version_jmespath_query: "application[?name=='ansible'].version|[0]"
 ans_pipx_app_ver_jmespath_query: "application[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 ans_pipx_apps_jmespath_query: "application[].name"
+ans_pipx_bin_jmespath_query: "files[?mode=='0775'].path"
 ans_pipx_injected_packages_jmespath_query: "application[?name=='ansible'].injected|[0]"
 ans_pipx_inject: []
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
