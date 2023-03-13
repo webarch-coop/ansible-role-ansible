@@ -4,11 +4,11 @@
 
 This repo contains an Ansible role for [installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
 
-The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.7` and when this role is run on these distros Ansible itself will be installed for the user running this role.
+The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.7` and when this role is run on these distros Ansible itself will be installed using into a virtual environment using `pipx` for the user running this role.
 
-This role is currently set to more-or-less match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file).
+This role is set to more-or-less match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file).
 
-**Note** The `master` branch of this role is used for development and testing, currently it is a WIP to replace `pip` with `pipx`. 
+On Debian Bookworm `pip` is used to install a newer versions of `ansible-lint` than Debian provides and `molecule`, which is not packaged by Debian.
 
 ## Usage
 
@@ -21,7 +21,7 @@ cd localhost
 ./ansible.sh         # update pypi packages and ansible collections
 ```
 
-This role is designed to be run by a non-root user, it will install Ansible to `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
+This role is designed to be run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
 
 To manually update the `$PATH` add the following to your `~/.bash_profile` or whichever file sets your `$PATH` environmental variable when you login:
 
@@ -66,8 +66,6 @@ A list of Debian / Ubuntu packages that are required, for example;
 ```yaml
 ans_pkgs:
   - ansible
-  - python3-argcomplete
-  - python3-dnspython
   - python3-jmespath
 ```
 
@@ -86,23 +84,17 @@ ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
     version: 7.3.0
-  - name: ansible-core
-    url: https://pypi.org/pypi/ansible-core
-    venv: ansible
-    version: 2.14.1
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
+    venv: ansible
     version: latest
-  - name: molecule
-    url: https://pypi.org/pypi/molecule
-    version: 4.0.4
   - name: molecule-plugins
     extras:
       - docker
       - podman
     state: forcereinstall
     url: https://pypi.org/pypi/molecule-plugins
-    venv: molecule
+    venv: ansible
     version: 23.0.0
 ```
 
