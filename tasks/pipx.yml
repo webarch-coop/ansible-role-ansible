@@ -153,7 +153,12 @@
     - name: Debug pipx info
       ansible.builtin.debug:
         var: ans_pipx_info
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Debug ans_pipx_info.applications.ansible
+      ansible.builtin.debug:
+        var: ans_pipx_info.applications.ansible
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Inject packages into the Ansible pipx venv when it exists
       block:
@@ -230,16 +235,16 @@
 
     - name: PyPI packages configured using pipx when not already available as system packages and not injected into the Ansible venv
       ansible.builtin.include_tasks: pipx_pkg.yml
-      loop: "{{ ans_pypi_pkgs }}"
-      loop_control:
-        loop_var: ans_pypi_pkg
-        label: "{{ ans_pypi_pkg.name }}"
       vars:
         ans_pypi_pkg_existing_version: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
       when:
         - ans_pypi_pkg.name != "ansible"
         - ( ans_pypi_pkg.venv is not defined ) or ( ( ans_pypi_pkg.venv is defined ) and ( ans_pypi_pkg.venv != "ansible" ) )
         - ( ans_pypi_pkg_existing_version is not defined ) or ( ans_pypi_pkg_existing_version | length == 0 ) or  ( ( ans_pypi_pkg_existing_version is defined ) and ( ans_pypi_pkg_existing_version is version(ans_pypi_pkg.version, 'ne') ) )
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
 
   tags:
     - ansible
