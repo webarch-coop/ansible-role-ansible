@@ -28,30 +28,21 @@
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
 
-        - name: PyPi pip packages need removing
-          block:
-
-            - name: Please manually remove these pip installed packages
-              ansible.builtin.debug:
-                var: ans_pypi_pkg
-              loop: "{{ ans_pypi_pkgs }}"
-              loop_control:
-                loop_var: ans_pypi_pkg
-                label: "{{ ans_pypi_pkg.name }}"
-
-            - name: The user pip packages can be removed with the following command
-              ansible.builtin.fail:
-                msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkgs %}{{ ans_pypi_pkg }}{% endfor %}"
-              when: ans_python_version is version('3.11.2', 'lt')
-
-            - name: The user pip packages can be removed with the following command
-              ansible.builtin.fail:
-                msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkgs %}{{ ans_pypi_pkg }}{% endfor %} --break-system-packages"
-              when: ans_python_version is version('3.11.2', 'ge')
-
+        - name: Set a fact for the pip user packages that should be removed
+          ansible.builtin.set_fact:
+            ans_pypi_pkg_uninstall: "{{ ans_pypi_pkg_uninstall + [ans_pypi_pkg.name] }}"
+          loop: "{{ ans_pypi_pkgs }}"
+          loop_control:
+            loop_var: ans_pypi_pkg
+            label: "{{ ans_pypi_pkg.name }}"
           when:
             - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) is defined
             - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) != "null"
+
+        - name: User pip packages need to be removed with the following command
+          ansible.builtin.fail:
+            msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkg_uninstall %} {{ ans_pypi_pkg }}{% endfor %}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
+          when: ans_python_version is version('3.11.2', 'lt')
 
       when:
         - ans_pip_user_existing is defined
