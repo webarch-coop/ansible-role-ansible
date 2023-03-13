@@ -98,6 +98,13 @@
             name: ansible
             state: absent
             executable: /usr/bin/pipx
+          register: ans_pipx_ansible_downgrade_removed
+
+        - name: Debug ans_pipx_ansible_downgrade_removed
+          ansible.builtin.debug:
+            var: ans_pipx_ansible_downgrade_removed
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          when: ans_pipx_ansible_downgrade_removed is defined
 
         - name: Install Ansible using pipx
           community.general.pipx:
@@ -107,7 +114,13 @@
             state: install
             executable: /usr/bin/pipx
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
-          register: ans_pipx_ansible_installed
+          register: ans_pipx_ansible_downgrade_installed
+
+        - name: Debug ans_pipx_ansible_downgrade_installed
+          ansible.builtin.debug:
+            var: ans_pipx_ansible_downgrade_installed
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          when: ans_pipx_ansible_downgrade_installed is defined
 
       when:
         - ans_downgrade | bool
@@ -115,12 +128,6 @@
         - ans_pipx_ansible_version is defined
         - ans_pipx_ansible_version | length > 0
         - ans_required_version is version(ans_pipx_ansible_version, 'lt')
-
-    - name: Debug ans_pipx_ansible_installed
-      ansible.builtin.debug:
-        var: ans_pipx_ansible_installed
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-      when: ans_pipx_ansible_installed is defined
 
     - name: Remove Ansible using pipx
       community.general.pipx:
@@ -209,20 +216,37 @@
             - ans_pipx_inject is defined
             - ans_pipx_inject != []
 
+        - name: Debug ans_pipx_ansible_injected
+          ansible.builtin.debug:
+            var: ans_pipx_ansible_injected
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          when: ans_pipx_ansible_injected is defined
+
         - name: Gather pipx_info
           community.general.pipx_info:
             include_deps: true
             include_injected: true
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_info
-          when:
-            - ans_pipx_ansible_injected is defined
-            - ans_pipx_ansible_injected.changed | bool
 
         - name: Debug pipx info
           ansible.builtin.debug:
             var: ans_pipx_info
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        - name: Find executables in the Ansible venv bin
+          ansible.builtin.find:
+            file_type: file
+            follow: false
+            path: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env.PIPX_HOME }}{% else %}{{ ans_pipx_user_env.PIPX_HOME }}{% endif %}/venvs/ansible"
+          register: ans_pipx_venv_bin_files
+
+        - name: Debug ans_pipx_venv_bin_files
+          ansible.builtin.debug:
+            var: ans_pipx_venv_bin_files
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+        - fail:
 
         # TODO
         # symlink ~/.local/venvs/ansible/bin files from ~/.local/bin
