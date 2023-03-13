@@ -30,7 +30,7 @@
 
         - name: Set a fact for the pip user packages that should be removed
           ansible.builtin.set_fact:
-            ans_pypi_pkg_uninstall: "{{ ans_pip_user_existing | selectattr('name') }}"
+            ans_pypi_pkg_uninstall: "{{ ans_pip_user_existing | community.general.json_query('[].name') }}"
 
         - name: User pip packages need to be removed with the following command
           ansible.builtin.fail:
