@@ -37,6 +37,7 @@
             label: "{{ ans_pypi_pkg.name }}"
           when:
             - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) is defined
+            - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) | length > 0
             - ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) != "null"
 
         - name: User pip packages need to be removed with the following command
