@@ -46,10 +46,33 @@
         var: ans_required_state
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
+    - name: Set a fact for the pipx packages, extras and versions to be injected
+      ansible.builtin.set_fact:
+        ans_pipx_inject: "{{ ans_pipx_inject + [ans_pipx_inject_pkg] }}"
+      when:
+        - ans_pypi_pkg.name != "ansible"
+        - ans_pypi_pkg.venv is defined
+        - ans_pypi_pkg.venv == "ansible"
+        - ans_pypi_pkg.version is defined
+        - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
+      vars:
+        ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
+
+    - name: Debug the pipx packages to be injected
+      ansible.builtin.debug:
+        var: ans_pipx_inject
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      when: ans_pipx_inject is defined
+
     - name: Install Ansible using pipx
       community.general.pipx:
         name: ansible
         source: "ansible=={{ ans_required_version }}"
+        inject_packages: "{% if ans_pipx_inject is defined and ans_pipx_inject | length > 0 %}{{ ans_pipx_inject }}{% endif %}"
         install_deps: true
         state: install
         executable: /usr/bin/pipx
