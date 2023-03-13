@@ -59,7 +59,7 @@
 
     - name: Set a fact for the required Ansible state and version
       ansible.builtin.set_fact:
-        ans_required_state: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | default('present') }}"
+        ans_required_state: "{% if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | length == 0 %}present{% else %}{{ if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}{% endif %}"
         ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
 
     - name: Debug the required Ansible state
