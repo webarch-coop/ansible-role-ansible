@@ -11,6 +11,8 @@
 - name: Bash tasks
   block:
 
+    # TODO https://pypa.github.io/pipx/installation/#shell-completion
+
     - name: Bash completion in place
       block:
 

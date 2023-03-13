@@ -98,6 +98,7 @@
     - name: Install Ansible Galaxy collection
       block:
 
+        # NOTE ansible_galaxy_install module is only present in community.general >= 3.5.0
         - name: Include tasks to install Ansible collection using the ansible_galaxy_install module
           ansible.builtin.include_tasks: col_install.yml
           when: ans_galaxy_install | bool

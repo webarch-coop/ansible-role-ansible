@@ -60,6 +60,32 @@
     - name: Check variables
       ansible.builtin.include_tasks: checks.yml
 
+    - name: Debug existing and proposed Ansible collections
+      ansible.builtin.debug:
+        msg:
+          - "ans_col.name: {{ ans_col.name }}"
+          - "ans_col.version {{ ans_col.version }}"
+          - "ans_col_system_version_present: {{ ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+          - "ans_col_user_version_present: {{ ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+        verbosity: 1
+      loop: "{{ ans_cols }}"
+      loop_control:
+        loop_var: ans_col
+        label: "{{ ans_col.name }}"
+
+    - name: Install Ansible collections when not already available as system or user collections
+      ansible.builtin.include_tasks: col.yml
+      loop: "{{ ans_cols }}"
+      loop_control:
+        loop_var: ans_col
+        label: "{{ ans_col.name }}"
+      when: >-
+        ( ansible_verbosity > 0 ) or
+        ( ansible_check_mode | bool ) or
+        ( ans_cols is defined ) and ( ans_cols != [] ) and ( ( ans_col.version == "latest" ) or
+        ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
+        ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
+
     - name: PyPI packages configured using pipx
       ansible.builtin.include_tasks: pipx.yml
       when: ans_pipx | bool
@@ -97,32 +123,6 @@
             ( ans_pypi_pkg.version != ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) ) ) )
 
       when: not ans_pipx | bool
-
-    - name: Debug existing and proposed Ansible collections
-      ansible.builtin.debug:
-        msg:
-          - "ans_col.name: {{ ans_col.name }}"
-          - "ans_col.version {{ ans_col.version }}"
-          - "ans_col_system_version_present: {{ ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
-          - "ans_col_user_version_present: {{ ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
-        verbosity: 1
-      loop: "{{ ans_cols }}"
-      loop_control:
-        loop_var: ans_col
-        label: "{{ ans_col.name }}"
-
-    - name: Install Ansible collections when not already available as system or user collections
-      ansible.builtin.include_tasks: col.yml
-      loop: "{{ ans_cols }}"
-      loop_control:
-        loop_var: ans_col
-        label: "{{ ans_col.name }}"
-      when: >-
-        ( ansible_verbosity > 0 ) or
-        ( ansible_check_mode | bool ) or
-        ( ans_cols is defined ) and ( ans_cols != [] ) and ( ( ans_col.version == "latest" ) or
-        ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
-        ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
 
     - name: Include the Bash PATH and python-argcomplete tasks when the init system is not sh
       ansible.builtin.include_tasks: bash.yml
