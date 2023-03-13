@@ -60,6 +60,12 @@
         - ( ans_pipx_ansible_version is not defined ) or ( ( ans_pipx_ansible_version is defined ) and ( ans_pipx_ansible_version | length == 0 ) )
         - ( ( not ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'gt') ) ) or ( ( ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'lt') ) )
 
+    - name: Debug ans_pipx_ansible_installed
+      ansible.builtin.debug:
+        var: ans_pipx_ansible_installed
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      when: ans_pipx_ansible_installed is defined
+
     - name: Upgrade Ansible using pipx
       community.general.pipx:
         name: ansible
@@ -77,6 +83,12 @@
         - ans_pipx_ansible_version is defined
         - ans_pipx_ansible_version | length > 0
         - ans_pipx_ansible_version is version(ans_required_version, 'lt')
+
+    - name: Debug ans_pipx_ansible_upgraded
+      ansible.builtin.debug:
+        var: ans_pipx_ansible_upgraded
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      when: ans_pipx_ansible_upgraded is defined
 
     - name: Downgrade Ansible using pipx
       block:
@@ -104,6 +116,12 @@
         - ans_pipx_ansible_version | length > 0
         - ans_required_version is version(ans_pipx_ansible_version, 'lt')
 
+    - name: Debug ans_pipx_ansible_installed
+      ansible.builtin.debug:
+        var: ans_pipx_ansible_installed
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      when: ans_pipx_ansible_installed is defined
+
     - name: Remove Ansible using pipx
       community.general.pipx:
         name: ansible
@@ -114,6 +132,12 @@
         - ans_pipx_ansible_version is defined
         - ans_pipx_ansible_version | length > 0
         - ( ans_required_state == "absent" ) or ( ( ans_required_state == "present" ) and ( ans_installed_version is version(ans_required_version, 'eq') ) )
+
+    - name: Debug ans_pipx_ansible_removed
+      ansible.builtin.debug:
+        var: ans_pipx_ansible_removed
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      when: ans_pipx_ansible_removed is defined
 
     - name: Regather pipx_info
       community.general.pipx_info:
