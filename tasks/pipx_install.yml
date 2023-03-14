@@ -8,43 +8,8 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: PyPI packages configured using pipx
+- name: PyPI packages configured using the Ansible pipx module
   block:
-
-    - name: Check for packages installed via pip
-      block:
-
-        - name: Debug pip packages
-          ansible.builtin.debug:
-            msg:
-              - "ans_pypi_pkg.name: {{ ans_pypi_pkg.name }}"
-              - "ans_pypi_pkg.state: {% if ans_pypi_pkg.state is defined %}{{ ans_pypi_pkg.state }}{% endif %}"
-              - "ans_pypi_pkg.version: {% if ans_pypi_pkg.version is defined %}{{ ans_pypi_pkg.version }}{% endif %}"
-              - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
-              - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
-            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-          loop: "{{ ans_pypi_pkgs }}"
-          loop_control:
-            loop_var: ans_pypi_pkg
-            label: "{{ ans_pypi_pkg.name }}"
-
-        - name: Set a fact for the pip user packages that should be removed
-          ansible.builtin.set_fact:
-            ans_pypi_pkg_uninstall: "{{ ans_pip_user_existing | community.general.json_query('[].name') }}"
-
-        - name: User pip packages need to be removed with the following command
-          ansible.builtin.fail:
-            msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkg_uninstall %} {{ ans_pypi_pkg }}{% endfor %}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
-          when: ans_python_version is version('3.11.2', 'lt')
-
-      when:
-        - ans_pip_user_existing is defined
-        - ans_pip_user_existing != []
-
-    - name: Debug the required Ansible state
-      ansible.builtin.debug:
-        var: ans_required_state
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Install Ansible using pipx
       community.general.pipx:

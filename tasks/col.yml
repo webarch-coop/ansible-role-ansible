@@ -90,9 +90,9 @@
           - "ans_col_system_version_present: {{ ans_col_system_version_present }}"
           - "ans_col_user_version_present: {{ ans_col_user_version_present }}"
 
-    - name: Debug ans_galaxy_install
+    - name: Debug ans_col
       ansible.builtin.debug:
-        var: ans_galaxy_install
+        var: ans_col
         verbosity: 2
 
     - name: Install Ansible Galaxy collection
@@ -101,7 +101,7 @@
         # NOTE ansible_galaxy_install module is only present in community.general >= 3.5.0
         - name: Include tasks to install Ansible collection using the ansible_galaxy_install module
           ansible.builtin.include_tasks: col_install.yml
-          when: ans_galaxy_install | bool
+          when: ans_col | bool
 
         - name: Install collection in a block so failures can be rescued
           block:
@@ -130,7 +130,7 @@
                 {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force
               changed_when: true
 
-          when: not ans_galaxy_install | bool
+          when: not ans_col | bool
 
       when: >-
         ( ( not ans_downgrade | bool ) and

@@ -99,14 +99,14 @@
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is not present
       ansible.builtin.assert:
         that:
-          - ans_installed_version is version(ans_ansible_min_version, '>=')
+          - ans_installed_version is version(ans_ansible_min_version, 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is not defined
 
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is present
       ansible.builtin.assert:
         that:
-          - ans_core_installed_version is version(ans_ansible_min_version, '>=')
+          - ans_core_installed_version is version(ans_ansible_min_version, 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is defined
 
@@ -252,27 +252,61 @@
 
       when: not ans_galaxy_json_output | bool
 
-    - name: Set ans_galaxy_install to true when Ansible Galaxy community.general 6.2.0 or greater is installed as a system collection
-      ansible.builtin.set_fact:
-        ans_galaxy_install: true
+    - name: Set facts based on the Ansible Galaxy community.general version installed
+      block:
+
+        - name: Set a fact for the Ansible Galaxy community.general version when installed as a system collection
+          ansible.builtin.set_fact:
+            ans_col_comgen_system_version: "{{ ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
+          when:
+            - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
+            - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) | type_debug == "str"
+
+        - name: Set a fact for the Ansible Galaxy community.general version when installed as a user collection
+          ansible.builtin.set_fact:
+            ans_col_comgen_user_version: "{{ ans_user_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
+          when:
+            - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
+            - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) | type_debug == "str"
+
+        - name: Set ans_col to true when community.general 6.2.0 or greater is available
+          ansible.builtin.set_fact:
+            ans_col: true
+          when: >-
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('6.2.0', 'ge') ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('6.2.0', 'ge') )
+
+        - name: Set ans_pipx_mod to true when community.general 3.8.0 or greater is available
+          ansible.builtin.set_fact:
+            ans_pipx_mod: true
+          when: >-
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('3.8.0', 'ge') ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('3.8.0', 'ge') )
+
+        - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available
+          ansible.builtin.set_fact:
+            ans_pipx_mod_info: true
+          when: >-
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('5.6.0', 'ge') ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('5.6.0', 'ge') )
+
       when:
         - ans_system_col_existing is defined
         - ans_system_col_existing != []
-        - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
-        - ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('6.2.0', '>=')
 
-    - name: Set ans_galaxy_install to true when community.general 6.2.0 or greater is installed as a user collection
-      ansible.builtin.set_fact:
-        ans_galaxy_install: true
-      when:
-        - ans_user_col_existing is defined
-        - ans_user_col_existing != []
-        - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
-        - ans_user_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('6.2.0', '>=')
-
-    - name: Debug ans_galaxy_install
+    - name: Debug ans_col
       ansible.builtin.debug:
-        var: ans_galaxy_install
+        var: ans_col
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Debug ans_pipx_mod
+      ansible.builtin.debug:
+        var: ans_pipx_mod
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Debug ans_pipx_mod_info
+      ansible.builtin.debug:
+        var: ans_pipx_mod_info
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
@@ -317,63 +351,13 @@
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
           when: ans_pipx is defined
 
-        - name: Ansible collection community.general >= 5.6.0 is required for community.general.pipx_info module
-          block:
-
-            - name: Run pipx list when the community.general collection doesn't contain community.general.pipx_info
-              ansible.builtin.command: pipx list --json
-              check_mode: false
-              changed_when: false
-              register: ans_pipx_list_json
-
-            - name: Set a fact for the pipx list
-              ansible.builtin.set_fact:
-                ans_pipx_list: "{{ ans_pipx_list_json.stdout | from_json }}"
-
-            - name: Debug ans_pipx_list
-              ansible.builtin.debug:
-                var: ans_pipx_list
-                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-            - name: Set a fact for the pipx installed packages
-              ansible.builtin.set_fact:
-                ans_pipx_pkgs: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_pkgs_jmespath_query) }}"
-
-            - name: Debug ans_pipx_pkgs
-              ansible.builtin.debug:
-                var: ans_pipx_pkgs
-                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-            - name: Set a fact for the Ansible version and injected packages when the Ansible pipx venv exists
-              block:
-
-                - name: Set a fact for the pipx Ansible version
-                  ansible.builtin.set_fact:
-                    ans_pipx_ansible_version: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_ansible_version_jmespath_query) }}"
-
-                - name: Debug pipx Ansible version
-                  ansible.builtin.debug:
-                    var: ans_pipx_ansible_version
-                    verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-                - name: Set a fact for the pipx Ansible venv existing injected packages
-                  ansible.builtin.set_fact:
-                    ans_pipx_injected: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_injected_pkgs_jmespath_query) }}"
-
-                - name: Debug pipx Ansible venv existing injected packages
-                  ansible.builtin.debug:
-                    var: ans_pipx_injected
-                    verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-              when:
-                - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) is defined
-                - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug == "str"
-
-          when: ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('5.6.0', 'lt')
+        - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
+          ansible.builtin.include_tasks: check_pipx_list.yml
+          when: not ans_pipx_mod_info | bool
 
         - name: Include community.general.pipx_info module tasks as community.general >= 5.6.0
           ansible.builtin.include_tasks: check_pipx_info.yml
-          when: ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('5.6.0', 'ge')
+          when: ans_pipx_mod_info | bool
 
         - name: Check that venv is not set to the package name when defined and that the venv is set to exist
           ansible.builtin.assert:
@@ -416,7 +400,7 @@
           ansible.builtin.set_fact:
             ans_pip_metadata: "{{ ans_pip_inspect.stdout | from_json | community.general.json_query('installed[].metadata') }}"
 
-      when: ans_pip_version is version('22.2', '>=')
+      when: ans_pip_version is version('22.2', 'ge')
 
     - name: Check the user PyPI packages
       ansible.builtin.command: python3 -m pip list --user --format=json
