@@ -36,12 +36,12 @@
         var: ans_pipx_pkgs
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Debug ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query)
+    - name: Debug the Ansible version and variable type
       ansible.builtin.debug:
         msg:
           - "Value: {{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
           - "Type: {{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Set a fact for the Ansible version and injected packages when the Ansible pipx venv exists
       block:
