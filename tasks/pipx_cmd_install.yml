@@ -131,14 +131,24 @@
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
 
-        - name: Debug the pipx packages to be injected
+        - name: Debug the list of pipx packages to be injected
           ansible.builtin.debug:
             var: ans_pipx_inject
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_inject is defined
 
+        - name: Set a string for the pipx packages, extras and versions to be injected
+          ansible.builtin.set_fact:
+            ans_pipx_inject_str: "{% for ans_pipx_inject_pkg in ans_pipx_inject %} {{ ans_pipx_inject_pkg }}{% endfor %}"
+
+        - name: Debug the string of pipx packages to be injected
+          ansible.builtin.debug:
+            var: ans_pipx_inject_str
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          when: ans_pipx_inject is defined
+
         - name: Inject PyPI packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps{% for ans_pipx_inject_pkg in ans_pipx_inject }} {{ ans_pipx_inject_pkg }}{% endfor %}"
+          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps {{ ans_pipx_inject_str }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           when:
