@@ -20,7 +20,7 @@ argument_specs:
         description: Run the tasks in this role.
       ans_cols:
         type: list
-        required: true
+        required: false
         description: Ansible collections to install.
         elements: dict
         options:

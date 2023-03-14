@@ -11,34 +11,34 @@
 # Run the tasks in this role
 ans: false
 # Ansible collections required
-ans_cols:
-  - name: ansible.posix
-    url: https://github.com/ansible-collections/ansible.posix
-    version: "1.5.1"
-  - name: community.docker
-    url: https://github.com/ansible-collections/community.docker
-    version: "3.4.2"
-  - name: community.crypto
-    url: https://github.com/ansible-collections/community.crypto
-    version: "2.11.0"
-  - name: community.general
-    url: https://github.com/ansible-collections/community.general
-    version: "6.4.0"
-  - name: community.mysql
-    url: https://github.com/ansible-collections/community.mysql
-    version: "3.6.0"
-  - name: community.postgresql
-    url: https://github.com/ansible-collections/community.postgresql
-    version: "2.3.2"
-  - name: community.rabbitmq
-    url: https://github.com/ansible-collections/community.rabbitmq
-    version: "1.2.3"
-  - name: hetzner.hcloud
-    url: https://github.com/ansible-collections/hetzner.hcloud
-    version: "1.10.0"
-  - name: kubernetes.core
-    url: https://github.com/ansible-collections/kubernetes.core
-    version: "2.4.0"
+# ans_cols:
+#   - name: ansible.posix
+#     url: https://github.com/ansible-collections/ansible.posix
+#     version: "1.5.1"
+#   - name: community.docker
+#     url: https://github.com/ansible-collections/community.docker
+#     version: "3.4.2"
+#   - name: community.crypto
+#     url: https://github.com/ansible-collections/community.crypto
+#     version: "2.11.0"
+#   - name: community.general
+#     url: https://github.com/ansible-collections/community.general
+#     version: "6.4.0"
+#   - name: community.mysql
+#     url: https://github.com/ansible-collections/community.mysql
+#     version: "3.6.0"
+#   - name: community.postgresql
+#     url: https://github.com/ansible-collections/community.postgresql
+#     version: "2.3.2"
+#   - name: community.rabbitmq
+#     url: https://github.com/ansible-collections/community.rabbitmq
+#     version: "1.2.3"
+#   - name: hetzner.hcloud
+#     url: https://github.com/ansible-collections/hetzner.hcloud
+#     version: "1.10.0"
+#   - name: kubernetes.core
+#     url: https://github.com/ansible-collections/kubernetes.core
+#     version: "2.4.0"
 ans_downgrade: false
 # Debian / Ubuntu packages required
 ans_pkgs:
@@ -63,24 +63,24 @@ ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
     version: "7.3.0"
-  - name: ansible-core
-    url: https://pypi.org/pypi/ansible-core
-    venv: ansible
-    version: "2.14.3"
-  - name: ansible-lint
-    url: https://pypi.org/pypi/ansible-lint
-    venv: ansible
-    version: "6.14.2"
-  # In the past Ansible DNS modules required
-  # dnspython<=2.2.1
-  - name: dnspython
-    url: https://pypi.org/pypi/dnspython
-    venv: ansible
-    version: "2.3.0"
+#   - name: ansible-core
+#     url: https://pypi.org/pypi/ansible-core
+#     venv: ansible
+#     version: "2.14.3"
+#   - name: ansible-lint
+#     url: https://pypi.org/pypi/ansible-lint
+#     venv: ansible
+#     version: "6.14.2"
+#   # In the past Ansible DNS modules required
+#   # dnspython<=2.2.1
+#   - name: dnspython
+#     url: https://pypi.org/pypi/dnspython
+#     venv: ansible
+#     version: "2.3.0"
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
-    version: "1.22.5"
+    version: "1.23.0"
   - name: jmespath
     url: https://pypi.org/pypi/jmespath
     venv: ansible
@@ -95,18 +95,18 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/molecule-plugins
     venv: ansible
     version: "23.0.0"
-  - name: netaddr
-    url: https://pypi.org/pypi/netaddr
-    venv: ansible
-    version: "0.8.0"
-  # In the past ansible-galaxy required
-  # resolvelib<0.9.0,>=0.5.3
-  # https://github.com/ansible/ansible/issues/74569
-  # https://github.com/ansible-community/ppa/issues/16
-  - name: resolvelib
-    url: https://pypi.org/pypi/resolvelib
-    venv: ansible
-    version: "0.9.0"
+#   - name: netaddr
+#     url: https://pypi.org/pypi/netaddr
+#     venv: ansible
+#     version: "0.8.0"
+#   # In the past ansible-galaxy required
+#   # resolvelib<0.9.0,>=0.5.3
+#   # https://github.com/ansible/ansible/issues/74569
+#   # https://github.com/ansible-community/ppa/issues/16
+#   - name: resolvelib
+#     url: https://pypi.org/pypi/resolvelib
+#     venv: ansible
+#     version: "0.9.0"
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible

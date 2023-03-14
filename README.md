@@ -42,7 +42,7 @@ Set the `ans` variable to `true` run the tasks in this role, it defaults to `fal
 
 ### ans_cols
 
-A list of Ansible collections, URLS and versions.
+A optional list of Ansible collections, URLS and versions.
 
 Each item in the list requires a `name`, for the name of the collection, a `url`, for the GitHub repo URL of the collection and a `version`, the version can be a version number or `latest`, for example:
 
