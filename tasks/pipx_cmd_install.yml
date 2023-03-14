@@ -148,7 +148,7 @@
           when: ans_pipx_inject is defined
 
         - name: Inject PyPI packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps {{ ans_pipx_inject_str }}"
+          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_inject_str }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           when:
