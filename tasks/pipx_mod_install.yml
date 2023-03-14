@@ -130,7 +130,7 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_injected is defined
 
-        - name: Set a fact for the pipx packages, extras and versions to be injected
+        - name: Set an array for the pipx packages, extras and versions to be injected
           ansible.builtin.set_fact:
             ans_pipx_inject: "{{ ans_pipx_inject + [ans_pipx_inject_pkg] }}"
           when:
@@ -146,7 +146,7 @@
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
 
-        - name: Debug the pipx packages to be injected
+        - name: Debug the list of pipx packages to be injected
           ansible.builtin.debug:
             var: ans_pipx_inject
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
