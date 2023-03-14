@@ -42,6 +42,7 @@ ans_pipx_inject: []
 ans_pipx_list_ansible_version_jmespath_query: "venvs.ansible.metadata.main_package.package_version"
 ans_pipx_list_injected_pkgs_jmespath_query: "venvs.ansible.metadata.injected_packages.*.{name: package,version: package_version}"
 ans_pipx_list_pkgs_jmespath_query: "venvs.*.metadata[].main_package.{name: package,version: package_version}"
+ans_pipx_path: /usr/bin/pipx
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
 ...
