@@ -23,6 +23,7 @@
         - name: Set a fact for the path to activate-global-python-argcomplete
           ansible.builtin.set_fact:
             ans_argcomplete_path: "{% if '/usr/bin/activate-global-python-argcomplete3' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/activate-global-python-argcomplete3{% elif '/usr/bin/activate-global-python-argcomplete' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/activate-global-python-argcomplete{% endif %}"
+            ans_argcomplete_register_path: "{% if '/usr/bin//usr/bin/register-python-argcomplete3' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/register-python-argcomplete3{% elif '/usr/bin/register-python-argcomplete' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/register-python-argcomplete{% endif %}"
 
         - name: Debug the path to activate-global-python-argcomplete
           ansible.builtin.debug:
