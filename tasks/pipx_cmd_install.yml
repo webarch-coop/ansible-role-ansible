@@ -17,7 +17,7 @@
       register: ans_pipx_ansible_installed
       when:
         - ans_required_state == "present"
-        - ( ans_pipx_ansible_version is not defined ) or ( ( ans_pipx_ansible_version is defined ) and ( ans_pipx_ansible_version | length == 0 ) )
+        - ( ans_pipx_installed_version is not defined ) or ( ( ans_pipx_installed_version is defined ) and ( ans_pipx_installed_version | length == 0 ) )
         - ( ( not ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'gt') ) ) or ( ( ans_downgrade | bool ) and ( ans_required_version is version(ans_installed_version, 'lt') ) )
 
     - name: Debug ans_pipx_ansible_installed
@@ -35,9 +35,9 @@
         - ans_pipx_ansible_state is defined
         - ans_pipx_ansible_state | length > 0
         - ans_pipx_ansible_state == "present"
-        - ans_pipx_ansible_version is defined
-        - ans_pipx_ansible_version | length > 0
-        - ans_pipx_ansible_version is version(ans_required_version, 'lt')
+        - ans_pipx_installed_version is defined
+        - ans_pipx_installed_version | length > 0
+        - ans_pipx_installed_version is version(ans_required_version, 'lt')
 
     - name: Debug ans_pipx_ansible_upgraded
       ansible.builtin.debug:
@@ -73,17 +73,17 @@
       when:
         - ans_downgrade | bool
         - ans_required_version is version(ans_installed_version, 'ne')
-        - ans_pipx_ansible_version is defined
-        - ans_pipx_ansible_version | length > 0
-        - ans_required_version is version(ans_pipx_ansible_version, 'lt')
+        - ans_pipx_installed_version is defined
+        - ans_pipx_installed_version | length > 0
+        - ans_required_version is version(ans_pipx_installed_version, 'lt')
 
     - name: Remove Ansible using pipx
       ansible.builtin.command: "{{ ans_pipx_path }} uninstall ansible"
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_removed
       when:
-        - ans_pipx_ansible_version is defined
-        - ans_pipx_ansible_version | length > 0
+        - ans_pipx_installed_version is defined
+        - ans_pipx_installed_version | length > 0
         - ( ans_required_state == "absent" ) or ( ( ans_required_state == "present" ) and ( ans_installed_version is version(ans_required_version, 'eq') ) )
 
     - name: Debug ans_pipx_ansible_removed
@@ -105,9 +105,9 @@
 
         - name: Debug pipx Ansible version
           ansible.builtin.debug:
-            var: ans_pipx_ansible_version
+            var: ans_pipx_installed_version
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-          when: ans_pipx_ansible_version is defined
+          when: ans_pipx_installed_version is defined
 
         - name: Debug pipx injected packages
           ansible.builtin.debug:
