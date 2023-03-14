@@ -27,7 +27,7 @@
         var: ans_init
       when: ans_init != "systemd"
 
-    - name: Stat ansible
+    - name: Stat system ansible
       ansible.builtin.stat:
         path: "{{ ans_ansible_path }}"
       register: ans_stat_ansible
@@ -125,43 +125,166 @@
         var: ans_python_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Check if the installed version of ansible-galaxy supports JSON output
-      ansible.builtin.command: "{{ ans_ansible_galaxy_path }} collection list --format json"
+    - name: Check if the system installed version of ansible-galaxy supports JSON output
+      ansible.builtin.command: "{{ ans_system_galaxy_path }} collection list --format json"
       check_mode: false
       changed_when: false
-      register: ans_galaxy_json
-      failed_when: ans_galaxy_json.rc is not ansible.builtin.regex('^0|2$')
+      register: ans_system_galaxy_json_check
+      failed_when: ans_system_galaxy_json_check.rc is not ansible.builtin.regex('^0|2$')
 
     - name: Set a fact for JSON output support in ansible-galaxy
       ansible.builtin.set_fact:
-        ans_galaxy_json_output: "{% if ans_galaxy_json.rc == 0 %}true{% else %}false{% endif %}"
+        ans_system_galaxy_json: "{% if ans_system_galaxy_json_check.rc == 0 %}true{% else %}false{% endif %}"
 
-    - name: Ansible Galaxy supports JSON output
+    - name: Check the users ansible-galaxy
       block:
 
-        - name: Debug Ansible Galaxy collections
+        - name: Check if a user installed ansible-galaxy exists
+          ansible.builtin.stat:
+            path: "{{ ans_user_bin }}/ansible-galaxy"
+          register: ans_user_galaxy_presence
+          when: ansible_effective_user_id != 0
+
+        - name: Check the user ansible-galaxy when present
+          block:
+
+            - name: Check if the user installed version of ansible-galaxy supports JSON output
+              ansible.builtin.command: "{{ ans_user_galaxy_path }} collection list --format json"
+              check_mode: false
+              changed_when: false
+              register: ans_user_galaxy_json_check
+              failed_when: ans_user_galaxy_json_check.rc is not ansible.builtin.regex('^0|2$')
+
+            - name: Set a fact for JSON output support in ansible-galaxy
+              ansible.builtin.set_fact:
+                ans_user_galaxy_json: "{% if ans_user_galaxy_json_check.rc == 0 %}true{% else %}false{% endif %}"
+
+            - name: Users ansible-galaxy supports JSON output
+              block:
+
+                - name: Debug users ansible-galaxy collections
+                  ansible.builtin.debug:
+                    var: ans_user_galaxy_list_json.stdout
+                    verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+                - name: Set a fact for the users ansiblegalaxy collections present
+                  ansible.builtin.set_fact:
+                    ans_user_col_existing: "{{ ans_user_galaxy_list_json.stdout | from_json }}"
+
+                - name: Debug ans_user_col_existing
+                  ansible.builtin.debug:
+                    var: ans_user_col_existing
+                    verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+                - name: Set a fact for the lists of ansible-galaxy user collections existing
+                  ansible.builtin.set_fact:
+                    ans_user_col_existing: "{{ ans_user_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+                  when: ans_user_col_existing[ans_col_path_user] is defined
+
+                - name: Set a fact for the lists of ansible-galaxy user collections existing
+                  ansible.builtin.set_fact:
+                    ans_user_col_existing: "{{ ans_user_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+                  when: ans_user_col_existing[ans_col_path_user] is defined
+
+                - name: Debug ans_user_col_existing
+                  ansible.builtin.debug:
+                    var: ans_user_col_existing
+                    verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+                  when: ans_user_col_existing is defined
+
+                - name: Debug ans_user_col_existing
+                  ansible.builtin.debug:
+                    var: ans_user_col_existing
+                    verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+                  when: ans_user_col_existing is defined
+
+              when: ans_user_galaxy_json | bool
+
+            - name: Users ansible-galaxy does not support JSON output
+              block:
+
+                - name: Check users ansible-galaxy output
+                  ansible.builtin.command: "{{ ans_users_galaxy_path }} collection list"
+                  check_mode: false
+                  changed_when: false
+                  register: ans_user_galaxy_txt
+
+                - name: Check ansible-galaxy user collections
+                  block:
+
+                    - name: Check ansible-galaxy user collections
+                      ansible.builtin.shell: >-
+                        set -e -o pipefail &&
+                        {{ ans_user_galaxy_path }} collection list |
+                        grep -e '^#[ ]{{ ans_col_path_user }}$' --after-context=1000 |
+                        grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
+                        sed 's/ /=/' | sed 's/ //g' | jo
+                      args:
+                        executable: "{{ ans_bash }}"
+                      check_mode: false
+                      changed_when: false
+                      register: ans_galaxy_col_user_list
+
+                    - name: Debug ansible-galaxy collections
+                      ansible.builtin.debug:
+                        var: ans_galaxy_col_user_list.stdout
+                        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+                    - name: Set a fact for the ansible-galaxy user collections existing
+                      ansible.builtin.set_fact:
+                        ans_user_col_existing: "{{ ans_galaxy_col_user_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
+
+                    - name: Debug user ans_col_existing
+                      ansible.builtin.debug:
+                        var: ans_user_col_existing
+                        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+                  when: ans_col_path_user in ans_user_galaxy_txt.stdout
+
+              when: not ans_user_galaxy_json | bool
+
+          when: ans_user_galaxy_presence.stat.exists | bool
+
+
+      when: ansible_effective_user_id
+
+    - name: Check if the user installed version of ansible-galaxy supports JSON output
+      ansible.builtin.command: "{{ ans_system_galaxy_path }} collection list --format json"
+      check_mode: false
+      changed_when: false
+      register: ans_system_galaxy_list_json
+      failed_when: ans_system_galaxy_list_json.rc is not ansible.builtin.regex('^0|2$')
+
+    - name: Set a fact for JSON output support in ansible-galaxy
+      ansible.builtin.set_fact:
+        ans_system_galaxy_json: "{% if ans_system_galaxy_list_json.rc == 0 %}true{% else %}false{% endif %}"
+
+    - name: System ansible-galaxy supports JSON output
+      block:
+
+        - name: Debug ansible-galaxy collections
           ansible.builtin.debug:
-            var: ans_galaxy_json.stdout
+            var: ans_system_galaxy_list_json.stdout
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-        - name: Set a fact for the Ansible Galaxy collections present
+        - name: Set a fact for the ansible-galaxy collections present
           ansible.builtin.set_fact:
-            ans_col_existing: "{{ ans_galaxy_json.stdout | from_json }}"
+            ans_system_col_existing: "{{ ans_system_galaxy_list_json.stdout | from_json }}"
 
-        - name: Debug ans_col_existing
+        - name: Debug ans_system_col_existing
           ansible.builtin.debug:
-            var: ans_col_existing
+            var: ans_system_col_existing
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-        - name: Set a fact for the lists of Ansible Galaxy system collections existing
+        - name: Set a fact for the lists of ansible-galaxy system collections existing
           ansible.builtin.set_fact:
-            ans_system_col_existing: "{{ ans_col_existing[ans_col_path_system] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
-          when: ans_col_existing[ans_col_path_system] is defined
+            ans_system_col_existing: "{{ ans_system_col_existing[ans_col_path_system] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+          when: ans_system_col_existing[ans_col_path_system] is defined
 
-        - name: Set a fact for the lists of Ansible Galaxy user collections existing
+        - name: Set a fact for the lists of ansible-galaxy user collections existing
           ansible.builtin.set_fact:
-            ans_user_col_existing: "{{ ans_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
-          when: ans_col_existing[ans_col_path_user] is defined
+            ans_user_col_existing: "{{ ans_system_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+          when: ans_system_col_existing[ans_col_path_user] is defined
 
         - name: Debug ans_system_col_existing
           ansible.builtin.debug:
@@ -175,24 +298,24 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_user_col_existing is defined
 
-      when: ans_galaxy_json_output | bool
+      when: ans_system_galaxy_json | bool
 
-    - name: Ansible Galaxy prior to version 2.13.1 doesn't support JSON output
+    - name: Prior to ansible-galaxy version 2.13.1 thre is no JSON output
       block:
 
-        - name: Check Ansible Galaxy output
-          ansible.builtin.command: "{{ ans_ansible_galaxy_path }} collection list"
+        - name: Check system ansible-galaxy output
+          ansible.builtin.command: "{{ ans_system_galaxy_path }} collection list"
           check_mode: false
           changed_when: false
-          register: ans_galaxy_txt
+          register: ans_system_galaxy_txt
 
-        - name: Check Ansible Galaxy system collections
+        - name: Check ansible-galaxy system collections
           block:
 
-            - name: Check Ansible Galaxy system collections
+            - name: Check ansible-galaxy system collections
               ansible.builtin.shell: >-
                 set -e -o pipefail &&
-                {{ ans_ansible_galaxy_path }} collection list |
+                {{ ans_system_galaxy_path }} collection list |
                 grep -e '^#[ ]{{ ans_col_path_system }}$' --after-context=1000 |
                 grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
                 sed 's/ /=/' | sed 's/ //g' | jo
@@ -202,67 +325,35 @@
               changed_when: false
               register: ans_galaxy_col_system_list
 
-            - name: Debug Ansible Galaxy collections
+            - name: Debug ansible-galaxy collections
               ansible.builtin.debug:
                 var: ans_galaxy_col_system_list.stdout
                 verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-            - name: Set a fact for the Ansible Galaxy system collections existing
+            - name: Set a fact for the ansible-galaxy system collections existing
               ansible.builtin.set_fact:
                 ans_system_col_existing: "{{ ans_galaxy_col_system_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
 
-            - name: Debug system ans_col_existing
+            - name: Debug system ans_system_col_existing
               ansible.builtin.debug:
                 var: ans_system_col_existing
                 verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
           when: ans_col_path_system in ans_galaxy_txt.stdout
 
-        - name: Check Ansible Galaxy user collections
-          block:
+      when: not ans_system_galaxy_json | bool
 
-            - name: Check Ansible Galaxy user collections
-              ansible.builtin.shell: >-
-                set -e -o pipefail &&
-                {{ ans_ansible_galaxy_path }} collection list |
-                grep -e '^#[ ]{{ ans_col_path_user }}$' --after-context=1000 |
-                grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
-                sed 's/ /=/' | sed 's/ //g' | jo
-              args:
-                executable: "{{ ans_bash }}"
-              check_mode: false
-              changed_when: false
-              register: ans_galaxy_col_user_list
-
-            - name: Debug Ansible Galaxy collections
-              ansible.builtin.debug:
-                var: ans_galaxy_col_user_list.stdout
-                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-            - name: Set a fact for the Ansible Galaxy user collections existing
-              ansible.builtin.set_fact:
-                ans_user_col_existing: "{{ ans_galaxy_col_user_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
-
-            - name: Debug user ans_col_existing
-              ansible.builtin.debug:
-                var: ans_user_col_existing
-                verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
-          when: ans_col_path_user in ans_galaxy_txt.stdout
-
-      when: not ans_galaxy_json_output | bool
-
-    - name: Set facts based on the Ansible Galaxy community.general version installed
+    - name: Set facts based on the ansible-galaxy community.general version installed
       block:
 
-        - name: Set a fact for the Ansible Galaxy community.general version when installed as a system collection
+        - name: Set a fact for the ansible-galaxy community.general version when installed as a system collection
           ansible.builtin.set_fact:
             ans_col_comgen_system_version: "{{ ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
           when:
             - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
             - ans_system_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) | type_debug == "str"
 
-        - name: Set a fact for the Ansible Galaxy community.general version when installed as a user collection
+        - name: Set a fact for the ansible-galaxy community.general version when installed as a user collection
           ansible.builtin.set_fact:
             ans_col_comgen_user_version: "{{ ans_user_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
           when:

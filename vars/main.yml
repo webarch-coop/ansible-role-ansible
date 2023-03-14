@@ -8,12 +8,11 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-ans_ansible_galaxy_path: /usr/bin/ansible-galaxy
 # Bullseye and Jammy have 2.10.7
 # https://packages.debian.org/bullseye/ansible
 # https://packages.ubuntu.com/jammy/ansible
 ans_ansible_min_version: "2.10.7"
-ans_ansible_path: /usr/bin/ansible
+ans_ansible_path: "{{ ans_system_bin }}/ansible"
 ans_bash: "{% if ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/usr/bin/bash{% endif %}"
 ans_col: false
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
@@ -22,9 +21,11 @@ ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
 ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collections"
+ans_deb_name_jmespath_query: '"ansible-core"[0].name'
+ans_deb_version_jmespath_query: '"ansible-core"[0].version'
 # Don't use community.general.ansible_galaxy_install by default because of this issue
 # https://github.com/ansible-collections/community.general/issues/5661
-ans_pip_path: /usr/bin/pip3
+ans_pip_path: "{{ ans_system_bin }}/bin/pip3"
 ans_pypi_ansible_state_jmespath_query: "[?name=='ansible'].state|[0]"
 ans_pypi_ansible_version_jmespath_query: "[?name=='ansible'].version|[0]"
 ans_pypi_extras: []
@@ -44,7 +45,8 @@ ans_pipx_list_injected_pkgs_jmespath_query: "venvs.ansible.metadata.injected_pac
 ans_pipx_list_pkgs_jmespath_query: "venvs.*.metadata[].main_package.{name: package,version: package_version}"
 ans_pipx_mod: false
 ans_pipx_mod_info: false
-ans_pipx_path: /usr/bin/pipx
-ans_deb_name_jmespath_query: '"ansible-core"[0].name'
-ans_deb_version_jmespath_query: '"ansible-core"[0].version'
+ans_pipx_path: "{{ ans_system_bin }}/pipx"
+ans_system_bin: /usr/bin
+ans_system_galaxy_path: "{{ ans_system_bin }}/ansible-galaxy"
+ans_user_galaxy_path: "{{ ans_user_bin }}/ansible-galaxy"
 ...

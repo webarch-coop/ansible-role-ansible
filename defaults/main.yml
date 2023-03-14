@@ -116,5 +116,6 @@ ans_pipx_root_env:
   PIPX_BIN_DIR: /usr/local/bin
 ans_pipx_user_env:
   PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
-  PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
+  PIPX_BIN_DIR: "{{ ans_user_bin }}"
+ans_user_bin: "{{ ansible_env.HOME }}/.local/bin"
 ...

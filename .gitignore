@@ -1,3 +1,4 @@
 galaxy/*
 *.retry
 .*.swp
+.*.swo

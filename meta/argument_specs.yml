@@ -108,4 +108,8 @@ argument_specs:
             type: str
             required: false
             description: The PIPX_BIN_DIR environment variable value for pipx when run as a regular user.
+      ans_user_bin:
+        type: str
+        required: false
+        description: The non-root user bin dir.
 ...

@@ -104,6 +104,10 @@ When the `state` is not `absent` the `url` and `version` are required, when the 
 
 Note that the `url` is used to download a JSON file that lists all the versions of the package that are available, the URL for the JSON file is the `url` appended with `/json`, the URL without `/json` redirects to the project page, for example `https://pypi.org/pypi/ansible-core` redirects to `https://pypi.org/project/ansible-core/`.
 
+### ans_user_bin
+
+An optional path for the non-root users `bin` directory, `ans_user_bin` defaults to `{{ ansible_env.HOME }}/.local/bin`.
+
 ## Notes
 
 List the PyPI system packages present:
