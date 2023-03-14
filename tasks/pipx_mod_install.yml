@@ -17,7 +17,7 @@
         source: "ansible=={{ ans_required_version }}"
         install_deps: true
         state: install
-        executable: "{{ pipx_path }}"
+        executable: "{{ ans_pipx_path }}"
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_installed
       when:
@@ -37,7 +37,7 @@
         source: "ansible=={{ ans_required_version }}"
         install_deps: true
         state: upgrade
-        executable: "{{ pipx_path }}"
+        executable: "{{ ans_pipx_path }}"
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_upgraded
       when:
@@ -62,7 +62,7 @@
           community.general.pipx:
             name: ansible
             state: absent
-            executable: "{{ pipx_path }}"
+            executable: "{{ ans_pipx_path }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_downgrade_removed
 
@@ -78,7 +78,7 @@
             source: "ansible=={{ ans_required_version }}"
             install_deps: true
             state: install
-            executable: "{{ pipx_path }}"
+            executable: "{{ ans_pipx_path }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_downgrade_installed
 
@@ -99,7 +99,7 @@
       community.general.pipx:
         name: ansible
         state: absent
-        executable: "{{ pipx_path }}"
+        executable: "{{ ans_pipx_path }}"
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_removed
       when:
@@ -178,7 +178,7 @@
             name: ansible
             inject_packages: "{{ ans_pipx_inject }}"
             state: inject
-            executable: "{{ pipx_path }}"
+            executable: "{{ ans_pipx_path }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           when:

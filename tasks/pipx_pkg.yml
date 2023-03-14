@@ -119,7 +119,7 @@
             source: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
             install_deps: false
             state: "{{ ans_pipx_pkg_state }}"
-            executable: "{{ pipx_path }}"
+            executable: "{{ ans_pipx_path }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           when: ans_pipx_pkg_state is defined
 
