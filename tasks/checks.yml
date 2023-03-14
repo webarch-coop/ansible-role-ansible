@@ -273,22 +273,22 @@
           ansible.builtin.set_fact:
             ans_col: true
           when: >-
-            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('6.2.0', 'ge') ) or
-            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('6.2.0', 'ge') )
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('6.2.0', 'ge') ) ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('6.2.0', 'ge') ) )
 
         - name: Set ans_pipx_mod to true when community.general 3.8.0 or greater is available
           ansible.builtin.set_fact:
             ans_pipx_mod: true
           when: >-
-            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('3.8.0', 'ge') ) or
-            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('3.8.0', 'ge') )
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('3.8.0', 'ge') ) ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('3.8.0', 'ge') ) )
 
         - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available
           ansible.builtin.set_fact:
             ans_pipx_mod_info: true
           when: >-
-            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('5.6.0', 'ge') ) or
-            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('5.6.0', 'ge') )
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('5.6.0', 'ge') ) ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('5.6.0', 'ge') ) )
 
       when:
         - ans_system_col_existing is defined
