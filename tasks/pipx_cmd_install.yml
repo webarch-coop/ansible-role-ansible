@@ -115,7 +115,7 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_injected is defined
 
-        - name: Set a fact for the pipx packages, extras and versions to be injected
+        - name: Set an array for the pipx packages, extras and versions to be injected
           ansible.builtin.set_fact:
             ans_pipx_inject: "{{ ans_pipx_inject + [ans_pipx_inject_pkg] }}"
           when:
@@ -138,7 +138,7 @@
           when: ans_pipx_inject is defined
 
         - name: Inject PyPI packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps {{ ans_pipx_inject }}"
+          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps{% for ans_pipx_inject_pkg in ans_pipx_inject }} {{ ans_pipx_inject_pkg }}{% endfor %}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           when:
