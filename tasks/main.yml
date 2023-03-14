@@ -72,6 +72,9 @@
       loop_control:
         loop_var: ans_col
         label: "{{ ans_col.name }}"
+      when:
+        - ans_cols is defined
+        - ans_cols != []
 
     - name: Install Ansible collections when not already available as system or user collections
       ansible.builtin.include_tasks: col.yml

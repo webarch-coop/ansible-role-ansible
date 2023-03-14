@@ -60,7 +60,7 @@
     - name: Debug ans_required_state
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Set a fact for the required Ansible state and version
       ansible.builtin.set_fact:
