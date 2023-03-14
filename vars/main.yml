@@ -32,12 +32,16 @@ ans_pypi_extras_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].provides_ext
 ans_pypi_pkg_uninstall: []
 ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 ans_pipx: false
-ans_pipx_ansible_version_jmespath_query: "application[?name=='ansible'].version|[0]"
 ans_pipx_app_ver_jmespath_query: "application[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 ans_pipx_apps_jmespath_query: "application[].name"
 ans_pipx_bin_jmespath_query: "files[?mode=='0775'].path"
-ans_pipx_injected_packages_jmespath_query: "application[?name=='ansible'].injected|[0]"
+ans_pipx_info_ansible_version_jmespath_query: "application[?name=='ansible'].version|[0]"
+ans_pipx_info_injected_pkgs_jmespath_query: "application[?name=='ansible'].injected|[0]"
+ans_pipx_info_pkgs_jmespath_query: "application[].{name: name,version: version}"
 ans_pipx_inject: []
+ans_pipx_list_ansible_version_jmespath_query: "venvs.ansible.metadata.main_package.package_version"
+ans_pipx_list_injected_pkgs_jmespath_query: "venvs.ansible.metadata.injected_packages.*.{name: package,version: package_version}"
+ans_pipx_list_pkgs_jmespath_query: "venvs.*.metadata[].main_package.{name: package,version: package_version}"
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
 ...

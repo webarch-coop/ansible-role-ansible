@@ -314,49 +314,66 @@
         - name: Debug ans_pipx variable
           ansible.builtin.debug:
             var: ans_pipx
-            verbosity: 2
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
           when: ans_pipx is defined
 
-        - name: Gather pipx_info
-          community.general.pipx_info:
-            include_deps: true
-            include_injected: true
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
-          register: ans_pipx_info
-
-        - name: Debug pipx info
-          ansible.builtin.debug:
-            var: ans_pipx_info
-            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-        - name: Debug existing pipx venvs
-          ansible.builtin.debug:
-            msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_apps_jmespath_query) }}"
-            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-        - name: Set pipx variables when Ansible is a pipx application
+        - name: Ansible collection community.general >= 5.6.0 is required for community.general.pipx_info module
           block:
 
-            - name: Set a fact for the pipx Ansible version
-              ansible.builtin.set_fact:
-                ans_pipx_ansible_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) }}"
+            - name: Run pipx list when the community.general collection doesn't contain community.general.pipx_info
+              ansible.builtin.command: pipx list --json
+              check_mode: false
+              changed_when: false
+              register: ans_pipx_list_json
 
-            - name: Debug pipx Ansible version
+            - name: Set a fact for the pipx list
+              ansible.builtin.set_fact:
+                ans_pipx_list: "{{ ans_pipx_list_json.stdout | from_json }}"
+
+            - name: Debug ans_pipx_list
               ansible.builtin.debug:
-                var: ans_pipx_ansible_version
+                var: ans_pipx_list
+                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+            - name: Set a fact for the pipx installed packages
+              ansible.builtin.set_fact:
+                ans_pipx_pkgs: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_pkgs_jmespath_query) }}"
+
+            - name: Debug ans_pipx_pkgs
+              ansible.builtin.debug:
+                var: ans_pipx_pkgs
                 verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-            - name: Set a fact for the pipx Ansible venv existing injected packages
-              ansible.builtin.set_fact:
-                ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
+            - name: Set a fact for the Ansible version and injected packages when the Ansible pipx venv exists
+              block:
 
-            - name: Debug pipx Ansible venv existing injected packages
-              ansible.builtin.debug:
-                var: ans_pipx_injected
-                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+                - name: Set a fact for the pipx Ansible version
+                  ansible.builtin.set_fact:
+                    ans_pipx_ansible_version: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_ansible_version_jmespath_query) }}"
 
-          # TODO files the following when
-          when: ans_pipx_info.applications.ansible is defined
+                - name: Debug pipx Ansible version
+                  ansible.builtin.debug:
+                    var: ans_pipx_ansible_version
+                    verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+                - name: Set a fact for the pipx Ansible venv existing injected packages
+                  ansible.builtin.set_fact:
+                    ans_pipx_injected: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_injected_pkgs_jmespath_query) }}"
+
+                - name: Debug pipx Ansible venv existing injected packages
+                  ansible.builtin.debug:
+                    var: ans_pipx_injected
+                    verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+              when:
+                - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) is defined
+                - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug == "str"
+
+          when: ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('5.6.0', 'lt')
+
+        - name: Include community.general.pipx_info module tasks as community.general >= 5.6.0
+          ansible.builtin.include_tasks: check_pipx_info.yml
+          when: ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) is version('5.6.0', 'ge')
 
         - name: Check that venv is not set to the package name when defined and that the venv is set to exist
           ansible.builtin.assert:
@@ -369,10 +386,7 @@
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
 
-      # TODO check that community.general is version('5.6.0', 'ge') as that is required for community.general.pipx_info
-      when:
-        - ans_pipx_version is version('1.0.0', '>=')
-        - ans_galaxy_install | bool
+      when: ans_pipx_version is version('1.0.0', 'ge')
 
     - name: Check the version of pip
       ansible.builtin.command: python3 -m pip --version

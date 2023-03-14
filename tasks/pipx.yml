@@ -160,16 +160,16 @@
 
     - name: Set a fact for the pipx Ansible version installed
       ansible.builtin.set_fact:
-        ans_pipx_installed_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) }}"
-      when: ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) | type_debug != "NoneType"
+        ans_pipx_installed_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_info_ansible_version_jmespath_query) }}"
+      when: ans_pipx_info | community.general.json_query(ans_pipx_info_ansible_version_jmespath_query) | type_debug != "NoneType"
 
     - name: Inject packages into the Ansible pipx venv when it exists
       block:
 
         - name: Set a fact for the pipx Ansible version and injected packages
           ansible.builtin.set_fact:
-            ans_pipx_ansible_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_ansible_version_jmespath_query) }}"
-            ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_injected_packages_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
+            ans_pipx_ansible_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_info_ansible_version_jmespath_query) }}"
+            ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_info_injected_pkgs_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
 
         - name: Debug pipx Ansible version
           ansible.builtin.debug:
