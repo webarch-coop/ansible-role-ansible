@@ -269,6 +269,20 @@
             - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
             - ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) | type_debug == "str"
 
+        - name: Set ans_pipx_mod to true when community.general 3.8.0 or greater is available as than means community.general.pipx can be used
+          ansible.builtin.set_fact:
+            ans_pipx_mod: true
+          when: >-
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('3.8.0', 'ge') ) ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('3.8.0', 'ge') ) )
+
+        - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
+          ansible.builtin.set_fact:
+            ans_pipx_mod_info: true
+          when: >-
+            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('5.6.0', 'ge') ) ) or
+            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('5.6.0', 'ge') ) )
+
         - name: Set ans_col to true when community.general 6.2.0 or greater is available
           ansible.builtin.set_fact:
             ans_col: true
@@ -276,28 +290,9 @@
             ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('6.2.0', 'ge') ) ) or
             ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('6.2.0', 'ge') ) )
 
-        - name: Set ans_pipx_mod to true when community.general 3.8.0 or greater is available
-          ansible.builtin.set_fact:
-            ans_pipx_mod: true
-          when: >-
-            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('3.8.0', 'ge') ) ) or
-            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('3.8.0', 'ge') ) )
-
-        - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available
-          ansible.builtin.set_fact:
-            ans_pipx_mod_info: true
-          when: >-
-            ( ( ans_col_comgen_system_version is defined ) and ( ans_col_comgen_system_version | type_debug == "str" ) and ( ans_col_comgen_system_version is version('5.6.0', 'ge') ) ) or
-            ( ( ans_col_comgen_user_version is defined ) and ( ans_col_comgen_user_version | type_debug == "str" ) and ( ans_col_comgen_user_version is version('5.6.0', 'ge') ) )
-
       when:
         - ans_system_col_existing is defined
         - ans_system_col_existing != []
-
-    - name: Debug ans_col
-      ansible.builtin.debug:
-        var: ans_col
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Debug ans_pipx_mod
       ansible.builtin.debug:
@@ -307,6 +302,11 @@
     - name: Debug ans_pipx_mod_info
       ansible.builtin.debug:
         var: ans_pipx_mod_info
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Debug ans_col
+      ansible.builtin.debug:
+        var: ans_col
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
@@ -434,7 +434,7 @@
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Include PATH and python-argcomplete check when the init system is not sh
-      ansible.builtin.include_tasks: bash_checks.yml
+      ansible.builtin.include_tasks: check_bash.yml
       when: ans_init != "sh"
 
   tags:
