@@ -38,7 +38,9 @@
 
     - name: Debug ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query)
       ansible.builtin.debug:
-        msg: "{{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+        msg:
+          - "Value: {{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+          - "Type: {{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug }}"
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Set a fact for the Ansible version and injected packages when the Ansible pipx venv exists
@@ -62,9 +64,7 @@
             var: ans_pipx_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-      when:
-        - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) is defined
-        - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug == "str"
+      when: ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug != "NoneType"
 
   tags:
     - ansible
