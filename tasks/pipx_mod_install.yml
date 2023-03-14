@@ -121,16 +121,6 @@
       ansible.builtin.include_tasks: check_pipx_info.yml
       when: ans_pipx_mod_info | bool
 
-    - name: Debug pipx info
-      ansible.builtin.debug:
-        var: ans_pipx_info
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-    - name: Set a fact for the pipx Ansible version installed
-      ansible.builtin.set_fact:
-        ans_pipx_installed_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_info_ansible_version_jmespath_query) }}"
-      when: ans_pipx_info | community.general.json_query(ans_pipx_info_ansible_version_jmespath_query) | type_debug != "NoneType"
-
     - name: Inject packages into the Ansible pipx venv when it exists
       block:
 
@@ -198,11 +188,6 @@
         - name: Include community.general.pipx_info module tasks as community.general >= 5.6.0
           ansible.builtin.include_tasks: check_pipx_info.yml
           when: ans_pipx_mod_info | bool
-
-        - name: Debug pipx info
-          ansible.builtin.debug:
-            var: ans_pipx_info
-            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
         - name: Find executables in the Ansible venv bin
           ansible.builtin.find:
