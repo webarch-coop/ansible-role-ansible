@@ -25,6 +25,13 @@
             - ans_argcomplete_root_path is defined
             - ans_argcomplete_root_path | length > 0
 
+        - name: Bash completion for pipx present using argcomplete present system-wide
+          ansible.builtin.shell: "{{ ans_argcomplete_path }} pipx > /etc/bash_completion.d/pipx-completion.sh"
+          args:
+            creates: /etc/bash_completion.d/pipx-completion.sh
+            executable: "{{ ans_bash }}"
+          when: ansible_effective_user_id == 0
+
         - name: Bash completion present using argcomplete present locally
           ansible.builtin.command: "{{ ans_argcomplete_path }} --user"
           args:
@@ -33,6 +40,13 @@
             - ansible_effective_user_id != 0
             - ans_argcomplete_user_path is defined
             - ans_argcomplete_user_path | length > 0
+
+        - name: Bash completion for pipx present using argcomplete present locally
+          ansible.builtin.shell: "{{ ans_argcomplete_path }} pipx > {{ ansible_env.HOME }}/.bash_completion.d/pipx-completion.sh"
+          args:
+            creates: "{{ ansible_env.HOME }}/.bash_completion.d/pipx-completion.sh"
+            executable: "{{ ans_bash }}"
+          when: ansible_effective_user_id != 0
 
       when:
         - ansible_env.SHELL is defined
