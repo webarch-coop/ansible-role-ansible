@@ -59,9 +59,7 @@
             var: ans_pipx_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-      when:
-        - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) is defined
-        - ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug == "str"
+      when: ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug == "str"
 
   tags:
     - ansible
