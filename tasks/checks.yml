@@ -150,6 +150,11 @@
           changed_when: false
           register: ans_user_galaxy_version_check
 
+        - name: Debug the first line of ans_user_galaxy_version_check
+          ansible.builtin.debug:
+            var: ans_user_galaxy_version_check.stdout_lines[0]
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
         - name: Set a fact for the user installed ansible-galaxy when core is not in the output
           ansible.builtin.set_fact:
             ans_user_galaxy_version: "{{ ans_user_galaxy_version_check.stdout_lines[0].split(' ')[1] | string }}"
