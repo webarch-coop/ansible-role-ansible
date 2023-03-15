@@ -108,7 +108,7 @@
 
             - name: "Ansible collection install using command module for {{ ans_col.name }}"
               ansible.builtin.command: >-
-                {{ ans_system_galaxy_path }} collection install
+                {{ ans_galaxy_path }} collection install
                 {{ ans_col.name }}:{{ ans_col_version_required }} --force
               changed_when: true
               register: ans_col_install
@@ -126,7 +126,7 @@
 
             - name: "Ansible collection install using command module without certificate verification for {{ ans_col.name }}"
               ansible.builtin.command: >-
-                {{ ans_system_galaxy_path }} collection install
+                {{ ans_galaxy_path }} collection install
                 {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force
               changed_when: true
 
