@@ -464,6 +464,16 @@
         - ans_system_col_existing is defined
         - ans_system_col_existing != []
 
+    - name: Debug system ansible-galaxy version variable type
+      ansible.builtin.debug:
+        msg: "{{ ans_system_galaxy_version | type_debug }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Debug user ansible-galaxy version variable type
+      ansible.builtin.debug:
+        msg: "{{ ans_user_galaxy_version | type_debug }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
     - name: Set a fact for the ansible-galaxy version to use
       ansible.builtin.set_fact:
         ans_galaxy_path: "{% if ans_user_galaxy_version is defined and ans_user_galaxy_version is version('ans_system_galaxy_version', 'gt') %}{{ ans_user_galaxy_path }}{% else %}{{ ans_system_galaxy_path }}{% endif %}"
