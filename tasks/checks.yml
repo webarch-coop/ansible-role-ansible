@@ -163,7 +163,7 @@
         - name: Set a fact for the user installed ansible-galaxy when core is in the output
           ansible.builtin.set_fact:
             ans_user_galaxy_version: "{{ ans_user_galaxy_version_check.stdout_lines[0].split(' ')[2] | regex_replace('[]]$') | string }}"
-          when: ( "core" not in ans_user_galaxy_version_check.stdout_lines[0] )
+          when: ( "core" in ans_user_galaxy_version_check.stdout_lines[0] )
 
         - name: Debug users ansible-galaxy version
           ansible.builtin.debug:
