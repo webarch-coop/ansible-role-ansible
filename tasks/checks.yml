@@ -164,12 +164,12 @@
 
                 - name: Debug users ansible-galaxy collections
                   ansible.builtin.debug:
-                    var: ans_user_galaxy_list_json.stdout
+                    var: ans_user_galaxy_json
                     verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
                 - name: Set a fact for the users ansiblegalaxy collections present
                   ansible.builtin.set_fact:
-                    ans_user_col_existing: "{{ ans_user_galaxy_list_json.stdout | from_json }}"
+                    ans_user_col_existing: "{{ ans_user_galaxy_json_check.stdout | from_json }}"
 
                 - name: Debug ans_user_col_existing
                   ansible.builtin.debug:
