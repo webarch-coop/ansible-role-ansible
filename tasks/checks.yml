@@ -376,7 +376,7 @@
                 var: ans_system_col_existing
                 verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-          when: ans_col_path_system in ans_galaxy_txt.stdout
+          when: ans_col_path_system in ans_system_galaxy_txt.stdout
 
       when: not ans_system_galaxy_json | bool
 
