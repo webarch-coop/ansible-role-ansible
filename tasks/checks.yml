@@ -467,16 +467,16 @@
     - name: Debug system ansible-galaxy version variable type
       ansible.builtin.debug:
         msg: "{{ ans_system_galaxy_version | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Debug user ansible-galaxy version variable type
       ansible.builtin.debug:
         msg: "{{ ans_user_galaxy_version | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Set a fact for the ansible-galaxy version to use
       ansible.builtin.set_fact:
-        ans_galaxy_path: "{% if ans_user_galaxy_version is defined and ans_user_galaxy_version is version('ans_system_galaxy_version', 'gt') %}{{ ans_user_galaxy_path }}{% else %}{{ ans_system_galaxy_path }}{% endif %}"
+        ans_galaxy_path: "{% if ans_user_galaxy_version is defined and ans_user_galaxy_version is version(ans_system_galaxy_version, 'gt') %}{{ ans_user_galaxy_path }}{% else %}{{ ans_system_galaxy_path }}{% endif %}"
 
     - name: Debug the ansible-galaxy path to use
       ansible.builtin.debug:
