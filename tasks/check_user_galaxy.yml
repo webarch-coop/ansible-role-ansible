@@ -55,7 +55,7 @@
       ansible.builtin.assert:
         that:
           - ans_col_path_user_check.stat.exists | bool
-          - ans_col_path_user_check.stat.is_dir | bool
+          - ans_col_path_user_check.stat.isdir | bool
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check if the user installed version of ansible-galaxy supports JSON output
