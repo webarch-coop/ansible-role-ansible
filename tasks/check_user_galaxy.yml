@@ -46,6 +46,18 @@
         var: ans_col_path_user
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
+    - name: Check that the user installed ansible-galaxy python module location exists
+      ansible.builtin.stat:
+        path: "{{ ans_col_path_user }}"
+      register: ans_col_path_user_check
+
+    - name: The user installed ansible-galaxy python module location should be an existing directory
+      ansible.builtin.assert:
+        that:
+          - ans_col_path_user_check.stat.exists | bool
+          - ans_col_path_user_check.stat.is_dir | bool
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
     - name: Check if the user installed version of ansible-galaxy supports JSON output
       ansible.builtin.command: "{{ ans_user_galaxy_path }} collection list --format json"
       check_mode: false
