@@ -86,6 +86,11 @@
             var: ans_user_col_existing
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
+        - name: Debug ans_user_col_existing[ans_col_path_user]
+          ansible.builtin.debug:
+            var: ans_user_col_existing[ans_col_path_user]
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
         - name: Set a fact for the lists of ansible-galaxy user collections existing
           ansible.builtin.set_fact:
             ans_user_col_existing: "{{ ans_user_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
