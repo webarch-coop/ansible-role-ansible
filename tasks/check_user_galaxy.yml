@@ -39,7 +39,7 @@
 
     - name: Set a fact for the user installed ansible-galaxy python module location
       ansible.builtin.set_fact:
-        ans_col_path_user: "{{ ans_user_galaxy_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | split[5] }}"
+        ans_col_path_user: "{{ ans_user_galaxy_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') }}"
 
     - name: Debug the user installed ansible-galaxy python module location
       ansible.builtin.debug:
