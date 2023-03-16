@@ -37,6 +37,17 @@
         var: ans_user_galaxy_version
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
+    - name: Set a fact for the user installed ansible-galaxy python module location
+      ansible.builtin.set_fact:
+        ans_col_path_user: "{{ ans_user_galaxy_version_check.stdout_lines | select('regex', '^  ansible python module location') | split[4] | string }}"
+
+    - name: Debug the user installed ansible-galaxy python module location
+      ansible.builtin.debug:
+        var: ans_col_path_user
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - fail:
+
     - name: Check if the user installed version of ansible-galaxy supports JSON output
       ansible.builtin.command: "{{ ans_user_galaxy_path }} collection list --format json"
       check_mode: false

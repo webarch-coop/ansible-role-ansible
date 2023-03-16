@@ -125,75 +125,6 @@
         var: ans_python_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Include checks for the system installed version of ansible-galaxy
-      ansible.builtin.include_tasks: check_system_galaxy.yml
-
-    - name: Check if a user installed ansible-galaxy exists
-      ansible.builtin.stat:
-        path: "{{ ans_user_bin }}/ansible-galaxy"
-      register: ans_user_galaxy_presence
-
-    - name: Include checks for the user installed version of ansible-galaxy
-      ansible.builtin.include_tasks: check_user_galaxy.yml
-      when: ans_user_galaxy_presence.stat.exists | bool
-
-    - name: Set a fact for the ansible-galaxy version to use
-      ansible.builtin.set_fact:
-        ans_galaxy_path: "{% if ans_user_galaxy_version is defined and ans_user_galaxy_version is version(ans_system_galaxy_version, 'gt') %}{{ ans_user_galaxy_path }}{% else %}{{ ans_system_galaxy_path }}{% endif %}"
-
-    - name: Debug the ansible-galaxy path to use
-      ansible.builtin.debug:
-        var: ans_galaxy_path
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-    - name: Set a fact when Ansible collection community.general 3.5.0 or greater is available as than means community.general.ansible_galaxy_install can be used
-      ansible.builtin.set_fact:
-        ans_galaxy_install_mod: true
-      when: >-
-        ( ( ans_system_galaxy_install_mod is defined ) and ( ans_system_galaxy_install_mod | bool ) ) or
-        ( ( ans_user_galaxy_install_mod is defined ) and ( ans_user_galaxy_install_mod | bool ) )
-
-    - name: Debug ans_galaxy_install_mod
-      ansible.builtin.debug:
-        var: ans_galaxy_install_mod
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-    - name: Set a fact when Ansible collection community.general 3.8.0 or greater is available as than means community.general.pipx can be used
-      ansible.builtin.set_fact:
-        ans_pipx_mod: true
-      when: >-
-        ( ( ans_system_pipx_mod is defined ) and ( ans_system_pipx_mod | bool ) ) or
-        ( ( ans_user_pipx_mod is defined ) and ( ans_user_pipx_mod | bool ) )
-
-    - name: Debug ans_pipx_mod
-      ansible.builtin.debug:
-        var: ans_pipx_mod
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-    - name: Set a fact when Ansible collection community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
-      ansible.builtin.set_fact:
-        ans_pipx_mod_info: true
-      when: >-
-        ( ( ans_system_pipx_mod_info is defined ) and ( ans_system_pipx_mod_info | bool ) ) or
-        ( ( ans_user_pipx_mod_info is defined ) and ( ans_user_pipx_mod_info | bool ) )
-
-    - name: Debug ans_pipx_mod_info
-      ansible.builtin.debug:
-        var: ans_galaxy_install_mod
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-    - name: Set a fact when Ansible collection community.general 6.2.0 or greater is available
-      ansible.builtin.set_fact:
-        ans_comgen: true
-      when: >-
-        ( ( ans_system_comgen is defined ) and ( ans_system_comgen | bool ) ) or
-        ( ( ans_user_comgen is defined ) and ( ans_user_comgen | bool ) )
-
-    - name: Debug ans_comgen
-      ansible.builtin.debug:
-        var: ans_comgen
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
       ansible.builtin.assert:
         that:
@@ -316,6 +247,75 @@
     - name: Debug system PyPI packages present
       ansible.builtin.debug:
         var: ans_pip_system_existing
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Include checks for the system installed version of ansible-galaxy
+      ansible.builtin.include_tasks: check_system_galaxy.yml
+
+    - name: Check if a user installed ansible-galaxy exists
+      ansible.builtin.stat:
+        path: "{{ ans_user_bin }}/ansible-galaxy"
+      register: ans_user_galaxy_presence
+
+    - name: Include checks for the user installed version of ansible-galaxy
+      ansible.builtin.include_tasks: check_user_galaxy.yml
+      when: ans_user_galaxy_presence.stat.exists | bool
+
+    - name: Set a fact for the ansible-galaxy version to use
+      ansible.builtin.set_fact:
+        ans_galaxy_path: "{% if ans_user_galaxy_version is defined and ans_user_galaxy_version is version(ans_system_galaxy_version, 'gt') %}{{ ans_user_galaxy_path }}{% else %}{{ ans_system_galaxy_path }}{% endif %}"
+
+    - name: Debug the ansible-galaxy path to use
+      ansible.builtin.debug:
+        var: ans_galaxy_path
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Set a fact when Ansible collection community.general 3.5.0 or greater is available as than means community.general.ansible_galaxy_install can be used
+      ansible.builtin.set_fact:
+        ans_galaxy_install_mod: true
+      when: >-
+        ( ( ans_system_galaxy_install_mod is defined ) and ( ans_system_galaxy_install_mod | bool ) ) or
+        ( ( ans_user_galaxy_install_mod is defined ) and ( ans_user_galaxy_install_mod | bool ) )
+
+    - name: Debug ans_galaxy_install_mod
+      ansible.builtin.debug:
+        var: ans_galaxy_install_mod
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Set a fact when Ansible collection community.general 3.8.0 or greater is available as than means community.general.pipx can be used
+      ansible.builtin.set_fact:
+        ans_pipx_mod: true
+      when: >-
+        ( ( ans_system_pipx_mod is defined ) and ( ans_system_pipx_mod | bool ) ) or
+        ( ( ans_user_pipx_mod is defined ) and ( ans_user_pipx_mod | bool ) )
+
+    - name: Debug ans_pipx_mod
+      ansible.builtin.debug:
+        var: ans_pipx_mod
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Set a fact when Ansible collection community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
+      ansible.builtin.set_fact:
+        ans_pipx_mod_info: true
+      when: >-
+        ( ( ans_system_pipx_mod_info is defined ) and ( ans_system_pipx_mod_info | bool ) ) or
+        ( ( ans_user_pipx_mod_info is defined ) and ( ans_user_pipx_mod_info | bool ) )
+
+    - name: Debug ans_pipx_mod_info
+      ansible.builtin.debug:
+        var: ans_galaxy_install_mod
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Set a fact when Ansible collection community.general 6.2.0 or greater is available
+      ansible.builtin.set_fact:
+        ans_comgen: true
+      when: >-
+        ( ( ans_system_comgen is defined ) and ( ans_system_comgen | bool ) ) or
+        ( ( ans_user_comgen is defined ) and ( ans_user_comgen | bool ) )
+
+    - name: Debug ans_comgen
+      ansible.builtin.debug:
+        var: ans_comgen
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
     - name: Include PATH and python-argcomplete check when the init system is not sh
