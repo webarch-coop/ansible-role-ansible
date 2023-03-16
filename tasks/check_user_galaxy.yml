@@ -68,7 +68,6 @@
         - name: Set a fact for the lists of ansible-galaxy user collections existing
           ansible.builtin.set_fact:
             ans_user_col_existing: "{{ ans_user_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
-          when: ans_user_col_existing[ans_col_path_user] is defined
 
         - name: Debug ans_user_col_existing
           ansible.builtin.debug:
