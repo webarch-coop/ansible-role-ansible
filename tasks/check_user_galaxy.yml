@@ -1,0 +1,158 @@
+# Copyright 2019-2023 Chris Croome
+#
+# This file is part of the Webarchitects Ansible role.
+#
+# The Webarchitects Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+- name: Check the user installed version of Ansible Galaxy
+  block:
+
+    - name: Check the version of the user installed ansible-galaxy
+      ansible.builtin.command: "{{ ans_user_galaxy_path }} --version"
+      check_mode: false
+      changed_when: false
+      register: ans_user_galaxy_version_check
+
+    - name: Debug the first line of ans_user_galaxy_version_check
+      ansible.builtin.debug:
+        var: ans_user_galaxy_version_check.stdout_lines[0]
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Set a fact for the user installed ansible-galaxy when core is not in the output
+      ansible.builtin.set_fact:
+        ans_user_galaxy_version: "{{ ans_user_galaxy_version_check.stdout_lines[0].split(' ')[1] | string }}"
+      when: ( "core" not in ans_user_galaxy_version_check.stdout_lines[0] )
+
+    - name: Set a fact for the user installed ansible-galaxy when core is in the output
+      ansible.builtin.set_fact:
+        ans_user_galaxy_version: "{{ ans_user_galaxy_version_check.stdout_lines[0].split(' ')[2] | regex_replace('[]]$') | string }}"
+      when: ( "core" in ans_user_galaxy_version_check.stdout_lines[0] )
+
+    - name: Debug users ansible-galaxy version
+      ansible.builtin.debug:
+        var: ans_user_galaxy_version
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Check if the user installed version of ansible-galaxy supports JSON output
+      ansible.builtin.command: "{{ ans_user_galaxy_path }} collection list --format json"
+      check_mode: false
+      changed_when: false
+      register: ans_user_galaxy_json_check
+      failed_when: ans_user_galaxy_json_check.rc is not ansible.builtin.regex('^0|2$')
+
+    - name: Set a fact for JSON output support in the user ansible-galaxy
+      ansible.builtin.set_fact:
+        ans_user_galaxy_json: "{% if ans_user_galaxy_json_check.rc == 0 %}true{% else %}false{% endif %}"
+
+    - name: Users ansible-galaxy supports JSON output
+      block:
+
+        - name: Debug users ansible-galaxy collections
+          ansible.builtin.debug:
+            var: ans_user_galaxy_json_check.stdout
+            verbosity: "{% if ansible_check_mode | bool %}3{% else %}4{% endif %}"
+
+        - name: Set a fact for the users ansiblegalaxy collections present
+          ansible.builtin.set_fact:
+            ans_user_col_existing: "{{ ans_user_galaxy_json_check.stdout | from_json }}"
+
+        - name: Debug ans_user_col_existing
+          ansible.builtin.debug:
+            var: ans_user_col_existing
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        - name: Set a fact for the lists of ansible-galaxy user collections existing
+          ansible.builtin.set_fact:
+            ans_user_col_existing: "{{ ans_user_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+          when: ans_user_col_existing[ans_col_path_user] is defined
+
+        - name: Debug ans_user_col_existing
+          ansible.builtin.debug:
+            var: ans_user_col_existing
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          when: ans_user_col_existing is defined
+
+      when: ans_user_galaxy_json | bool
+
+    - name: Users ansible-galaxy does not support JSON output
+      block:
+
+        - name: Check users ansible-galaxy output
+          ansible.builtin.command: "{{ ans_users_galaxy_path }} collection list"
+          check_mode: false
+          changed_when: false
+          register: ans_user_galaxy_txt
+
+        - name: Check ansible-galaxy user collections
+          block:
+
+            - name: Check ansible-galaxy user collections
+              ansible.builtin.shell: >-
+                set -e -o pipefail &&
+                {{ ans_user_galaxy_path }} collection list |
+                grep -e '^#[ ]{{ ans_col_path_user }}$' --after-context=1000 |
+                grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
+                sed 's/ /=/' | sed 's/ //g' | jo
+              args:
+                executable: "{{ ans_bash }}"
+              check_mode: false
+              changed_when: false
+              register: ans_galaxy_col_user_list
+
+            - name: Debug ansible-galaxy collections
+              ansible.builtin.debug:
+                var: ans_galaxy_col_user_list.stdout
+                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+            - name: Set a fact for the ansible-galaxy user collections existing
+              ansible.builtin.set_fact:
+                ans_user_col_existing: "{{ ans_galaxy_col_user_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
+
+            - name: Debug user ans_col_existing
+              ansible.builtin.debug:
+                var: ans_user_col_existing
+                verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+          when: ans_col_path_user in ans_user_galaxy_txt.stdout
+
+      when: not ans_user_galaxy_json | bool
+
+    - name: Set a fact for the ansible-galaxy community.general version when installed as a user collection
+      ansible.builtin.set_fact:
+        ans_user_col_comgen_version: "{{ ans_user_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
+      when: ans_user_col_existing | community.general.json_query(ans_col_comgen_jmespath_query) != []
+
+    - name: Set facts based on the version of community.general available
+      block:
+
+        - name: Set ans_user_galaxy_install_mod to true when community.general 3.5.0 or greater is available as than means community.general.ansible_galaxy_install can be used
+          ansible.builtin.set_fact:
+            ans_user_galaxy_install_mod: true
+          when: ans_user_col_comgen_version is version('3.5.0', 'ge')
+
+        - name: Set ans_user_pipx_mod to true when community.general 3.8.0 or greater is available as a user collection as than means community.general.pipx can be used
+          ansible.builtin.set_fact:
+            ans_user_pipx_mod: true
+          when: ans_col_comgen_user_version is version('3.8.0', 'ge')
+
+        - name: Set ans_user_pipx_mod_info to true when community.general 5.6.0 or greater is available as a user collection as that means community.general.pipx_info can be used
+          ansible.builtin.set_fact:
+            ans_user_pipx_mod_info: true
+          when: ans_col_comgen_user_version is version('5.6.0', 'ge')
+
+        - name: Set ans_user_comgen to true when community.general 6.2.0 or greater is available as a user collection
+          ansible.builtin.set_fact:
+            ans_user_comgen: true
+          when: ans_col_comgen_user_version is version('6.2.0', 'ge')
+
+      when:
+        - ans_system_col_comgen_version is defined
+        - ans_system_col_comgen_version | type_debug != "NoneType"
+
+  tags:
+    - ansible
+...

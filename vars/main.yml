@@ -14,15 +14,16 @@
 ans_ansible_min_version: "2.10.7"
 ans_ansible_path: "{{ ans_system_bin }}/ansible"
 ans_bash: "{% if ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/usr/bin/bash{% endif %}"
-ans_col: false
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
 ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
 ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
 ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collections"
+ans_comgen: false
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
+ans_galaxy_install_mod: false
 # Don't use community.general.ansible_galaxy_install by default because of this issue
 # https://github.com/ansible-collections/community.general/issues/5661
 ans_pip_path: "{{ ans_system_bin }}/bin/pip3"
