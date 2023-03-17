@@ -11,7 +11,7 @@
 # Bullseye and Jammy have 2.10.7
 # https://packages.debian.org/bullseye/ansible
 # https://packages.ubuntu.com/jammy/ansible
-ans_ansible_min_version: "2.10.7"
+ans_ansible_min_version: "2.10.8"
 ans_ansible_path: "{{ ans_system_bin }}/ansible"
 ans_bash: "{% if ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/usr/bin/bash{% endif %}"
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
