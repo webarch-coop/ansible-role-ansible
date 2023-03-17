@@ -11,6 +11,14 @@
 - name: Check variables
   block:
 
+    - name: Debug the Ansible version
+      ansible.builtin.debug:
+        var: ansible_version
+
+    - name: Debug the Pythin version
+      ansible.builtin.debug:
+        var: ansible_playbook_python
+
     # When in a docker container ans_init.stdout == "sh"
     - name: Check if system has been booted with systemd as init system
       ansible.builtin.command: ps -p 1 -o comm=
