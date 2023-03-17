@@ -11,14 +11,6 @@
 - name: Check variables
   block:
 
-    - name: Debug the Ansible version
-      ansible.builtin.debug:
-        var: ansible_version
-
-    - name: Debug the Pythin version
-      ansible.builtin.debug:
-        var: ansible_playbook_python
-
     # When in a docker container ans_init.stdout == "sh"
     - name: Check if system has been booted with systemd as init system
       ansible.builtin.command: ps -p 1 -o comm=
@@ -40,16 +32,51 @@
         path: "{{ ans_ansible_path }}"
       register: ans_stat_ansible
 
-    - name: Ansible needs to be installed
+    - name: "A .deb packaged Ansible should result in a version of ansible being present at {{ ans_ansible_path }}"
       ansible.builtin.assert:
         that:
           - ans_stat_ansible.stat.exists | bool
-        fail_msg: "Please install Ansible!"
+        fail_msg: "Please install Ansible! 'sudo apt install ansible'"
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+    - name: Debug the Python version
+      ansible.builtin.debug:
+        var: ansible_playbook_python
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Check the version of Python being used
+      ansible.builtin.command: "{{ ansible_playbook_python }} --version"
+      check_mode: false
+      changed_when: false
+      register: ans_python_version_check
+
+    - name: Set a fact for the version of Python being used
+      ansible.builtin.set_fact:
+        ans_python_version: "{{ ans_python_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
+
+    - name: Debug the Python version being used
+      ansible.builtin.debug:
+        var: ans_python_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    - name: Debug the running Ansible version
+      ansible.builtin.debug:
+        var: ansible_version
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Set a fact for the running version of Ansible
+      ansible.builtin.set_fact:
+        ans_running_version: "{{ ansible_version.full }}"
+
+    - name: Debug the full path of used Ansible configuration file
+      ansible.builtin.debug:
+        var: ansible_config_file
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Get the apt package facts
       ansible.builtin.package_facts:
         manager: apt
+      when: ansible_facts.packages is not defined
 
     - name: Debug the installed ansible package version string
       ansible.builtin.debug:
@@ -118,20 +145,17 @@
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is defined
 
-    - name: Check the version of python3
-      ansible.builtin.command: python3 --version
-      check_mode: false
-      changed_when: false
-      register: ans_python_version_check
-
-    - name: Set a fact for the version of python3
-      ansible.builtin.set_fact:
-        ans_python_version: "{{ ans_python_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
-
-    - name: Debug the python3 version
-      ansible.builtin.debug:
-        var: ans_python_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+#    - name: Check and set facts for path when the running version on Ansible equals the system version of Ansible
+#      block:
+#
+#    - name: Check the output of ansible --version
+#      ansible.builtin.command: "{{ ans_user_galaxy_path }} --version"
+#      check_mode: false
+#      changed_when: false
+#      register: ans_user_galaxy_version_check
+#
+#
+#      when: ans_running_version is version(ans_installed_version, 'eq')
 
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
       ansible.builtin.assert:
@@ -265,9 +289,10 @@
         path: "{{ ans_user_bin }}/ansible-galaxy"
       register: ans_user_galaxy_presence
 
-    - name: Include checks for the user installed version of ansible-galaxy
+    - name: Include checks for the user installed version of ansible-galaxy when it is being run
       ansible.builtin.include_tasks: check_user_galaxy.yml
-      when: ans_user_galaxy_presence.stat.exists | bool
+      when:
+        - ans_user_galaxy_presence.stat.exists | bool
 
     - name: Set a fact for the ansible-galaxy version to use
       ansible.builtin.set_fact:

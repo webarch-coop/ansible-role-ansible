@@ -12,13 +12,13 @@ On Debian Bookworm `pip` is used to install a newer versions of `ansible-lint` t
 
 ## Usage
 
-The suggested method for using this role is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
+The role should be run using the `/usr/bin/ansible-playbook` that is inmstalled by the Debian or Ubuntu `ansible` package, the suggested method for doing this is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
 
 ```bash
 git clone https://git.coop/webarch/localhost.git
 cd localhost
-./ansible.sh --check # check what versions are available and installed
-./ansible.sh         # update pypi packages and ansible collections
+./ansible.sh --check     # check what will be done
+./ansible.sh --verbose   # verbose install / update
 ```
 
 This role is designed to be run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
