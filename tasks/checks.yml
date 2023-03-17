@@ -360,6 +360,20 @@
         ( ( ans_core_installed_version is not defined ) and ( ans_installed_version is version(ans_running_version, 'eq') ) ) or
         ( ( ans_core_installed_version is defined ) and ( ans_core_installed_version is version(ans_running_version, 'eq') ) )
 
+    - name: Check that the ansible-galaxy version number based variables have been set
+      ansible.builtin.assert:
+        that:
+          - ans_galaxy_path is defined
+          - ans_galaxy_install_mod is defined
+          - ans_galaxy_install_mod | type_debug == "bool"
+          - ans_pipx_mod is defined
+          - ans_pipx_mod | type_debug == "bool"
+          - ans_pipx_mod_info is defined
+          - ans_pipx_mod_info | type_debug == "bool"
+          - ans_comgen is defined
+          - ans_comgen | type_debug == "bool"
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
       ansible.builtin.assert:
         that:
