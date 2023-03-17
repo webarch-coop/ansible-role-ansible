@@ -292,9 +292,9 @@
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
       when: >-
-        ( ( ans_user_version is defined ) and ( ans_user_version is version(ans_running_version, 'eq') ) and
-        ( ( ans_core_installed_version is not defined ) and ( ans_installed_version is version(ans_running_version, 'ne') ) ) or
-        ( ( ans_core_installed_version is defined ) and ( ans_core_installed_version is version(ans_running_version, 'ne') ) )
+        ( ( ans_user_version is defined ) and ( ans_user_version is version(ans_running_version, 'eq') ) ) and
+        ( ( ( ans_core_installed_version is not defined ) and ( ans_installed_version is version(ans_running_version, 'ne') ) ) or
+        ( ( ans_core_installed_version is defined ) and ( ans_core_installed_version is version(ans_running_version, 'ne') ) ) )
 
     - name: Set facts based on the system version of Ansible as that is the version being run
       block:
