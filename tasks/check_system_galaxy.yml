@@ -11,34 +11,6 @@
 - name: Check the system installed version of Ansible Galaxy
   block:
 
-    # NOTE The following tasks to check the version of ansible-galaxy are probably not needed as it matches the version of ansible-core
-
-    - name: Check the version of the system installed ansible-galaxy
-      ansible.builtin.command: "{{ ans_system_galaxy_path }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_system_galaxy_version_check
-
-    - name: Debug the first line of ans_system_galaxy_version_check
-      ansible.builtin.debug:
-        var: ans_system_galaxy_version_check.stdout_lines[0]
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
-    - name: Set a fact for the system installed ansible-galaxy when core is not in the output
-      ansible.builtin.set_fact:
-        ans_system_galaxy_version: "{{ ans_system_galaxy_version_check.stdout_lines[0].split(' ')[1] | string }}"
-      when: ( "core" not in ans_system_galaxy_version_check.stdout_lines[0] )
-
-    - name: Set a fact for the system installed ansible-galaxy when core is in the output
-      ansible.builtin.set_fact:
-        ans_system_galaxy_version: "{{ ans_system_galaxy_version_check.stdout_lines[0].split(' ')[2] | regex_replace('[]]$') | string }}"
-      when: ( "core" in ans_system_galaxy_version_check.stdout_lines[0] )
-
-    - name: Debug system ansible-galaxy version
-      ansible.builtin.debug:
-        var: ans_system_galaxy_version
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
     - name: Check if the system installed version of ansible-galaxy supports JSON output
       ansible.builtin.command: "{{ ans_system_galaxy_path }} collection list --format json"
       check_mode: false

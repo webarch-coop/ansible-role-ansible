@@ -18,7 +18,6 @@ ans_col_comgen_jmespath_query: "[?name=='community.general']"
 ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
 ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
-ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_comgen: false
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
@@ -48,5 +47,6 @@ ans_pipx_mod_info: false
 ans_pipx_path: "{{ ans_system_bin }}/pipx"
 ans_system_bin: /usr/bin
 ans_system_galaxy_path: "{{ ans_system_bin }}/ansible-galaxy"
+ans_user_path: "{{ ans_user_bin }}/ansible"
 ans_user_galaxy_path: "{{ ans_user_bin }}/ansible-galaxy"
 ...
