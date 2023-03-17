@@ -231,6 +231,15 @@
 
       when: ans_user_presence.stat.exists | bool
 
+    - name: Debug Ansible version variables
+      ansible.builtin.debug:
+        msg:
+          - "ans_running_version: {{ ans_running_version }}"
+          - "ans_installed_version:{% if ans_installed_version is defined %} {{ ans_installed_version }}{% endif %}"
+          - "ans_core_installed_version:{% if ans_core_installed_versionis defined %} {{ ans_core_installed_version }}{% endif %}"
+          - "ans_user_version: {% if ans_user_version is defined %}{{ ans_user_version }}{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
     - name: Set facts based on the user version of Ansible as that is the version being run
       block:
 
