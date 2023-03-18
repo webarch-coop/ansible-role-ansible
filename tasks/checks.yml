@@ -95,26 +95,6 @@
         var: ans_installed_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Debug ans_required_state variable type
-      ansible.builtin.debug:
-        msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-    - name: Set a fact for the required Ansible state and version
-      ansible.builtin.set_fact:
-        ans_required_state: "{% if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug == 'NoneType' %}present{% else %}{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}{% endif %}"
-        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
-
-    - name: Debug the required Ansible state
-      ansible.builtin.debug:
-        var: ans_required_state
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-    - name: Debug the required Ansible version
-      ansible.builtin.debug:
-        var: ans_required_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
     - name: Check ansible-core .deb version present
       block:
 
@@ -134,6 +114,52 @@
 
       when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
 
+    - name: Check the latest Ansible core version
+      ansible.builtin.include_tasks: pip.yml
+      vars:
+        ans_pypi_pkg:
+          name: ansible-core
+          url: https://pypi.org/pypi/ansible
+
+    - name: Set facts based on the versions of Ansible core available and the latest version
+      ansible.builtin.set_fact:
+        ans_core_available_versions: "{{ ans_pypi_versions_available }}"
+        ans_core_latest_version: "{{ ans_pypi_version_latest }}"
+
+    - name: Debug the versions of Ansible core available
+      ansible.builtin.debug:
+        var: ans_core_available_versions
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Debug the versions of Ansible core available
+      ansible.builtin.debug:
+        var: ans_core_latest_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    - name: Set a fact for the required Ansible core version
+      ansible.builtin.set_fact:
+        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+
+    - name: Debug the required Ansible version
+      ansible.builtin.debug:
+        var: ans_required_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    - name: Debug ans_required_state variable type
+      ansible.builtin.debug:
+        msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug }}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Set a fact for the required Ansible state
+      ansible.builtin.set_fact:
+        ans_required_state: "{% if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug == 'NoneType' %}present{% else %}{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}{% endif %}"
+        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+
+    - name: Debug the required Ansible state
+      ansible.builtin.debug:
+        var: ans_required_state
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is not present
       ansible.builtin.assert:
         that:
@@ -147,6 +173,13 @@
           - ans_core_installed_version is version(ans_ansible_min_version, 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is defined
+
+#    - name: Check that the running version of Ansible is not a version that this role is about to upgrade
+#      ansible.builtin.assert:
+#        that:
+#          - ans_running_version is version(
+#      when:
+#        - ans_running_version is version(ans_required_version, 'eq')
 
     - name: Check the output of ansible --version
       ansible.builtin.command: "{{ ans_ansible_path }} --version"
