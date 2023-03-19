@@ -27,6 +27,8 @@ ans_galaxy_install_mod: false
 # Don't use community.general.ansible_galaxy_install by default because of this issue
 # https://github.com/ansible-collections/community.general/issues/5661
 ans_pip_path: "{{ ans_system_bin }}/pip3"
+ans_pypi_ansible_core_state_jmespath_query: "[?name=='ansible-core'].state|[0]"
+ans_pypi_ansible_core_version_jmespath_query: "[?name=='ansible-core'].version|[0]"
 ans_pypi_ansible_state_jmespath_query: "[?name=='ansible'].state|[0]"
 ans_pypi_ansible_version_jmespath_query: "[?name=='ansible'].version|[0]"
 ans_pypi_extras: []

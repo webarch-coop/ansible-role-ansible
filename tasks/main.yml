@@ -11,51 +11,40 @@
 - name: Ansible tasks
   block:
 
-    - name: Check that Backports are enabled on Debian Bullseye for pipx
+    - name: Linux distribution check and requirements present
       block:
 
-        - name: Use apt-cache policy pipx to check if pipx is availabe
-          ansible.builtin.command: apt-cache policy pipx
-          check_mode: false
-          changed_when: false
-          register: ans_debian_apt_cache_policy_pipx
-
-        - name: Backports are required when pipx is unavailable on Debian Bullseye
+        - name: This role has only been designed to be run on Debian Bullseye, Debian Bookworm and Ubuntu Jammy
           ansible.builtin.assert:
             that:
-              - ( "bullseye-backports" in ans_debian_apt_cache_policy_pipx.stdout )
-            fail_msg: "Backports need to be enabled on Debian Bullseye for pipx to be installed."
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+              - ansible_distribution is regex('^Debian|Ubuntu$')
+              - ansible_distribution_release is regex('^bookworm|bullseye|jammy$')
 
-      when: ansible_distribution_release == "bullseye"
+        - name: Check that Backports are enabled on Debian Bullseye for pipx
+          block:
 
-    - name: Requirements present when root
-      ansible.builtin.apt:
-        pkg: "{{ ans_pkgs }}"
-        state: present
-      when: ansible_effective_user_id == 0
+            - name: Use apt-cache policy pipx to check if pipx is availabe
+              ansible.builtin.command: apt-cache policy pipx
+              check_mode: false
+              changed_when: false
+              register: ans_debian_apt_cache_policy_pipx
 
-    - name: Check requirements when not root
-      block:
+            - name: Backports are required when pipx is unavailable on Debian Bullseye
+              ansible.builtin.assert:
+                that:
+                  - ( "bullseye-backports" in ans_debian_apt_cache_policy_pipx.stdout )
+                fail_msg: "Backports need to be enabled on Debian Bullseye for pipx to be installed."
+                quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
-        - name: Read package facts
-          ansible.builtin.package_facts:
-            manager: apt
+          when: ansible_distribution_release == "bullseye"
 
-        - name: Check the presence of the required packages
-          ansible.builtin.assert:
-            that:
-              - ans_deb_pkg in ansible_facts.packages.keys()
-            fail_msg:
-              - "The {{ ans_deb_pkg }} is required"
-              - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_pkgs %} {{ ans_pkg_missing }}{% endfor %}"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_pkgs }}"
-          loop_control:
-            loop_var: ans_deb_pkg
+        - name: Requirements present when root
+          ansible.builtin.apt:
+            pkg: "{{ ans_pkgs }}"
+            state: present
+          when: ansible_effective_user_id == 0
 
-      when: ansible_effective_user_id != 0
+      when: ans_distro_check | bool
 
     - name: Check variables
       ansible.builtin.include_tasks: checks.yml

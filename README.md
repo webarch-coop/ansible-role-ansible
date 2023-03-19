@@ -2,17 +2,17 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This repo contains an Ansible role for [installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages on Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
+This repo contains an Ansible role desined to be run on the `localhost`, by a `.deb` installed system version of Ansible to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages on the Ansible Controller when it is running Debian Bookworm, Debian Bullseye and Ubuntu Jammy.
 
-The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.7` and when this role is run on these distros Ansible itself will be installed using into a virtual environment using `pipx` for the user running this role.
+The [role defaults](defaults/main.yml) are set to match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core).
 
-This role is set to more-or-less match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core) (the version strings are set in the [defaults/main.yml](defaults/main.yml) file).
+The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.8` and when this role is run on these distros a newer version of Ansible will be installed using into a virtual environment using `pipx`.
 
-On Debian Bookworm `pip` is used to install a newer versions of `ansible-lint` than Debian provides and `molecule`, which is not packaged by Debian.
+By default, on Debian Bookworm `pip` is used to install a newer versions of `ansible-lint` than Debian provides and also `molecule`, which is not packaged by Debian, Ansible itself is not installed.
 
 ## Usage
 
-The role should be run using the `/usr/bin/ansible-playbook` that is inmstalled by the Debian or Ubuntu `ansible` package, the suggested method for doing this is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
+The role is designed to be run using the `/usr/bin/ansible-playbook` that is installed by the Debian or Ubuntu `ansible` package, the suggested method for doing this is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
 
 ```bash
 git clone https://git.coop/webarch/localhost.git

@@ -8,140 +8,184 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Check variables
+- name: Ansible checks
   block:
 
-    - name: This role has only been designed to be run on Debian Bullseye, Debian Bookworm and Ubuntu Jammy
+    - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
       ansible.builtin.assert:
         that:
-          - ansible_distribution is regex('^Debian|Ubuntu$')
-          - ansible_distribution_release is regex('^bookworm|bullseye|jammy$')
-      when: ans_distro_check | bool
-
-    # When in a docker container ans_init.stdout == "sh"
-    - name: Check if system has been booted with systemd as init system
-      ansible.builtin.command: ps -p 1 -o comm=
-      changed_when: false
-      check_mode: false
-      register: ans_ps
-
-    - name: Set a fact for the init system
-      ansible.builtin.set_fact:
-        ans_init: "{{ ans_ps.stdout }}"
-
-    - name: Debug the ini system when it is not systemd
-      ansible.builtin.debug:
-        var: ans_init
-      when: ans_init != "systemd"
-
-    - name: Stat system ansible
-      ansible.builtin.stat:
-        path: "{{ ans_ansible_path }}"
-      register: ans_stat_ansible
-
-    - name: "A .deb packaged Ansible should result in a version of ansible being present at {{ ans_ansible_path }}"
-      ansible.builtin.assert:
-        that:
-          - ans_stat_ansible.stat.exists | bool
-        fail_msg: "Please install Ansible! 'sudo apt install ansible'"
+          - ans_pypi_pkg.url is defined
+          - ans_pypi_pkg.version is defined
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+      when: >-
+        ( ans_pypi_pkg.state is not defined ) or
+        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state != "absent" ) )
+      loop: "{{ ans_pypi_pkgs }}"
+      loop_control:
+        loop_var: ans_pypi_pkg
+        label: "{{ ans_pypi_pkg.name }}"
 
-    - name: Debug the Python version
-      ansible.builtin.debug:
-        var: ansible_playbook_python
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
-    - name: Check the version of Python being used
-      ansible.builtin.command: "{{ ansible_playbook_python }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_python_version_check
-
-    - name: Set a fact for the version of Python being used
-      ansible.builtin.set_fact:
-        ans_python_version: "{{ ans_python_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
-
-    - name: Debug the Python version being used
-      ansible.builtin.debug:
-        var: ans_python_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-    - name: Debug the running Ansible version
-      ansible.builtin.debug:
-        var: ansible_version
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
-    - name: Set a fact for the running version of Ansible
-      ansible.builtin.set_fact:
-        ans_running_version: "{{ ansible_version.full }}"
-
-    - name: Get the apt package facts
-      ansible.builtin.package_facts:
-        manager: apt
-      when: ansible_facts.packages is not defined
-
-    - name: Debug the installed ansible package version string
-      ansible.builtin.debug:
-        var: ansible_facts.packages.ansible[0].version
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-    # https://packages.debian.org/bullseye/ansible
-    # https://packages.ubuntu.com/jammy/ansible
-    - name: Set a fact for the Bullseye and Focal packaged version of Ansible
-      ansible.builtin.set_fact:
-        ans_core_installed_version: "2.10.8"
-      when:
-        - ansible_distribution_release is regex('^bullseye|jammy$')
-        - ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1"
-
-    - name: Set a fact for the Bookworm packaged version of Ansible
+    - name: Check deb packages
       block:
 
-        - name: Check the ansible .deb version on Bookworm
+        - name: Read package facts
+          ansible.builtin.package_facts:
+            manager: apt
+
+        - name: Check the presence of the required packages
+          ansible.builtin.assert:
+            that:
+              - ans_deb_pkg in ansible_facts.packages.keys()
+            fail_msg:
+              - "The {{ ans_deb_pkg }} is required"
+              - "You can install all the requirements using:"
+              - "sudo apt install{% for ans_pkg_missing in ans_pkgs %} {{ ans_pkg_missing }}{% endfor %}"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          loop: "{{ ans_pkgs }}"
+          loop_control:
+            loop_var: ans_deb_pkg
+          when: ansible_effective_user_id != 0
+
+        - name: Stat system ansible
+          ansible.builtin.stat:
+            path: "{{ ans_ansible_path }}"
+          register: ans_stat_ansible
+
+        - name: "A .deb packaged Ansible should result in a version of ansible being present at {{ ans_ansible_path }}"
+          ansible.builtin.assert:
+            that:
+              - ans_stat_ansible.stat.exists | bool
+            fail_msg: "Please install Ansible! 'sudo apt install ansible'"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+        - name: Check the system ansible to get the ansible-galaxy collections path
+          ansible.builtin.command: "{{ ans_ansible_path }} --version"
+          check_mode: false
+          changed_when: false
+          register: ans_system_version_check
+
+        - name: Set a fact for the system installed ansible-galaxy collections path
           ansible.builtin.set_fact:
-            ans_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
+            ans_col_path_system: "{{ ans_system_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | regex_replace('^  ansible python module location = ') | regex_replace('$', '_collections') | trim }}"
 
-        - name: Set a fact for the Bokworm packaged version of Ansible
-          ansible.builtin.set_fact:
-            ans_core_installed_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
-
-      when:
-        - ansible_distribution_release is regex('^bookworm$')
-        - ansible_facts.packages.ansible[0].version != "2.10.7+merged+base+2.10.8+dfsg-1"
-
-    - name: Check ansible-core .deb version present
-      block:
-
-        - name: Debug the installed ansible-core package version string
+        - name: Debug the system installed ansible-galaxy collections path
           ansible.builtin.debug:
-            msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
+            var: ans_col_path_system
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-        - name: Set a fact for the .deb package ansible-core version
+        - name: Stat the system installed ansible-galaxy collections path
+          ansible.builtin.stat:
+            path: "{{ ans_col_path_system }}"
+          register: ans_col_path_system_check
+
+        - name: The system installed ansible-galaxy python module location should be an existing directory
+          ansible.builtin.assert:
+            that:
+              - ans_col_path_system_check.stat.exists | bool
+              - ans_col_path_system_check.stat.isdir | bool
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+        - name: Include checks for the system installed version of ansible-galaxy
+          ansible.builtin.include_tasks: check_system_galaxy.yml
+
+        - name: Get the apt package facts
+          ansible.builtin.package_facts:
+            manager: apt
+          when: ansible_facts.packages is not defined
+
+        - name: Debug the installed ansible package version string
+          ansible.builtin.debug:
+            var: ansible_facts.packages.ansible[0].version
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        # https://packages.debian.org/bullseye/ansible
+        # https://packages.ubuntu.com/jammy/ansible
+        - name: Set a fact for the Bullseye and Jammy packaged version of Ansible
           ansible.builtin.set_fact:
-            ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | regex_replace('[-][0-9]$') | string }}"
+            ans_core_installed_version: "2.10.8"
+          when:
+            - ansible_distribution_release is regex('^bullseye|jammy$')
+            - ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1"
+
+        - name: Check the Ansible .deb version when not Bullseye or Jammy
+          block:
+
+            - name: Set a fact for the Ansible .deb version
+              ansible.builtin.set_fact:
+                ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
+
+            - name: Debug the Ansible installed version
+              ansible.builtin.debug:
+                var: ans_installed_version
+                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+            - name: Check ansible-core .deb version present
+              block:
+
+                - name: Debug the installed ansible-core package version string
+                  ansible.builtin.debug:
+                    msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
+                    verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+                - name: Set a fact for the .deb package ansible-core version
+                  ansible.builtin.set_fact:
+                    ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | regex_replace('[-][0-9]$') | string }}"
+
+              when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
+
+          when: ansible_distribution_release is not regex('^bullseye|jammy$')
 
         - name: Ansible core installed version
           ansible.builtin.debug:
             var: ans_core_installed_version
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-      when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
+        - name: Debug the running Ansible version
+          ansible.builtin.debug:
+            var: ansible_version
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-    - name: Ansible core installed version
+        - name: Set a fact for the running version of Ansible
+          ansible.builtin.set_fact:
+            ans_running_version: "{{ ansible_version.full }}"
+
+        - name: This role is designed to be run using the system version of Ansible
+          ansible.builtin.assert:
+            that:
+              - ans_core_installed_version is version(ans_running_version, 'eq')
+            fail_msg: "Please run this role using the Ansible version at {{ ans_ansible_path }}-playbook"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+      when: ans_distro_check | bool
+
+    - name: Check the latest Ansible version
+      ansible.builtin.include_tasks: pypi_info.yml
+      vars:
+        ans_pypi_pkg:
+          name: ansible
+          url: https://pypi.org/pypi/ansible
+
+    - name: Set facts based on the versions of Ansible available and the latest version
+      ansible.builtin.set_fact:
+        ans_available_versions: "{{ ans_pypi_versions_available }}"
+        ans_latest_version: "{{ ans_pypi_version_latest }}"
+
+    - name: Debug the versions of Ansible available
       ansible.builtin.debug:
-        var: ans_core_installed_version
+        var: ans_available_versions
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    - name: Debug the latest Ansible version available
+      ansible.builtin.debug:
+        var: ans_latest_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    # TODO the above needs only one way to set ans_core_installed_version!
-    - fail:
-
     - name: Check the latest Ansible core version
-      ansible.builtin.include_tasks: pip.yml
+      ansible.builtin.include_tasks: pypi_info.yml
       vars:
         ans_pypi_pkg:
           name: ansible-core
-          url: https://pypi.org/pypi/ansible
+          url: https://pypi.org/pypi/ansible-core
 
     - name: Set facts based on the versions of Ansible core available and the latest version
       ansible.builtin.set_fact:
@@ -153,85 +197,75 @@
         var: ans_core_available_versions
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-    - name: Debug the versions of Ansible core available
+    - name: Debug the latest Ansible core version available
       ansible.builtin.debug:
         var: ans_core_latest_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Set a fact for the required Ansible core version
-      ansible.builtin.set_fact:
-        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
-
-    - name: Debug the required Ansible version
-      ansible.builtin.debug:
-        var: ans_required_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
-    - name: Debug ans_required_state variable type
-      ansible.builtin.debug:
-        msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
     - name: Set a fact for the required Ansible state
       ansible.builtin.set_fact:
         ans_required_state: "{% if ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | type_debug == 'NoneType' %}present{% else %}{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}{% endif %}"
-        ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
 
     - name: Debug the required Ansible state
       ansible.builtin.debug:
         var: ans_required_state
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-    - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is not present
-      ansible.builtin.assert:
-        that:
-          - ans_core_installed_version is version(ans_ansible_core_min_version, 'ge')
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-      when: ans_core_installed_version is not defined
+    - name: Set a fact for the required Ansible version
+      block:
 
-    - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is present
-      ansible.builtin.assert:
-        that:
-          - ans_core_installed_version is version(ans_ansible_core_min_version, 'ge')
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-      when: ans_core_installed_version is defined
+        - name: Set a fact for the required Ansible version when latest
+          ansible.builtin.set_fact:
+            ans_required_version: "{{ ans_latest_version }}"
+          when: ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) == "latest"
 
-#    - name: Check that the running version of Ansible is not a version that this role is about to upgrade
-#      ansible.builtin.assert:
-#        that:
-#          - ans_running_version is version(
-#      when:
-#        - ans_running_version is version(ans_required_version, 'eq')
+        - name: Set a fact for the required Ansible version when not latest
+          ansible.builtin.set_fact:
+            ans_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+          when: ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) != "latest"
 
-    - name: Check the output of ansible --version
-      ansible.builtin.command: "{{ ans_ansible_path }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_system_version_check
+      when: ans_required_state is regex('^forcereinstall|present$')
 
-    - name: Set a fact for the system installed ansible-galaxy collections path
-      ansible.builtin.set_fact:
-        ans_col_path_system: "{{ ans_system_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | regex_replace('^  ansible python module location = ') | regex_replace('$', '_collections') | trim }}"
-
-    - name: Debug the system installed ansible-galaxy collections path
+    - name: Debug the required Ansible version
       ansible.builtin.debug:
-        var: ans_col_path_system
-        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        var: ans_required_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      when: ans_required_version is defined
 
-    - name: Stat the system installed ansible-galaxy collections path
-      ansible.builtin.stat:
-        path: "{{ ans_col_path_system }}"
-      register: ans_col_path_system_check
+    - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query)
+      ansible.builtin.debug:
+        msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-    - name: The system installed ansible-galaxy python module location should be an existing directory
-      ansible.builtin.assert:
-        that:
-          - ans_col_path_system_check.stat.exists | bool
-          - ans_col_path_system_check.stat.isdir | bool
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+    - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug
+      ansible.builtin.debug:
+        msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug }}"
+        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-    - name: Include checks for the system installed version of ansible-galaxy
-      ansible.builtin.include_tasks: check_system_galaxy.yml
+    - name: Set a fact for the required version of ansible-core when it is not defined
+      ansible.builtin.set_fact:
+        ans_core_required_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
+      vars:
+        ans_version: "{{ ans_required_version }}"
+      when: >-
+        ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is not defined ) or
+        ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug == "NoneType" )
+
+    - name: Set a fact for the required version of ansible-core when it is defined and set to latest
+      ansible.builtin.set_fact:
+        ans_core_required_version: "{{ ans_core_latest_version }}"
+      when:
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is defined
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) == "latest"
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug != "NoneType"
+
+    - name: Set a fact for the required version of ansible-core when it is defined and not set to latest
+      ansible.builtin.set_fact:
+        ans_core_required_version: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
+      when:
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is defined
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) != "latest"
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug != "NoneType"
 
     - name: Check if a user installed ansible exists
       ansible.builtin.stat:
@@ -428,9 +462,9 @@
             var: ans_comgen
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-      when: >-
-        ( ( ans_core_installed_version is not defined ) and ( ans_core_installed_version is version(ans_running_version, 'eq') ) ) or
-        ( ( ans_core_installed_version is defined ) and ( ans_core_installed_version is version(ans_running_version, 'eq') ) )
+      when:
+        - ans_core_installed_version is defined
+        - ans_core_installed_version is version(ans_running_version, 'eq')
 
     - name: Check that the ansible-galaxy version number based variables have been set
       ansible.builtin.assert:
@@ -445,20 +479,6 @@
           - ans_comgen is defined
           - ans_comgen | type_debug == "bool"
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-
-    - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
-      ansible.builtin.assert:
-        that:
-          - ans_pypi_pkg.url is defined
-          - ans_pypi_pkg.version is defined
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-      when: >-
-        ( ans_pypi_pkg.state is not defined ) or
-        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state != "absent" ) )
-      loop: "{{ ans_pypi_pkgs }}"
-      loop_control:
-        loop_var: ans_pypi_pkg
-        label: "{{ ans_pypi_pkg.name }}"
 
     - name: Debug the installed pipx version string
       ansible.builtin.debug:
@@ -477,10 +497,22 @@
     - name: Pipx checks
       block:
 
+        - name: Debug ans_core_installed_version
+          ansible.builtin.debug:
+            var: ans_core_installed_version
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        - name: Debug ans_core_required_version
+          ansible.builtin.debug:
+            var: ans_core_required_version
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
         - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
           ansible.builtin.set_fact:
             ans_pipx: true
-          when: ans_core_installed_version is version(ans_required_version, 'lt')
+          when: >
+            ( ( not ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'gt') ) ) or
+            ( ( ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'lt') ) )
 
         - name: Debug ans_pipx variable
           ansible.builtin.debug:
@@ -565,10 +597,46 @@
       ansible.builtin.set_fact:
         ans_pip_system_existing: "{{ ans_pip_system_list.stdout | ansible.builtin.from_json | ansible.builtin.difference(ans_pip_user_existing) }}"
 
+    - name: Check the version of Python being used
+      ansible.builtin.command: "{{ ansible_playbook_python }} --version"
+      check_mode: false
+      changed_when: false
+      register: ans_python_version_check
+
+    - name: Set a fact for the version of Python being used
+      ansible.builtin.set_fact:
+        ans_python_version: "{{ ans_python_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
+
+    - name: Debug the Python version being used
+      ansible.builtin.debug:
+        var: ans_python_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
     - name: Debug system PyPI packages present
       ansible.builtin.debug:
         var: ans_pip_system_existing
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+    # When in a docker container ans_init.stdout == "sh"
+    - name: Check if system has been booted with systemd as init system
+      ansible.builtin.command: ps -p 1 -o comm=
+      changed_when: false
+      check_mode: false
+      register: ans_ps
+
+    - name: Set a fact for the init system
+      ansible.builtin.set_fact:
+        ans_init: "{{ ans_ps.stdout }}"
+
+    - name: Debug the ini system when it is not systemd
+      ansible.builtin.debug:
+        var: ans_init
+      when: ans_init != "systemd"
+
+    - name: Debug the Python path on the Ansible controler
+      ansible.builtin.debug:
+        var: ansible_playbook_python
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Include PATH and python-argcomplete check when the init system is not sh
       ansible.builtin.include_tasks: check_bash.yml

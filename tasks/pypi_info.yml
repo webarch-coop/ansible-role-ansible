@@ -70,9 +70,10 @@
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
       when: >-
-        ( ans_pypi_pkg.state is not defined ) or
+        ( ans_pypi_pkg.version is defined ) and
+        ( ( ans_pypi_pkg.state is not defined ) or
         ( ( ans_pypi_pkg.state is defined ) and
-        ( ans_pypi_pkg.state != "absent" ) )
+        ( ans_pypi_pkg.state != "absent" ) ) )
 
   tags:
     - ans
