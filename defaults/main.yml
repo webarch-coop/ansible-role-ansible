@@ -39,6 +39,7 @@ ans: false
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
 #     version: "2.4.0"
+ans_distro_check: true
 ans_downgrade: false
 # Debian / Ubuntu packages required
 ans_pkgs:

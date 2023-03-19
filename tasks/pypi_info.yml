@@ -33,7 +33,7 @@
 
         - name: Fail if the GET request failure didn't occur when running the minimum Ansible version
           ansible.builtin.fail:
-          when: ans_installed_version is version(ans_ansible_min_version, '>')
+          when: ans_core_installed_version is version(ans_ansible_core_min_version, '>')
 
         - name: "Get a list of available PyPi versions without validating certificates when using the minimum Ansible version for {{ ans_pypi_pkg.name }}"
           ansible.builtin.uri:
@@ -44,7 +44,7 @@
           check_mode: false
           changed_when: false
           register: ans_pypi
-          when: ans_installed_version == ans_ansible_min_version
+          when: ans_core_installed_version == ans_ansible_core_min_version
 
     - name: "Debug available PyPi versions for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:

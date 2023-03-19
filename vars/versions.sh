@@ -18,6 +18,7 @@ declare -a core_changelog_urls=(
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/7/CHANGELOG-v7.rst"
 )
 
+echo "---"
 echo "ans_versions:"
 for url in "${base_changelog_urls[@]}"
   do

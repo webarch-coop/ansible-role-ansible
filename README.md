@@ -59,6 +59,10 @@ Note that the `url` of the GitHub project is appended with `/releases/latest` to
 
 The `ans_downgrade` variable defaults to `false`, if it is set to `true` then this role will install older versions of PyPi packages  Ansible Galaxy Collections even when newer system versions are present.
 
+### ans_distro_check
+
+The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_distribution` is not Debian or Ubuntu and `ansible_distribution_release` is not bullseye, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
+
 ### ans_pkgs
 
 A list of Debian / Ubuntu packages that are required, for example;

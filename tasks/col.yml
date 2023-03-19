@@ -32,7 +32,7 @@
 
         - name: "Fail if the GET request failure didn't occur when running the minimum Ansible version for {{ ans_col.name }}"
           ansible.builtin.fail:
-          when: ans_installed_version is version(ans_ansible_min_version, '>')
+          when: ans_core_installed_version is version(ans_ansible_core_min_version, '>')
 
         - name: "Use a HEAD request to get the latest redirect URL without certificate validation when using the minimum Ansible version for {{ ans_col.name }}"
           ansible.builtin.uri:
@@ -122,7 +122,7 @@
 
             - name: Fail if the collection install failure didn't occur when running the minimum Ansible version
               ansible.builtin.fail:
-              when: ans_installed_version is version(ans_ansible_min_version, '>')
+              when: ans_core_installed_version is version(ans_ansible_core_min_version, '>')
 
             - name: "Ansible collection install using command module without certificate verification for {{ ans_col.name }}"
               ansible.builtin.command: >-

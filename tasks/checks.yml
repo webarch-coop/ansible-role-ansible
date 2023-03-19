@@ -11,6 +11,13 @@
 - name: Check variables
   block:
 
+    - name: This role has only been designed to be run on Debian Bullseye, Debian Bookworm and Ubuntu Jammy
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution is regex('^Debian|Ubuntu$')
+          - ansible_distribution_release is regex('^bookworm|bullseye|jammy$')
+      when: ans_distro_check | bool
+
     # When in a docker container ans_init.stdout == "sh"
     - name: Check if system has been booted with systemd as init system
       ansible.builtin.command: ps -p 1 -o comm=
@@ -80,20 +87,27 @@
 
     # https://packages.debian.org/bullseye/ansible
     # https://packages.ubuntu.com/jammy/ansible
-    - name: Set a fact for the .deb package ansible version for bullseye and jammy version
+    - name: Set a fact for the Bullseye and Focal packaged version of Ansible
       ansible.builtin.set_fact:
-        ans_installed_version: "2.10.8"
-      when: ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1"
+        ans_core_installed_version: "2.10.8"
+      when:
+        - ansible_distribution_release is regex('^bullseye|jammy$')
+        - ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1"
 
-    - name: Set a fact for the .deb package ansible version when not the bullseye or jammy version
-      ansible.builtin.set_fact:
-        ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
-      when: ansible_facts.packages.ansible[0].version != "2.10.7+merged+base+2.10.8+dfsg-1"
+    - name: Set a fact for the Bookworm packaged version of Ansible
+      block:
 
-    - name: Ansible installed version
-      ansible.builtin.debug:
-        var: ans_installed_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+        - name: Check the ansible .deb version on Bookworm
+          ansible.builtin.set_fact:
+            ans_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
+
+        - name: Set a fact for the Bokworm packaged version of Ansible
+          ansible.builtin.set_fact:
+            ans_core_installed_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
+
+      when:
+        - ansible_distribution_release is regex('^bookworm$')
+        - ansible_facts.packages.ansible[0].version != "2.10.7+merged+base+2.10.8+dfsg-1"
 
     - name: Check ansible-core .deb version present
       block:
@@ -113,6 +127,14 @@
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
       when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
+
+    - name: Ansible core installed version
+      ansible.builtin.debug:
+        var: ans_core_installed_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+    # TODO the above needs only one way to set ans_core_installed_version!
+    - fail:
 
     - name: Check the latest Ansible core version
       ansible.builtin.include_tasks: pip.yml
@@ -163,14 +185,14 @@
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is not present
       ansible.builtin.assert:
         that:
-          - ans_installed_version is version(ans_ansible_min_version, 'ge')
+          - ans_core_installed_version is version(ans_ansible_core_min_version, 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is not defined
 
     - name: Check that the installed version of Ansible is greater than or equal to the minimum version required when ansible-core is present
       ansible.builtin.assert:
         that:
-          - ans_core_installed_version is version(ans_ansible_min_version, 'ge')
+          - ans_core_installed_version is version(ans_ansible_core_min_version, 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: ans_core_installed_version is defined
 
@@ -276,7 +298,7 @@
       ansible.builtin.debug:
         msg:
           - "ans_running_version: {{ ans_running_version }}"
-          - "ans_installed_version:{% if ans_installed_version is defined %} {{ ans_installed_version }}{% endif %}"
+          - "ans_core_installed_version:{% if ans_core_installed_version is defined %} {{ ans_core_installed_version }}{% endif %}"
           - "ans_core_installed_version:{% if ans_core_installed_version is defined %} {{ ans_core_installed_version }}{% endif %}"
           - "ans_user_version:{% if ans_user_version is defined %} {{ ans_user_version }}{% endif %}"
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
@@ -343,7 +365,7 @@
 
       when: >-
         ( ( ans_user_version is defined ) and ( ans_user_version is version(ans_running_version, 'eq') ) ) and
-        ( ( ( ans_core_installed_version is not defined ) and ( ans_installed_version is version(ans_running_version, 'ne') ) ) or
+        ( ( ( ans_core_installed_version is not defined ) and ( ans_core_installed_version is version(ans_running_version, 'ne') ) ) or
         ( ( ans_core_installed_version is defined ) and ( ans_core_installed_version is version(ans_running_version, 'ne') ) ) )
 
     - name: Set facts based on the system version of Ansible as that is the version being run
@@ -407,7 +429,7 @@
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
       when: >-
-        ( ( ans_core_installed_version is not defined ) and ( ans_installed_version is version(ans_running_version, 'eq') ) ) or
+        ( ( ans_core_installed_version is not defined ) and ( ans_core_installed_version is version(ans_running_version, 'eq') ) ) or
         ( ( ans_core_installed_version is defined ) and ( ans_core_installed_version is version(ans_running_version, 'eq') ) )
 
     - name: Check that the ansible-galaxy version number based variables have been set
@@ -458,7 +480,7 @@
         - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
           ansible.builtin.set_fact:
             ans_pipx: true
-          when: ans_installed_version is version(ans_required_version, 'lt')
+          when: ans_core_installed_version is version(ans_required_version, 'lt')
 
         - name: Debug ans_pipx variable
           ansible.builtin.debug:

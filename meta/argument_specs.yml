@@ -36,6 +36,10 @@ argument_specs:
             type: str
             required: true
             description: The version of the Ansible collection to install.
+      ans_distro_check:
+        type: bool
+        required: true
+        description: Enable or disable the ansible_distribution and ansible_distribution_release check.
       ans_downgrade:
         type: bool
         required: true
