@@ -21,7 +21,7 @@ cd localhost
 ./ansible.sh --verbose   # verbose install / update
 ```
 
-This role is designed to be run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
+When this role is run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
 
 To manually update the `$PATH` add the following to your `~/.bash_profile` or whichever file sets your `$PATH` environmental variable when you login:
 
