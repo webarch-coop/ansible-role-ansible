@@ -66,17 +66,16 @@
           register: ans_bash_profile_copied
           when: not ans_bash_profile.stat.exists | bool
 
-        - name: Fail if ~/.local/bin is not in the PATH environmental variable and ~/.bash_profile hasn't been changed
-          ansible.builtin.assert:
-            that:
-              - ans_local_path in ans_paths
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-            fail_msg:
+        - name: Warn if ~/.local/bin is not in the PATH environmental variable and ~/.bash_profile hasn't been changed
+          ansible.builtin.debug:
+            msg:
               - "Please add {{ ans_local_path }} to your PATH environmental variable"
               - "For example add the following two lines to ~/.bash_profile"
               - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
               - "export PATH=${PATH}"
-          when: not ans_bash_profile_copied.changed | bool
+          when:
+            - not ans_bash_profile_copied.changed | bool
+            - ans_local_path not in ans_paths
 
       when:
         - ans_paths is defined

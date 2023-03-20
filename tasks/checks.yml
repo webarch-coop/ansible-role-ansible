@@ -58,24 +58,6 @@
             fail_msg: "Please install Ansible! 'sudo apt install ansible'"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
-        # The following commented tasks return the users ansible_collections path
-        # so for the system path it is set in vars/main.yml
-        #
-        # - name: Check the system ansible to get the ansible-galaxy collections path
-        #   ansible.builtin.command: "{{ ans_ansible_path }} --version"
-        #   check_mode: false
-        #   changed_when: false
-        #   register: ans_system_version_check
-
-        # - name: Set a fact for the system installed ansible-galaxy collections path
-        #   ansible.builtin.set_fact:
-        #     ans_col_path_system: "{{ ans_system_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | regex_replace('^  ansible python module location = ') | regex_replace('$', '_collections') | trim }}"
-
-        # - name: Debug the system installed ansible-galaxy collections path
-        #   ansible.builtin.debug:
-        #     var: ans_col_path_system
-        #     verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
         - name: Stat the system installed ansible-galaxy collections path
           ansible.builtin.stat:
             path: "{{ ans_col_path_system }}"
@@ -151,16 +133,6 @@
         - name: Set a fact for the running version of Ansible
           ansible.builtin.set_fact:
             ans_running_version: "{{ ansible_version.full }}"
-
-        # This check doesn't work as the users version is automaticaly used whne it has been
-        # installed using pip
-        #
-        # - name: This role is designed to be run using the system version of Ansible
-        #   ansible.builtin.assert:
-        #     that:
-        #       - ans_core_installed_version is version(ans_running_version, 'eq')
-        #     fail_msg: "Please run this role using the Ansible version at {{ ans_ansible_path }}-playbook"
-        #     quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
       when: ans_distro_check | bool
 
@@ -306,17 +278,6 @@
           ansible.builtin.debug:
             var: ans_user_version
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
-        # This check returns the wromg path so the ans_col_path_user variable is set in vars/main.yml
-        #
-        # - name: Set a fact for the user installed ansible python module location
-        #   ansible.builtin.set_fact:
-        #     ans_col_path_user: "{{ ans_user_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | regex_replace('^  ansible python module location = ') | regex_replace('$', '/collections') | trim }}"
-
-        # - name: Debug the user installed ansible python module location
-        #   ansible.builtin.debug:
-        #     var: ans_col_path_user
-        #     verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Check that the user installed ansible-galaxy python module location exists
           ansible.builtin.stat:

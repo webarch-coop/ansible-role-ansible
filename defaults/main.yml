@@ -72,12 +72,6 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
     version: "6.14.2"
-#   # In the past Ansible DNS modules required
-#   # dnspython<=2.2.1
-#   - name: dnspython
-#     url: https://pypi.org/pypi/dnspython
-#     venv: ansible
-#     version: "2.3.0"
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
@@ -96,18 +90,6 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/molecule-plugins
     venv: ansible
     version: "23.0.0"
-#   - name: netaddr
-#     url: https://pypi.org/pypi/netaddr
-#     venv: ansible
-#     version: "0.8.0"
-#   # In the past ansible-galaxy required
-#   # resolvelib<0.9.0,>=0.5.3
-#   # https://github.com/ansible/ansible/issues/74569
-#   # https://github.com/ansible-community/ppa/issues/16
-#   - name: resolvelib
-#     url: https://pypi.org/pypi/resolvelib
-#     venv: ansible
-#     version: "0.9.0"
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible
