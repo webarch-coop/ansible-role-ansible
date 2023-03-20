@@ -21,6 +21,7 @@ ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
 ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
 ans_comgen: false
+ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
 ans_galaxy_install_mod: false

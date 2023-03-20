@@ -58,20 +58,23 @@
             fail_msg: "Please install Ansible! 'sudo apt install ansible'"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
-        - name: Check the system ansible to get the ansible-galaxy collections path
-          ansible.builtin.command: "{{ ans_ansible_path }} --version"
-          check_mode: false
-          changed_when: false
-          register: ans_system_version_check
+        # The following commented tasks return the users ansible_collections path
+        # so for the system path it is set in vars/main.yml
+        #
+        # - name: Check the system ansible to get the ansible-galaxy collections path
+        #   ansible.builtin.command: "{{ ans_ansible_path }} --version"
+        #   check_mode: false
+        #   changed_when: false
+        #   register: ans_system_version_check
 
-        - name: Set a fact for the system installed ansible-galaxy collections path
-          ansible.builtin.set_fact:
-            ans_col_path_system: "{{ ans_system_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | regex_replace('^  ansible python module location = ') | regex_replace('$', '/collections') | trim }}"
+        # - name: Set a fact for the system installed ansible-galaxy collections path
+        #   ansible.builtin.set_fact:
+        #     ans_col_path_system: "{{ ans_system_version_check.stdout_lines | select('regex', '^  ansible python module location') | community.general.json_query('[0]') | regex_replace('^  ansible python module location = ') | regex_replace('$', '_collections') | trim }}"
 
-        - name: Debug the system installed ansible-galaxy collections path
-          ansible.builtin.debug:
-            var: ans_col_path_system
-            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        # - name: Debug the system installed ansible-galaxy collections path
+        #   ansible.builtin.debug:
+        #     var: ans_col_path_system
+        #     verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Stat the system installed ansible-galaxy collections path
           ansible.builtin.stat:
