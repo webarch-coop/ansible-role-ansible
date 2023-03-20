@@ -30,7 +30,9 @@
           args:
             creates: /etc/bash_completion.d/pipx-completion.sh
             executable: "{{ ans_bash }}"
-          when: ansible_effective_user_id == 0
+          when:
+            - ansible_effective_user_id == 0
+            - ans_argcomplete_register_path is defined
 
         - name: Bash completion present using argcomplete present locally
           ansible.builtin.command: "{{ ans_argcomplete_path }} --user"

@@ -62,6 +62,7 @@
                 name: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"
                 state: "{{ ans_pypi_pkg_state }}"
                 executable: "{{ ans_pip_path }}"
+                extra_args: "{% if ansible_facts.python_version is version('3.11.2', '>=') %}--break-system-packages{% endif %}"
               when:
                 - ansible_effective_user_id == 0
                 - ans_pypi_pkg_state is regex('^forcereinstall|present$')
@@ -108,29 +109,16 @@
     - name: PyPI package absent using pip
       block:
 
-        - name: Remove PyPI package using pip as root
-          block:
-
-            - name: "PyPi root user package absent {{ ans_pypi_pkg.name }}"
-              ansible.builtin.pip:
-                name: "{{ ans_pypi_pkg.name }}"
-                state: absent
-                executable: "{{ ans_pip_path }}"
-              when:
-                - ansible_effective_user_id == 0
-                - ans_pypi_system_version_present is defined
-                - ans_pypi_system_version_present | length > 0
-
-          rescue:
-
-            - name: This role doesn't use --break-system-packages as root, please remove this package manually
-              ansible.builtin.fail:
-                msg: "Please run: sudo pip remove --break-system-packages {{ ans_pypi_pkg.name }}"
-              when: ansible_facts.python_version is version('3.11.2', '>=')
-
-            - name: Removing package using pip as root failed
-              ansible.builtin.fail:
-                msg: "Please try removing this package manually: sudo pip remove {{ ans_pypi_pkg.name }}"
+        - name: "PyPi root user package absent {{ ans_pypi_pkg.name }}"
+          ansible.builtin.pip:
+            name: "{{ ans_pypi_pkg.name }}"
+            state: absent
+            executable: "{{ ans_pip_path }}"
+            extra_args: "{% if ansible_facts.python_version is version('3.11.2', '>=') %}--break-system-packages{% endif %}"
+          when:
+            - ansible_effective_user_id == 0
+            - ans_pypi_system_version_present is defined
+            - ans_pypi_system_version_present | length > 0
 
         - name: "PyPi user package absent {{ ans_pypi_pkg.name }}"
           ansible.builtin.pip:
