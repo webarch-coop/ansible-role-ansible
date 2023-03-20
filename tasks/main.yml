@@ -19,6 +19,7 @@
             that:
               - ansible_distribution is regex('^Debian|Ubuntu$')
               - ansible_distribution_release is regex('^bookworm|bullseye|jammy$')
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
         - name: Check that Backports are enabled on Debian Bullseye for pipx
           block:
