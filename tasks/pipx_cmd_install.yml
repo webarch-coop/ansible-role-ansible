@@ -109,11 +109,16 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_installed_version is defined
 
-        - name: Debug pipx injected packages
+        - name: Debug pipx existing injected packages
           ansible.builtin.debug:
             var: ans_pipx_injected
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_injected is defined
+
+        - name: Debug pipx proposed injected packages
+          ansible.builtin.debug:
+            var: ans_pypi_pkgs
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Set an array for the pipx packages, extras and versions to be injected
           ansible.builtin.set_fact:
@@ -124,6 +129,7 @@
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
             - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
+            - ( ans_pipx_injected not defined ) or ( ans_pipx_injected == [] ) or ( ans_pypi_pkg not in ans_pipx_injected )
           vars:
             ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
           loop: "{{ ans_pypi_pkgs }}"
