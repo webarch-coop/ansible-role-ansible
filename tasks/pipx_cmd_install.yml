@@ -129,7 +129,6 @@
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
             - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
-            - ( ans_pipx_injected not defined ) or ( ans_pipx_injected == [] ) or ( ans_pypi_pkg not in ans_pipx_injected )
           vars:
             ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
           loop: "{{ ans_pypi_pkgs }}"
@@ -166,6 +165,8 @@
             var: ans_pipx_ansible_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_injected is defined
+
+        - fail:
 
         - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
           ansible.builtin.include_tasks: check_pipx_list.yml
