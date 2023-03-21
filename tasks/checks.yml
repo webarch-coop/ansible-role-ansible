@@ -431,9 +431,10 @@
             var: ans_comgen
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-      when:
-        - ans_core_installed_version is defined
-        - ans_core_installed_version is version(ans_running_version, 'eq')
+      when: >-
+        ( ( ans_core_installed_version is defined ) and
+        ( ans_core_installed_version is version(ans_running_version, 'eq') ) or
+        ( ans_galaxy_path is not defined )
 
     - name: Check that the ansible-galaxy version number based variables have been set
       ansible.builtin.assert:

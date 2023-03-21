@@ -23,7 +23,7 @@
         - name: Set a fact for the path to activate-global-python-argcomplete
           ansible.builtin.set_fact:
             ans_argcomplete_path: "{% if '/usr/bin/activate-global-python-argcomplete3' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/activate-global-python-argcomplete3{% elif '/usr/bin/activate-global-python-argcomplete' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/activate-global-python-argcomplete{% endif %}"
-            ans_argcomplete_register_path: "{% if '/usr/bin//usr/bin/register-python-argcomplete3' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/register-python-argcomplete3{% elif '/usr/bin/register-python-argcomplete' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/register-python-argcomplete{% endif %}"
+            ans_argcomplete_register_path: "{% if '/usr/bin/usr/bin/register-python-argcomplete3' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/register-python-argcomplete3{% elif '/usr/bin/register-python-argcomplete' in ans_dpkg_argcomplete.stdout_lines %}/usr/bin/register-python-argcomplete{% endif %}"
 
         - name: Debug the path to activate-global-python-argcomplete
           ansible.builtin.debug:
@@ -32,6 +32,14 @@
           when:
             - ans_argcomplete_path is defined
             - ans_argcomplete_path | length > 0
+
+        - name: Debug the path to register-python-argcomplete
+          ansible.builtin.debug:
+            var: ans_argcomplete_register_path
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          when:
+            - ans_argcomplete_register_path is defined
+            - ans_argcomplete_register_path | length > 0
 
         - name: Check if Bash completion is present for the user when not root
           block:
