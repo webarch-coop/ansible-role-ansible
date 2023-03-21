@@ -29,6 +29,12 @@
           ansible.builtin.debug:
             var: ans_argcomplete_path
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+        - name: Check that the path to activate-global-python-argcomplete
+          ansible.builtin.stat:
+            path: "{{ ans_argcomplete_path }}"
+          register: ans_argcomplete_path_check
+          failed_when: not ans_argcomplete_path_check.stat.exists | bool
           when:
             - ans_argcomplete_path is defined
             - ans_argcomplete_path | length > 0
@@ -37,9 +43,17 @@
           ansible.builtin.debug:
             var: ans_argcomplete_register_path
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+        - name: Check that the path to register-python-argcomplete exists
+          ansible.builtin.stat:
+            path: "{{ ans_argcomplete_register_path }}"
+          register: ans_argcomplete_register_path_check
+          failed_when: not ans_argcomplete_register_path_check.stat.exists | bool
           when:
             - ans_argcomplete_register_path is defined
             - ans_argcomplete_register_path | length > 0
+
+        - fail:
 
         - name: Check if Bash completion is present for the user when not root
           block:
