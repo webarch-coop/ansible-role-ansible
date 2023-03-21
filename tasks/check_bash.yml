@@ -53,8 +53,6 @@
             - ans_argcomplete_register_path is defined
             - ans_argcomplete_register_path | length > 0
 
-        - fail:
-
         - name: Check if Bash completion is present for the user when not root
           block:
 
