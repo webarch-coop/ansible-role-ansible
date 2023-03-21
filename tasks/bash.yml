@@ -30,6 +30,7 @@
               args:
                 creates: /root/pipx-completion.sh
                 executable: "{{ ans_bash }}"
+              environment: "{{ ans_pipx_root_env }}"
               when: ans_argcomplete_register_path is defined
 
             - name: Stat Bash completion for pipx
@@ -70,6 +71,8 @@
               args:
                 creates: "{{ ansible_env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
                 executable: "{{ ans_bash }}"
+              environment: "{{ ans_pipx_user_env }}"
+              when: ans_argcomplete_register_path is defined
 
             - name: Stat Bash completion for pipx
               ansible.builtin.stat:
