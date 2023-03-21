@@ -433,7 +433,7 @@
 
       when: >-
         ( ( ans_core_installed_version is defined ) and
-        ( ans_core_installed_version is version(ans_running_version, 'eq') ) or
+        ( ans_core_installed_version is version(ans_running_version, 'eq') ) ) or
         ( ans_galaxy_path is not defined )
 
     - name: Check that the ansible-galaxy version number based variables have been set
