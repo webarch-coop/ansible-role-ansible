@@ -66,6 +66,12 @@
                 state: directory
                 mode: "0700"
 
+            - name: Users ~/.bash_completion.d directory present
+              ansible.builtin.file:
+                path: "{{ ansible_env.HOME }}/.bash_completion.d"
+                state: directory
+                mode: "0700"
+
             - name: Bash completion for pipx generated using argcomplete
               ansible.builtin.shell: "{{ ans_argcomplete_register_path }} pipx > {{ ansible_env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
               args:
