@@ -157,4 +157,6 @@ ans_versions:
     core: 2.14.2
   - ansible: 7.3.0
     core: 2.14.3
+  - ansible: 7.4.0
+    core: 2.14.4
 ...
