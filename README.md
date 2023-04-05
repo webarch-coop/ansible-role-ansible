@@ -38,7 +38,7 @@ See the [defaults/main.yml](defaults/main.yml) file for the default variables, t
 
 ### ans
 
-Set the `ans` variable to `true` run the tasks in this role, it defaults to `false`.
+Set the `ans` variable to `true` for the tasks in this role to be run, it defaults to `false`.
 
 ### ans_cols
 
