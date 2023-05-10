@@ -1,3 +1,4 @@
+vars/versions.yml
 galaxy/*
 *.retry
 .*.swp
