@@ -23,7 +23,7 @@ ans_cols:
     version: "2.13.0"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "6.6.0"
+    version: "7.0.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: "3.7.0"
@@ -67,7 +67,7 @@ ans_pypi_pkgs:
 #   - name: ansible-core
 #     url: https://pypi.org/pypi/ansible-core
 #     venv: ansible
-#     version: "2.14.3"
+#     version: "2.14.5"
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
@@ -75,7 +75,7 @@ ans_pypi_pkgs:
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
-    version: "1.23.0"
+    version: "1.23.2"
   - name: jinja2-ansible-filters
     url: https://pypi.org/pypi/jinja2-ansible-filters
     venv: ansible
@@ -87,17 +87,17 @@ ans_pypi_pkgs:
   - name: molecule
     url: https://pypi.org/pypi/molecule
     venv: ansible
-    version: "4.0.4"
+    version: "5.0.1"
   - name: molecule-plugins
     extras:
       - docker
     url: https://pypi.org/pypi/molecule-plugins
     venv: ansible
-    version: "23.0.0"
+    version: "23.4.1"
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible
-    version: "1.30.0"
+    version: "1.31.0"
 ans_pipx_root_env:
   PIPX_HOME: /opt
   PIPX_BIN_DIR: /usr/local/bin
