@@ -250,6 +250,14 @@
         path: "{{ ans_user_path }}"
       register: ans_user_presence
 
+    - name: Check the destination when a user installed ansible is a symlink
+      ansible.builtin.stat:
+        path: "{{ ans_user_presence.lnk_target }}"
+      register: ans_user_presence_lnk
+      when:
+        - ans_user_presence.stat.islnk is defined
+        - ans_user_presence.stat.islnk | bool
+
     - name: Check the version of the user installed version of Ansible when it exists
       block:
 
@@ -295,7 +303,13 @@
           ansible.builtin.include_tasks: check_user_galaxy.yml
           when: ans_user_version is version(ans_running_version, 'eq')
 
-      when: ans_user_presence.stat.exists | bool
+      when: >-
+        ( ( ans_user_presence.stat.exists | bool ) and
+        ( ans_user_presence.stat.isreg | bool ) ) or
+        ( ( ans_user_presence.stat.exists | bool ) and
+        ( ans_user_presence.stat.islnk | bool ) and
+        ( ans_user_presence_lnk.stat.exists | bool ) and
+        ( ans_user_presence_lnk.stat.isreg | bool ) )
 
     - name: Debug Ansible version variables
       ansible.builtin.debug:
