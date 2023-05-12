@@ -169,7 +169,7 @@
           when: ans_pipx_ansible_injected is defined
 
         - name: Inject PyPI library packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
+          ansible.builtin.command: "{{ ans_pipx_path }} inject ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
           register: ans_pipx_lib_injected
           when:
             - ans_pypi_pkg.name != "ansible"
@@ -183,6 +183,12 @@
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
+
+        - name: Debug ans_pipx_lib_injected
+          ansible.builtin.debug:
+            var: ans_pipx_lib_injected
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          when: ans_pipx_lib_injected is defined
 
         - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
           ansible.builtin.include_tasks: check_pipx_list.yml

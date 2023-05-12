@@ -130,7 +130,7 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_injected is defined
 
-        - name: Set an array for the pipx packages, extras and versions to be injected
+        - name: Set an array for the pipx application ackages, extras and versions to be injected
           ansible.builtin.set_fact:
             ans_pipx_inject: "{{ ans_pipx_inject + [ans_pipx_inject_pkg] }}"
           when:
@@ -139,6 +139,7 @@
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
             - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
+            - ( ans_pypi_pkg.type is not defined ) or ( ans_pypi_pkg.type == "app" )
           vars:
             ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
           loop: "{{ ans_pypi_pkgs }}"
@@ -146,17 +147,19 @@
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
 
-        - name: Debug the list of pipx packages to be injected
+        - name: Debug the list of pipx application packages to be injected
           ansible.builtin.debug:
             var: ans_pipx_inject
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_inject is defined
 
-        - name: Inject PyPI packages into the Ansible venv
+        - name: Inject PyPI application packages into the Ansible venv
           community.general.pipx:
             name: ansible
             inject_packages: "{{ ans_pipx_inject }}"
             state: inject
+            install_apps: true
+            install_deps: true
             executable: "{{ ans_pipx_path }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
@@ -169,6 +172,35 @@
             var: ans_pipx_ansible_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_injected is defined
+
+        - name: Inject PyPI library packages into the Ansible venv
+          community.general.pipx:
+            name: ansible
+            inject_packages: "{{ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
+            state: inject
+            install_apps: false
+            install_deps: true
+            executable: "{{ ans_pipx_path }}"
+          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          register: ans_pipx_lib_injected
+          when:
+            - ans_pypi_pkg.name != "ansible"
+            - ans_pypi_pkg.venv is defined
+            - ans_pypi_pkg.venv == "ansible"
+            - ans_pypi_pkg.version is defined
+            - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
+            - ans_pypi_pkg.type is defined
+            - ans_pypi_pkg.type == "lib"
+          loop: "{{ ans_pypi_pkgs }}"
+          loop_control:
+            loop_var: ans_pypi_pkg
+            label: "{{ ans_pypi_pkg.name }}"
+
+        - name: Debug ans_pipx_lib_injected
+          ansible.builtin.debug:
+            var: ans_pipx_lib_injected
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          when: ans_pipx_lib_injected is defined
 
         - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
           ansible.builtin.include_tasks: check_pipx_list.yml
