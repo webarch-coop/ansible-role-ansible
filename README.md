@@ -81,7 +81,7 @@ If this role is run usidng `sudo` or as `root` these packages will be automatica
 
 A list of Python Package Index ([PyPI](https://pypi.org/)), package names, URLs and versions that will be installed as user packages if they are not already available as system packages, either using `pip` or `pipx` if the distro is Debian Bookworm.
 
-Each item in the list requires a `name` for the name of the PyPI package, when the `state` is not set to `absent` a `url` for the URL of the project on the PyPI website and a `version` is also required, when `pipx` (rather than `pip`) is used the optional `venv` variable is used set fo the name of the existing virtual environment that package should be injected into, the version can be a version number or `latest`, the `extras` list and `state` are optional, for example:
+Each item in the list requires a `name` for the name of the PyPI package, when the `state` is not set to `absent` a `url` for the URL of the project on the PyPI website and a `version` is also required, when `pipx` (rather than `pip`) is used the optional `venv` variable is used set fo the name of the existing virtual environment that package should be injected into, the version can be a version number or `latest`, the `extras` list and `state` are optional, in addition the optional `type` attribute is used for `pipx`, when it is not set `app` is assumed, the other option being `lib` for packages that don't provide applications, for example:
 
 ```yaml
 ans_pypi_pkgs:
@@ -92,6 +92,11 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
     version: latest
+  - name: jinja2-ansible-filters
+    type: lib
+    url: https://pypi.org/pypi/jinja2-ansible-filters
+    venv: ansible
+    version: "1.3.2"
   - name: molecule-plugins
     extras:
       - docker
