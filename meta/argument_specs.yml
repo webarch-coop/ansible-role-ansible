@@ -74,6 +74,13 @@ argument_specs:
               # Use version for latest
               # - "latest"
               - "present"
+          type:
+            type: str
+            required: false
+            description: The type of the PyPI package.
+            choices:
+              - app
+              - lib
           url:
             type: str
             required: false
