@@ -156,6 +156,11 @@
           ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_inject_str }}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
+          changed_when: ( "installed package" in ans_pipx_ansible_injected.stdout )
+          failed_when: >-
+            ( ans_pipx_ansible_injected.rc != 0 ) or
+            ( ( ans_pipx_ansible_injected.rc == 1 ) and
+            ( "No apps associated with package" not in ans_pipx_ansible_injected.stderr ) )
           when:
             - ans_pipx_inject is defined
             - ans_pipx_inject != []
@@ -165,6 +170,30 @@
             var: ans_pipx_ansible_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_injected is defined
+
+        - name: Attempt to inject single package into the Ansible venv after a failure
+          block:
+
+            - name: Set a fact for the package that caused an error
+              ansible.builtin.set_fact:
+                ans_pipx_failed: "{{ ansible_loop.last | ansible.builtin.regex_replace('^installing[ ][a-z0-9-]{2,64}[ ]from[ ]spec') | ansible.builtin.regex_replace('[.][.][.]$') }}"
+              when: ( "No apps associated with package" in ans_pipx_err )
+              loop: "{{ ans_pipx_ansible_injected.stderr_lines }}"
+              loop_control:
+                extended: true
+                loop_var: ans_pipx_err
+                label: "{{ ansible_loop.index }}"
+
+            - name: Inject failed package into the Ansible venv
+              ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_failed }}"
+              environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+              register: ans_pipx_ansible_injected
+              changed_when: ( "installed package" in ans_pipx_ansible_injected.stdout )
+              when: ans_pipx_failed is defined
+
+          when:
+            - ans_pipx_ansible_injected.rc == 1
+            - ( "No apps associated with package" not in ans_pipx_ansible_injected.stderr )
 
         - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
           ansible.builtin.include_tasks: check_pipx_list.yml
