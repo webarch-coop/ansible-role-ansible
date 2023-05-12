@@ -252,7 +252,7 @@
 
     - name: Check the destination when a user installed ansible is a symlink
       ansible.builtin.stat:
-        path: "{{ ans_user_presence.lnk_target }}"
+        path: "{{ ans_user_presence.stat.lnk_target }}"
       register: ans_user_presence_lnk
       when:
         - ans_user_presence.stat.islnk is defined
