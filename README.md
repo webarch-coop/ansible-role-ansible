@@ -114,6 +114,12 @@ An optional path for the non-root users `bin` directory, `ans_user_bin` defaults
 
 ## Notes
 
+When running `ansible-lint` there is a warning like this:
+
+> WARNING: PATH altered to include ~/.local/pipx/venvs/ansible/bin :: This is usually a sign of broken local setup, which can cause unexpected behaviors.
+
+This is [safe to ignore](https://github.com/ansible/ansible-lint/issues/2538).
+
 List the PyPI system packages present:
 
 ```bash
