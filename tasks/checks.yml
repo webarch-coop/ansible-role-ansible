@@ -491,6 +491,7 @@
             var: ans_core_required_version
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
+        # TODO This doesn't result in ans_pipx being true when downgrading ansible in a pipx venv
         - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
           ansible.builtin.set_fact:
             ans_pipx: true
