@@ -176,7 +176,7 @@
         - name: Inject PyPI library packages into the Ansible venv
           community.general.pipx:
             name: ansible
-            inject_packages: "{{ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
+            inject_packages: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
             state: inject
             install_apps: false
             install_deps: false
