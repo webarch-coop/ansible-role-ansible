@@ -71,7 +71,7 @@ ans_pypi_pkgs:
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
-    version: "6.16.0"
+    version: "6.16.1"
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
