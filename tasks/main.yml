@@ -43,7 +43,10 @@
           ansible.builtin.apt:
             pkg: "{{ ans_pkgs }}"
             state: present
-          when: ansible_effective_user_id == 0
+          when:
+            - ansible_effective_user_id == 0
+            - ansible_local.dpkg.installed is defined
+            - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
 
       when: ans_distro_check | bool
 
