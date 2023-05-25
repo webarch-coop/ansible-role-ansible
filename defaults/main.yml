@@ -23,10 +23,10 @@ ans_cols:
     version: "2.13.1"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "7.0.0"
+    version: "7.0.1"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: "3.7.1"
+    version: "3.7.2"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: "2.4.1"
@@ -98,7 +98,7 @@ ans_pypi_pkgs:
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible
-    version: "1.31.0"
+    version: "1.32.0"
 ans_pipx_root_env:
   PIPX_HOME: /opt
   PIPX_BIN_DIR: /usr/local/bin
