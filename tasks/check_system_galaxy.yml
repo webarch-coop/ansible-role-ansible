@@ -107,10 +107,10 @@
             ans_system_galaxy_install_mod: true
           when: ans_system_col_comgen_version is version('3.5.0', 'ge')
 
-        - name: Set ans_system_pipx_mod to true when community.general 3.8.0 or greater is available as than means community.general.pipx can be used
+        - name: Set ans_system_pipx_mod to true when community.general 6.6.0 or greater is available as than means community.general.pipx can be used
           ansible.builtin.set_fact:
             ans_system_pipx_mod: true
-          when: ans_system_col_comgen_version is version('3.8.0', 'ge')
+          when: ans_system_col_comgen_version is version('6.6.0', 'ge')
 
         - name: Set ans_system_pipx_mod_info to true when community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
           ansible.builtin.set_fact:
