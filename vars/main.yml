@@ -15,7 +15,7 @@
 # https://packages.debian.org/bookworm/ansible-core
 ans_ansible_core_min_version: "2.10.8"
 ans_ansible_path: "{{ ans_system_bin }}/ansible"
-ans_bash: "{% if ansible_env.SHELL is defined and ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/usr/bin/bash{% endif %}"
+ans_bash: "{% if ansible_env.SHELL is defined and ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/bin/bash{% endif %}"
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
 ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
 ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
