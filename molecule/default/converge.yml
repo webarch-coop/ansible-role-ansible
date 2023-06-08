@@ -36,4 +36,26 @@
       args:
         chdir: ../..
       changed_when: false
+
+- name: Run as root
+  become: true
+  connection: local
+  gather_facts: true
+  hosts:
+    - localhost
+  tasks:
+    - name: Include molecule
+      ansible.builtin.include_role:
+        name: molecule
+
+- name: Run as ansible user
+  become: false
+  connection: local
+  gather_facts: true
+  hosts:
+    - localhost
+  tasks:
+    - name: Include molecule
+      ansible.builtin.include_role:
+        name: molecule
 ...

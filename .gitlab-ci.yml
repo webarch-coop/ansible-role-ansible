@@ -8,18 +8,37 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-image: registry.git.coop/webarch/containers/images/ansible:0.24.0
 variables:
   ANSIBLE_DEFAULT_VERBOSITY: "2"
   ANSIBLE_DIFF_ALWAYS: "1"
   ANSIBLE_FORCE_COLOR: "1"
+  GIT_STRATEGY: none
+  MOLECULE_VERBOSITY: "0"
   PY_COLORS: "1"
 before_script:
-  - chmod 700 $(pwd)
+  - cd
+  - source ~/.profile
+  - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
+  - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
+  - git clone ${CI_PROJECT_URL}.git
+  - cd ${CI_PROJECT_NAME}
 stages:
-  - lint
-lint:
-  stage: lint
+  - bookworm
+  - bullseye
+  - jammy
+bookworm:
+  image: debian:bookworm-backports
+  stage: bookworm
+  script:
+    - molecule converge
+bullseye:
+  image: debian:bullseye-backports
+  stage: bullseye
+  script:
+    - molecule converge
+jammy:
+  image: ubuntu:jammy
+  stage: jammy
   script:
     - molecule converge
 # vim: syntax=yaml
