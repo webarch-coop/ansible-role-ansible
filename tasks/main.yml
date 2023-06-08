@@ -34,7 +34,10 @@
               ansible.builtin.assert:
                 that:
                   - ( "bullseye-backports" in ans_debian_apt_cache_policy_pipx.stdout )
-                fail_msg: "Backports need to be enabled on Debian Bullseye for pipx to be installed."
+                fail_msg:
+                  - "Backports need to be enabled on Debian Bullseye for pipx to be installed."
+                  - "apt-cache policy pipx stdout {{ ans_debian_apt_cache_policy_pipx.stdout }}"
+                  - "apt-cache policy pipx stderr {{ ans_debian_apt_cache_policy_pipx.stderr }}"
                 quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
           when: ansible_distribution_release == "bullseye"
