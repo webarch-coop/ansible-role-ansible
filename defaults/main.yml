@@ -48,6 +48,7 @@ ans_pkgs:
   - jc
   - jo
   - pipx
+  - procps
   - python3-argcomplete
   - python3-dnspython
   - python3-commonmark
