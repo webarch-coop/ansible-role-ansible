@@ -25,6 +25,7 @@ before_script:
   - su - ansible
   - cd
   - pipx install molecule
+  - ls -lah /root/.local/bin
   - pipx ensurepath
   - source ~/.profile
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
