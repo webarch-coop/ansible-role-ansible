@@ -17,12 +17,16 @@ variables:
   PY_COLORS: "1"
 before_script:
   - apt-get update -qq
-  - apt-get install -qqy git sudo
+  - apt-get dist-upgrade -qqy
+  - apt-get install -qqy git pipx sudo
   - useradd -m -U ansible
   - echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
   - chmod 700 /home/ansible
   - su - ansible
   - cd
+  - pipx install molecule
+  - pipx ensurepath
+  - source ~/.profile
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
