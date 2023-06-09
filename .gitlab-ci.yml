@@ -18,7 +18,7 @@ variables:
 before_script:
   - apt-get update -qq
   - apt-get dist-upgrade -qqy
-  - apt-get install -qqy ansible git pipx sudo
+  - apt-get install -qqy ansible git pipx python3-apt sudo
   - useradd -m -U ansible
   - echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
   - chmod 700 /home/ansible
