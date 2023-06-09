@@ -8,35 +8,6 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Lint
-  become: false
-  connection: local
-  gather_facts: false
-  hosts:
-    - localhost
-  tasks:
-
-    - name: Check Jinja2 syntax
-      ansible.builtin.command: find -type f -name '*.j2' -exec ansiblej2lint.py {} +
-      check_mode: false
-      args:
-        chdir: ../..
-      changed_when: false
-
-    - name: YAML lint
-      ansible.builtin.command: yamllint -f colored -c .yamllint .
-      check_mode: false
-      args:
-        chdir: ../..
-      changed_when: false
-
-    - name: Ansible lint
-      ansible.builtin.command: ansible-lint -c .ansible-lint --force-color .
-      check_mode: false
-      args:
-        chdir: ../..
-      changed_when: false
-
 - name: Run as root
   become: true
   connection: local
@@ -44,18 +15,31 @@
   hosts:
     - localhost
   tasks:
-    - name: Include molecule
-      ansible.builtin.include_role:
-        name: molecule
 
-- name: Run as ansible user
+    - name: Debug ansible_effective_user_id
+      ansible.builtin.debug:
+        var: ansible_effective_user_id
+
+    - name: Include ansible role as root
+      ansible.builtin.include_role:
+        name: ansible
+      vars:  # noqa var-naming[no-role-prefix]
+        ans: true
+
+- name: Run as user
   become: false
   connection: local
   gather_facts: true
   hosts:
     - localhost
   tasks:
-    - name: Include molecule
+
+    - name: Debug ansible_effective_user_id
+      ansible.builtin.debug:
+        var: ansible_effective_user_id
+    - name: Include ansible role as user
       ansible.builtin.include_role:
-        name: molecule
+        name: ansible
+      vars:  # noqa var-naming[no-role-prefix]
+        ans: true
 ...
