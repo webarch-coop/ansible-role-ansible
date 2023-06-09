@@ -44,6 +44,10 @@ argument_specs:
         type: bool
         required: true
         description: Enable or disable the installing of older versions of packages than the system packages.
+      ans_env:
+        type: dict
+        required: true
+        description: An internal dictionary of environment variables to use when running ansible.
       ans_pkgs:
         type: list
         required: true

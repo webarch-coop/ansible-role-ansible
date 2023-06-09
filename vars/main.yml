@@ -25,6 +25,9 @@ ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collections"
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
+ans_env:
+  ANSIBLE_FORCE_COLOR: "0"
+  PY_COLORS: "0"
 ans_galaxy_install_mod: false
 # Don't use community.general.ansible_galaxy_install by default because of this issue
 # https://github.com/ansible-collections/community.general/issues/5661
