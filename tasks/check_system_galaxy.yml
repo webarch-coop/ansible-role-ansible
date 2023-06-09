@@ -13,6 +13,7 @@
 
     - name: Check if the system installed version of ansible-galaxy supports JSON output
       ansible.builtin.command: "{{ ans_system_galaxy_path }} collection list --format json"
+      environment: "{{ ans_env }}"
       check_mode: false
       changed_when: false
       register: ans_system_galaxy_json_check
@@ -27,12 +28,12 @@
 
         - name: Debug ansible-galaxy collections
           ansible.builtin.debug:
-            var: ans_system_galaxy_json_check.stdout
+            var: ans_system_galaxy_json_check.stdout_lines[-1]
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
         - name: Set a fact for the ansible-galaxy collections present
           ansible.builtin.set_fact:
-            ans_system_col_existing: "{{ ans_system_galaxy_json_check.stdout | from_json }}"
+            ans_system_col_existing: "{{ ans_system_galaxy_json_check.stdout_lines[-1] | from_json }}"
 
         - name: Debug ans_system_col_existing
           ansible.builtin.debug:

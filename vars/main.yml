@@ -27,6 +27,8 @@ ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
 ans_env:
   ANSIBLE_FORCE_COLOR: "0"
+  ANSIBLE_NOCOLOR: "1"
+  ANSIBLE_NOCOWS: "1"
   PY_COLORS: "0"
 ans_galaxy_install_mod: false
 # Don't use community.general.ansible_galaxy_install by default because of this issue
