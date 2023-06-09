@@ -24,8 +24,8 @@ before_script:
   - chmod 700 /home/ansible
   - su - ansible
   - cd
-  - pipx install molecule
-  - pipx inject molecule ansible==7.3.0
+  - pipx install --include-deps molecule
+  - pipx inject --include-deps --include-apps molecule ansible==7.3.0
   - pipx ensurepath
   - source ~/.profile
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
