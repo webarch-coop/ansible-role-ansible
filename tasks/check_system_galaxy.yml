@@ -28,7 +28,7 @@
         - name: Debug ansible-galaxy collections
           ansible.builtin.debug:
             var: ans_system_galaxy_json_check.stdout
-            verbosity: "{% if ansible_check_mode | bool %}3{% else %}4{% endif %}"
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
         - name: Set a fact for the ansible-galaxy collections present
           ansible.builtin.set_fact:
