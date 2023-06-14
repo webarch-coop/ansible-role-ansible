@@ -29,7 +29,7 @@ ans_cols:
     version: "3.7.2"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: "2.4.1"
+    version: "3.0.0"
 #   - name: community.rabbitmq
 #     url: https://github.com/ansible-collections/community.rabbitmq
 #     version: "1.2.3"
@@ -72,7 +72,7 @@ ans_pypi_pkgs:
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
-    version: "6.17.0"
+    version: "6.17.1"
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
