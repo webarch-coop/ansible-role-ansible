@@ -17,12 +17,14 @@ repos:
       - id: yamllint
         name: YAML Lint
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.17.0
+    rev: v6.17.1
     hooks:
       - id: ansible-lint
         name: Ansible Lint
         language: python
         additional_dependencies:
+          # https://github.com/kellyjonbrazil/jc/releases
           - jc==1.23.2
+          # https://github.com/jmespath/jmespath.py/tags
           - jmespath==1.0.1
 ...
