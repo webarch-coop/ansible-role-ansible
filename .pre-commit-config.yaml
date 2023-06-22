@@ -17,7 +17,7 @@ repos:
       - id: yamllint
         name: YAML Lint
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.17.1
+    rev: v6.17.2
     hooks:
       - id: ansible-lint
         name: Ansible Lint
