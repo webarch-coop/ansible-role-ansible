@@ -170,4 +170,6 @@ ans_versions:
     core: 2.14.6
   - ansible: 8.0.0
     core: 2.15.0
+  - ansible: 8.1.0
+    core: 2.15.1
 ...
