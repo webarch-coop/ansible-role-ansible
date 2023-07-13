@@ -58,37 +58,51 @@
     - localhost
   tasks:
 
+    - name: Run ls -l /usr/local/bin
+      ansible.builtin.command: ls -l /usr/local/bin
+      check_mode: false
+      changed_when: false
+      register: molecule_ls_usr_local_bin
+
+    - name: Set a fact for the ls -l /usr/local/bin results
+      ansible.builtin.set_fact:
+        molecule_usr_local_bin: "{{ molecule_ls_usr_local_bin.stdout | string | community.general.jc('ls') }}"
+
+    - name: Debug ls -l /usr/local/bin results
+      ansible.builtin.debug:
+        var: molecule_usr_local_bin
+
     - name: Run which ansible
       ansible.builtin.command: which ansible
       check_mode: false
       changed_when: false
-      register: molecule_user_which_ansible
+      register: molecule_which_ansible
 
     - name: Debug which ansible
       ansible.builtin.debug:
-        var: molecule_user_which_ansible.stdout
+        var: molecule_which_ansible.stdout
 
     - name: Run which ansible -a
       ansible.builtin.command: which ansible -a
       check_mode: false
       changed_when: false
-      register: molecule_user_which_ansible_a
-      failed_when: molecule_user_which_ansible_a.rc is not regex('^0|1$')
+      register: molecule_which_ansible_a
+      failed_when: molecule_which_ansible_a.rc is not regex('^0|1$')
 
     - name: Check ansible versions
       ansible.builtin.command: "{{ molecule_ansible_path }} --version"
       check_mode: false
       changed_when: false
       register: molecule_ansible_v
-      loop: "{{ molecule_user_which_ansible_a.stdout_lines }}"
+      loop: "{{ molecule_which_ansible_a.stdout_lines }}"
       loop_control:
         loop_var: molecule_ansible_path
 
     - name: Set facts for the ansible versions
       ansible.builtin.set_fact:
-        molecule_ansible_user_versions: "{{ molecule_ansible_v | community.general.json_query('results[].{path: molecule_ansible_path, version: stdout_lines[0]}') }}"
+        molecule_ansible_versions: "{{ molecule_ansible_v | community.general.json_query('results[].{path: molecule_ansible_path, version: stdout_lines[0]}') }}"
 
     - name: Debug ansible versions
       ansible.builtin.debug:
-        var: molecule_ansible_user_versions
+        var: molecule_ansible_versions
 ...
