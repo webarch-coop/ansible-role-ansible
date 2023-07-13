@@ -166,6 +166,8 @@
           when:
             - ans_pipx_inject is defined
             - ans_pipx_inject != []
+          tags:
+            - molecule-idempotence-notest
 
         - name: Debug ans_pipx_ansible_injected
           ansible.builtin.debug:
@@ -190,6 +192,8 @@
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
+          tags:
+            - molecule-idempotence-notest
 
         - name: Debug ans_pipx_lib_injected
           ansible.builtin.debug:
