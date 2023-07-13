@@ -14,21 +14,23 @@ variables:
   ANSIBLE_FORCE_COLOR: "1"
   GIT_STRATEGY: none
   MOLECULE_VERBOSITY: "2"
+  PIPX_HOME: "/opt"
+  PIPX_BIN_DIR: "/usr/local/bin"
   PY_COLORS: "1"
 before_script:
   - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
   - apt-get update -qq
   - apt-get dist-upgrade -qqy
-  - apt-get install -qqy ansible git pipx python3-apt python3-pip sudo
-  - useradd -m -U ansible
-  - echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-  - chmod 700 /home/ansible
-  - su - ansible
-  - cd
+  - apt-get install -qqy ansible git pipx python3-apt python3-pip
+  # - useradd -m -U ansible
+  # - echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+  # - chmod 700 /home/ansible
+  # - su - ansible
+  # - cd
   - pipx install --include-deps molecule
-  - pipx inject --include-deps --include-apps molecule ansible==7.3.0
-  - pipx ensurepath
-  - source ~/.profile
+  - pipx inject --include-deps --include-apps molecule ansible
+  # - pipx ensurepath
+  # - source ~/.profile
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
