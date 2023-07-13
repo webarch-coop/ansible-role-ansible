@@ -4,33 +4,7 @@
 
 This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Debian Bullseye or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages.
 
-The [role defaults](defaults/main.yml) are set to match the Ansible version available on [Debian Bookworm](https://packages.debian.org/bookworm/ansible-core).
-
-The version of [Ansible provided by Debian Bullseye](https://packages.debian.org/bullseye/ansible) and the version provided by [Ubuntu Jammy](https://packages.ubuntu.com/jammy/ansible) is `2.10.8` and when this role is run on these distros a newer version of Ansible will be installed using into a virtual environment using [pipx](https://pypa.github.io/pipx/).
-
-On Debian Bookworm Ansible itself is not installed, [pip](https://pip.pypa.io/) is used (with `--break-system-packages`) to install a newer versions of `ansible-lint` than Debian provides and `molecule`, which is not packaged by Debian.
-
-## Usage
-
-The role is designed to be run using the `/usr/bin/ansible-playbook` that is installed by the Debian or Ubuntu `ansible` package, the suggested method for doing this is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
-
-```bash
-git clone https://git.coop/webarch/localhost.git
-cd localhost
-./ansible.sh --check     # check what will be done
-./ansible.sh --verbose   # verbose install / update
-```
-
-When this role is run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
-
-To manually update the `$PATH` add the following to your `~/.bash_profile` or whichever file sets your `$PATH` environmental variable when you login:
-
-```bash
-PATH="${HOME}/.local/bin:${PATH}"
-export PATH="${PATH}"
-```
-
-After updating or creating a file containing your `$PATH` environmental variable you will need to either exit the shell and login again / reopen it or run `source ~/.bash_profile`, (replace `~/bash_profile` which which ever path contains the settings).
+This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Jammy.
 
 ## Role variables
 
@@ -116,6 +90,28 @@ Note that the `url` is used to download a JSON file that lists all the versions 
 ### ans_user_bin
 
 An optional path for the non-root users `bin` directory, `ans_user_bin` defaults to `{{ ansible_env.HOME }}/.local/bin`.
+
+## Usage
+
+The role is designed to be run using the `/usr/bin/ansible-playbook` that is installed by the Debian or Ubuntu `ansible` package, the suggested method for doing this is via the [localhost repo](https://git.coop/webarch/localhost) which contains a [ansible.sh](https://git.coop/webarch/localhost/-/blob/main/ansible.sh) script that will download this role and run it, for example:
+
+```bash
+git clone https://git.coop/webarch/localhost.git
+cd localhost
+./ansible.sh --check     # check what will be done
+./ansible.sh --verbose   # verbose install / update
+```
+
+When this role is run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
+
+To manually update the `$PATH` add the following to your `~/.bash_profile` or whichever file sets your `$PATH` environmental variable when you login:
+
+```bash
+PATH="${HOME}/.local/bin:${PATH}"
+export PATH="${PATH}"
+```
+
+After updating or creating a file containing your `$PATH` environmental variable you will need to either exit the shell and login again / reopen it or run `source ~/.bash_profile`, (replace `~/bash_profile` which which ever path contains the settings).
 
 ## Notes
 

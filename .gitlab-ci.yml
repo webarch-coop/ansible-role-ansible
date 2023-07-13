@@ -42,6 +42,14 @@ bookworm:
     - pipx install molecule
     - pipx inject molecule ansible jc jmespath
     - molecule test
+bullseye:
+  image: ubuntu:bullseye
+  stage: molecule
+  script:
+    - pipx install molecule
+    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - molecule test
+# vim: syntax=yaml
 jammy:
   image: ubuntu:jammy
   stage: molecule
