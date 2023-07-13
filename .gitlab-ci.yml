@@ -33,9 +33,15 @@ before_script:
   - git clone ${CI_PROJECT_URL}.git
   - cd ${CI_PROJECT_NAME}
 stages:
+  - trixie
   - bookworm
   - bullseye
   - jammy
+trixie:
+  image: debian:trixie-backports
+  stage: trixie
+  script:
+    - molecule test
 bookworm:
   image: debian:bookworm-backports
   stage: bookworm
