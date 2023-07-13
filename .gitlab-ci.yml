@@ -22,11 +22,6 @@ before_script:
   - apt-get update -qq
   - apt-get dist-upgrade -qqy
   - apt-get install -qqy ansible ansible-lint git jc jo pipx procps python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
-  - pipx install molecule
-  - pipx inject molecule ansible jc jmespath
-  - ls -lah /usr/local/bin
-  - which ansible
-  - ansible --version
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
@@ -37,21 +32,22 @@ trixie:
   image: debian:trixie-backports
   stage: molecule
   script:
+    - pipx install molecule
+    - pipx inject molecule ansible jc jmespath
     - molecule test
 bookworm:
   image: debian:bookworm-backports
   stage: molecule
   script:
-    - molecule test
-bullseye:
-  image: debian:bullseye-backports
-  stage: molecule
-  script:
+    - pipx install molecule
+    - pipx inject molecule ansible jc jmespath
     - molecule test
 jammy:
   image: ubuntu:jammy
   stage: molecule
   script:
+    - pipx install molecule
+    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
     - molecule test
 # vim: syntax=yaml
 ...
