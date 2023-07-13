@@ -33,28 +33,25 @@ before_script:
   - git clone ${CI_PROJECT_URL}.git
   - cd ${CI_PROJECT_NAME}
 stages:
-  - trixie
-  - bookworm
-  - bullseye
-  - jammy
+  - molecule
 trixie:
   image: debian:trixie-backports
-  stage: trixie
+  stage: molecule
   script:
     - molecule test
 bookworm:
   image: debian:bookworm-backports
-  stage: bookworm
+  stage: molecule
   script:
     - molecule test
 bullseye:
   image: debian:bullseye-backports
-  stage: bullseye
+  stage: molecule
   script:
     - molecule test
 jammy:
   image: ubuntu:jammy
-  stage: jammy
+  stage: molecule
   script:
     - molecule test
 # vim: syntax=yaml
