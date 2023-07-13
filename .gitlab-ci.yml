@@ -23,7 +23,7 @@ before_script:
   - apt-get dist-upgrade -qqy
   - apt-get install -qqy ansible git jc jp pipx python3-apt python3-pip
   - pipx install --include-deps molecule
-  - pipx inject --include-deps --include-apps molecule ansible
+  - pipx inject --include-deps --include-apps molecule ansible jc jp
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
