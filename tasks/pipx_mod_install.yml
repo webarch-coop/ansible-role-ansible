@@ -237,7 +237,7 @@
             src: "{{ ans_venv_executable }}"
             dest: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env.PIPX_BIN_DIR }}{% else %}{{ ans_pipx_user_env.PIPX_BIN_DIR }}{% endif %}/{{ ans_venv_executable | ansible.builtin.basename }}"
             follow: false
-            mode: 0777
+            mode: "0777"
           loop: "{{ ans_pipx_venv_bin_file_paths }}"
           loop_control:
             loop_var: ans_venv_executable

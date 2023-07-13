@@ -607,7 +607,7 @@
         var: ans_pip_system_existing
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-    # When in a docker container ans_init.stdout == "sh"
+    # When in a docker container ans_init.stdout == "sh" or "bash"
     - name: Check if system has been booted with systemd as init system
       ansible.builtin.command: ps -p 1 -o comm=
       changed_when: false
@@ -628,9 +628,9 @@
         var: ansible_playbook_python
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-    - name: Include PATH and python-argcomplete check when the init system is not sh
+    - name: Include PATH and python-argcomplete check when the init system is not sh or ash or bash
       ansible.builtin.include_tasks: check_bash.yml
-      when: ans_init != "sh"
+      when: ans_init is not regex('^sh$')
 
   tags:
     - ansible
