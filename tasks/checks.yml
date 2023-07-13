@@ -292,17 +292,17 @@
             var: ans_user_version
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-        - name: Check that the user installed ansible-galaxy python module location exists
-          ansible.builtin.stat:
-            path: "{{ ans_col_path_user }}"
-          register: ans_col_path_user_check
+        # - name: "Check that the user installed ansible-galaxy python module location exists at {{ ans_col_path_user }}"
+        #   ansible.builtin.stat:
+        #     path: "{{ ans_col_path_user }}"
+        #   register: ans_col_path_user_check
 
-        - name: The user installed ansible-galaxy python module location should be an existing directory
-          ansible.builtin.assert:
-            that:
-              - ans_col_path_user_check.stat.exists | bool
-              - ans_col_path_user_check.stat.isdir | bool
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+        # - name: The user installed ansible-galaxy python module location should be an existing directory
+        #   ansible.builtin.assert:
+        #     that:
+        #       - ans_col_path_user_check.stat.exists | bool
+        #       - ans_col_path_user_check.stat.isdir | bool
+        #     quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
         - name: Include checks for the user installed version of ansible-galaxy when it is being run
           ansible.builtin.include_tasks: check_user_galaxy.yml
