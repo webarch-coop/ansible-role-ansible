@@ -17,13 +17,13 @@ ans_cols:
 #     version: "1.5.2"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: "3.4.6"
+    version: "3.4.8"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: "2.13.1"
+    version: "2.14.1"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "7.0.1"
+    version: "7.1.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: "3.7.2"
@@ -35,7 +35,7 @@ ans_cols:
 #     version: "1.2.3"
   - name: hetzner.hcloud
     url: https://github.com/ansible-collections/hetzner.hcloud
-    version: "1.10.0"
+    version: "1.15.0"
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
 #     version: "2.4.0"
@@ -76,7 +76,7 @@ ans_pypi_pkgs:
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
-    version: "1.23.2"
+    version: "1.23.3"
   - name: jinja2-ansible-filters
     type: lib
     url: https://pypi.org/pypi/jinja2-ansible-filters
@@ -89,7 +89,7 @@ ans_pypi_pkgs:
   - name: molecule
     url: https://pypi.org/pypi/molecule
     venv: ansible
-    version: "5.0.1"
+    version: "5.1.0"
   - name: molecule-plugins
     extras:
       - docker
