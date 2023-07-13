@@ -136,7 +136,7 @@
             - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
             - ( ans_pypi_pkg.type is not defined ) or ( ans_pypi_pkg.type == "app" )
           vars:
-            ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
+            ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
           loop: "{{ ans_pypi_pkgs }}"
           loop_control:
             loop_var: ans_pypi_pkg
