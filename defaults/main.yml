@@ -11,31 +11,31 @@
 # Run the tasks in this role
 ans: false
 # Ansible collections required
-ans_cols:
+# ans_cols:
 #   - name: ansible.posix
 #     url: https://github.com/ansible-collections/ansible.posix
 #     version: "1.5.2"
-  - name: community.docker
-    url: https://github.com/ansible-collections/community.docker
-    version: "3.4.8"
-  - name: community.crypto
-    url: https://github.com/ansible-collections/community.crypto
-    version: "2.14.1"
-  - name: community.general
-    url: https://github.com/ansible-collections/community.general
-    version: "7.1.0"
-  - name: community.mysql
-    url: https://github.com/ansible-collections/community.mysql
-    version: "3.7.2"
-  - name: community.postgresql
-    url: https://github.com/ansible-collections/community.postgresql
-    version: "3.0.0"
+#   - name: community.docker
+#     url: https://github.com/ansible-collections/community.docker
+#     version: "3.4.8"
+#   - name: community.crypto
+#     url: https://github.com/ansible-collections/community.crypto
+#     version: "2.14.1"
+#   - name: community.general
+#     url: https://github.com/ansible-collections/community.general
+#     version: "7.1.0"
+#   - name: community.mysql
+#     url: https://github.com/ansible-collections/community.mysql
+#     version: "3.7.2"
+#   - name: community.postgresql
+#     url: https://github.com/ansible-collections/community.postgresql
+#     version: "3.0.0"
 #   - name: community.rabbitmq
 #     url: https://github.com/ansible-collections/community.rabbitmq
 #     version: "1.2.3"
-  - name: hetzner.hcloud
-    url: https://github.com/ansible-collections/hetzner.hcloud
-    version: "1.15.0"
+#   - name: hetzner.hcloud
+#     url: https://github.com/ansible-collections/hetzner.hcloud
+#     version: "1.15.0"
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
 #     version: "2.4.0"
@@ -64,42 +64,38 @@ ans_pkgs:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: "8.1.0"
-#   - name: ansible-core
-#     url: https://pypi.org/pypi/ansible-core
-#     venv: ansible
-#     version: "2.15.1"
+    version: latest
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
-    version: "6.17.2"
+    version: latest
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
-    version: "1.23.3"
+    version: latest
   - name: jinja2-ansible-filters
     type: lib
     url: https://pypi.org/pypi/jinja2-ansible-filters
     venv: ansible
-    version: "1.3.2"
+    version: latest
   - name: jmespath
     url: https://pypi.org/pypi/jmespath
     venv: ansible
-    version: "1.0.1"
+    version: latest
   - name: molecule
     url: https://pypi.org/pypi/molecule
     venv: ansible
-    version: "5.1.0"
+    version: latest
   - name: molecule-plugins
     extras:
       - docker
     url: https://pypi.org/pypi/molecule-plugins
     venv: ansible
-    version: "23.4.1"
+    version: latest
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible
-    version: "1.32.0"
+    version: latest
 ans_pipx_root_env:
   PIPX_HOME: /opt
   PIPX_BIN_DIR: /usr/local/bin
