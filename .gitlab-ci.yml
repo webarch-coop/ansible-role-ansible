@@ -43,7 +43,7 @@ bookworm:
     - pipx inject molecule ansible jc jmespath
     - molecule test
 bullseye:
-  image: debian:bullseye
+  image: debian:bullseye-backports
   stage: molecule
   script:
     - pipx install molecule
