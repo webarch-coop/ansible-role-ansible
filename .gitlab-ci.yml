@@ -14,8 +14,8 @@ variables:
   ANSIBLE_FORCE_COLOR: "1"
   GIT_STRATEGY: none
   MOLECULE_VERBOSITY: "0"
-  PIPX_BIN_DIR: "/usr/local/bin"
-  PIPX_HOME: "/opt"
+  PIPX_BIN_DIR: /usr/local/bin
+  PIPX_HOME: /opt
   PY_COLORS: "1"
 before_script:
   - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime

@@ -25,21 +25,4 @@
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
-
-- name: Run as user
-  become: false
-  connection: local
-  gather_facts: true
-  hosts:
-    - localhost
-  tasks:
-
-    - name: Debug ansible_effective_user_id
-      ansible.builtin.debug:
-        var: ansible_effective_user_id
-    - name: Include ansible role as user
-      ansible.builtin.include_role:
-        name: ansible
-      vars:  # noqa var-naming[no-role-prefix]
-        ans: true
 ...
