@@ -16,16 +16,19 @@
     - localhost
   tasks:
 
-    - name: Find symlinks in /usr/local/bin
-      ansible.builtin.find:
-        paths: /usr/local/bin
-        file_type: link
-        follow: true
-      register: molecule_root_usr_local_bin_symlinks
+    - name: Find symlinks using ls -l /usr/local/bin
+      ansible.builtin.command: ls -l /usr/local/bin
+      check_mode: false
+      changed_when: false
+      register: molecule_root_usr_local_bin_ls
 
-    - name: Debug find symlinks in /usr/local/bin
+    - name: Set a fact for the results of ls -l /usr/local/bin
+      ansible.builtin.set_fact:
+        molecule_root_usr_local_bin: "{{ molecule_root_usr_local_bin_ls.stdout | string | community.general.jc('ls') | community.general.json_query('[?link_to].{symlink: filename,dest: link_to}') }}"
+
+    - name: Debug ls symlinks in /usr/local/bin
       ansible.builtin.debug:
-        var: molecule_root_usr_local_bin_symlinks
+        var: molecule_root_usr_local_bin
 
     - name: Run which ansible
       ansible.builtin.command: which ansible
