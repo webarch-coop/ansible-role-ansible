@@ -2,7 +2,7 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Debian Bullseye or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages.
+This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Debian Bullseye or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
 
 This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Jammy.
 
