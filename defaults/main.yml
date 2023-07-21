@@ -70,6 +70,7 @@ ans_pypi_pkgs:
     venv: ansible
     version: latest
   - name: dnspython
+    type: lib
     url: https://pypi.org/pypi/dnspython
     venv: ansible
     version: latest
