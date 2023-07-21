@@ -69,6 +69,10 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
     version: latest
+  - name: dnspython
+    url: https://pypi.org/pypi/dnspython
+    venv: ansible
+    version: latest
   - name: jc
     url: https://pypi.org/pypi/jc
     venv: ansible
