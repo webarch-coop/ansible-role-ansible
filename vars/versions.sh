@@ -36,7 +36,7 @@ done
 for url in "${core_changelog_urls[@]}"
   do
     wget -q "${url}" -O CHANGELOG
-    readarray -t strings < <(grep "contains Ansible-core version" CHANGELOG | sort -V)
+    readarray -t strings < <(grep -i "contains Ansible-core version" CHANGELOG | sort -V)
     for line in "${strings[@]}"
       do
         ansible=$(echo "${line}" | awk '{print $2}')
