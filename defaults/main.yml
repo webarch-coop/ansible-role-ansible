@@ -91,6 +91,11 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/molecule
     venv: ansible
     version: latest
+  - name: lxml
+    type: lib
+    url: https://pypi.org/pypi/lxml
+    venv: ansible
+    version: latest
   - name: molecule-plugins
     extras:
       - docker
