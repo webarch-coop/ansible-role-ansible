@@ -213,12 +213,12 @@
     - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query)
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug }}"
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
     - name: Set a fact for the required version of ansible-core when it is defined and set to latest
       ansible.builtin.set_fact:
@@ -248,7 +248,9 @@
     - name: Fail if ans_core_required_version is not a version number
       ansible.builtin.fail:
         fail_msg: "This variable is required to be a version number, it is set to '{{ ans_core_required_version }}'"
-      when: ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge')
+      when: >-
+        ( ans_core_required_version | length == 0 ) or
+        ( ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge')
 
     - name: Check if a user installed ansible exists
       ansible.builtin.stat:
