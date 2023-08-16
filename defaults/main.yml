@@ -64,7 +64,7 @@ ans_pkgs:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: latest
+    version: 8.3.0
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
