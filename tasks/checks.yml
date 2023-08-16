@@ -245,6 +245,10 @@
         - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) != "latest"
         - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug != "NoneType"
 
+    - name: Fail if ans_core_required_version is not a version number
+      ansible.builtin.fail:
+      when: ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge')
+
     - name: Check if a user installed ansible exists
       ansible.builtin.stat:
         path: "{{ ans_user_path }}"
