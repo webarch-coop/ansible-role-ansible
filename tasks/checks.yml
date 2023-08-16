@@ -247,7 +247,7 @@
 
     - name: Fail if ans_core_required_version is not a version number
       ansible.builtin.fail:
-        fail_msg: "This variable is required to be a version number, it is set to '{{ ans_core_required_version }}'"
+        msg: "This variable is required to be a version number, it is set to '{{ ans_core_required_version }}'"
       when: >-
         ( ans_core_required_version | length == 0 ) or
         ( ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge') )
