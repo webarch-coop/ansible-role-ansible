@@ -47,6 +47,7 @@ ans_pkgs:
   - ansible-lint
   - jc
   - jo
+  - libpq-dev
   - pipx
   - postgresql-common
   - procps
