@@ -79,6 +79,7 @@ ans_pkgs_ubuntu:
   - python3-lxml
   - python3-netaddr
   - python3-pip
+  - python3-psycopg2
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
