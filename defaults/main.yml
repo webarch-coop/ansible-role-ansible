@@ -49,6 +49,7 @@ ans_pkgs_debian:
   - jo
   - libpq-dev
   - pipx
+  - postgresql-client
   - postgresql-common
   - procps
   - python3-argcomplete
