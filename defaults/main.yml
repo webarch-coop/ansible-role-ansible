@@ -107,6 +107,11 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/netaddr
     venv: ansible
     version: latest
+  - name: psycopg2
+    type: lib
+    url: https://pypi.org/pypi/psycopg2
+    venv: ansible
+    version: latest
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible
