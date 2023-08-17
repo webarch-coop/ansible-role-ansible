@@ -32,19 +32,37 @@
           ansible.builtin.package_facts:
             manager: apt
 
-        - name: Check the presence of the required packages
+        - name: Check the presence of the required Debian packages
           ansible.builtin.assert:
             that:
               - ans_deb_pkg in ansible_facts.packages.keys()
             fail_msg:
               - "The {{ ans_deb_pkg }} is required"
               - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_pkgs %} {{ ans_pkg_missing }}{% endfor %}"
+              - "sudo apt install{% for ans_pkg_missing in ans_pkgs_debian %} {{ ans_pkg_missing }}{% endfor %}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_pkgs }}"
+          loop: "{{ ans_pkgs_debian }}"
           loop_control:
             loop_var: ans_deb_pkg
-          when: ansible_effective_user_id != 0
+          when:
+            - ansible_effective_user_id != 0
+            - ansible_distribution == "Debian"
+
+        - name: Check the presence of the required Ubuntu packages
+          ansible.builtin.assert:
+            that:
+              - ans_deb_pkg in ansible_facts.packages.keys()
+            fail_msg:
+              - "The {{ ans_deb_pkg }} is required"
+              - "You can install all the requirements using:"
+              - "sudo apt install{% for ans_pkg_missing in ans_pkgs_ubuntu %} {{ ans_pkg_missing }}{% endfor %}"
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          loop: "{{ ans_pkgs_ubuntu }}"
+          loop_control:
+            loop_var: ans_deb_pkg
+          when:
+            - ansible_effective_user_id != 0
+            - ansible_distribution == "Ubuntu"
 
         - name: Stat system ansible
           ansible.builtin.stat:

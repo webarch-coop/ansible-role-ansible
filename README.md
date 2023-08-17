@@ -39,15 +39,19 @@ The `ans_downgrade` variable defaults to `false`, if it is set to `true` then th
 
 The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_distribution` is not Debian or Ubuntu and `ansible_distribution_release` is not bullseye, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
 
-### ans_pkgs
+### ans_pkgs_debian
 
-A list of Debian / Ubuntu packages that are required, for example;
+A list of Debian packages that are required, for example;
 
 ```yaml
 ans_pkgs:
   - ansible
   - python3-jmespath
 ```
+
+### ans_pkgs_ubuntu
+
+A list of Ubuntu packages that are required.
 
 See the [defaults/main.yml](defaults/main.yml) file for the default list of packages.
 

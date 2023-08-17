@@ -48,10 +48,15 @@ argument_specs:
         type: dict
         required: true
         description: An internal dictionary of environment variables to use when running ansible.
-      ans_pkgs:
+      ans_pkgs_debian:
         type: list
         required: true
-        description: A list of Debian / Ubuntu packages that are required.
+        description: A list of Debian packages that are required.
+        elements: str
+      ans_pkgs_ubuntu:
+        type: list
+        required: true
+        description: A list of Ubuntu packages that are required.
         elements: str
       ans_pypi_pkgs:
         type: list

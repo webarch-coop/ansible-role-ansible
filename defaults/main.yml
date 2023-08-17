@@ -42,7 +42,7 @@ ans: false
 ans_distro_check: true
 ans_downgrade: false
 # Debian / Ubuntu packages required
-ans_pkgs:
+ans_pkgs_debian:
   - ansible
   - ansible-lint
   - jc
@@ -50,6 +50,25 @@ ans_pkgs:
   - libpq-dev
   - pipx
   - postgresql-common
+  - procps
+  - python3-argcomplete
+  - python3-dnspython
+  - python3-commonmark
+  - python3-jmespath
+  - python3-lxml
+  - python3-netaddr
+  - python3-pip
+  - python3-resolvelib
+  - python3-ruamel.yaml
+  - python3-setuptools
+  - python3-venv
+ans_pkgs_ubuntu:
+  - ansible
+  - ansible-lint
+  - jc
+  - jo
+  - pipx
+  - postgresql
   - procps
   - python3-argcomplete
   - python3-dnspython

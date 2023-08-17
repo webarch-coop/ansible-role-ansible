@@ -43,12 +43,23 @@
 
           when: ansible_distribution_release == "bullseye"
 
-        - name: Requirements present when root
+        - name: Debian requirements present when root
           ansible.builtin.apt:
-            pkg: "{{ ans_pkgs }}"
+            pkg: "{{ ans_pkgs_debian }}"
             state: present
           when:
             - ansible_effective_user_id == 0
+            - ansible_distribution == "Debian"
+            - ansible_local.dpkg.installed is defined
+            - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
+
+        - name: Ubuntu requirements present when root
+          ansible.builtin.apt:
+            pkg: "{{ ans_pkgs_ubuntu }}"
+            state: present
+          when:
+            - ansible_effective_user_id == 0
+            - ansible_distribution == "Ubuntu"
             - ansible_local.dpkg.installed is defined
             - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
 
