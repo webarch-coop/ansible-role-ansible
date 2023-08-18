@@ -658,7 +658,7 @@
 
     - name: Include PATH and python-argcomplete check when the init system is not sh or ash or bash
       ansible.builtin.include_tasks: check_bash.yml
-      when: ans_init is not regex('^sh$')
+      when: ans_init is not regex('^b?a?sh$')
 
   tags:
     - ansible
