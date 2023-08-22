@@ -11,31 +11,31 @@
 # Run the tasks in this role
 ans: false
 # Ansible collections required
-# ans_cols:
+ans_cols:
 #   - name: ansible.posix
 #     url: https://github.com/ansible-collections/ansible.posix
 #     version: "1.5.2"
 #   - name: community.docker
 #     url: https://github.com/ansible-collections/community.docker
 #     version: "3.4.8"
-#   - name: community.crypto
-#     url: https://github.com/ansible-collections/community.crypto
-#     version: "2.14.1"
-#   - name: community.general
-#     url: https://github.com/ansible-collections/community.general
-#     version: "7.1.0"
-#   - name: community.mysql
-#     url: https://github.com/ansible-collections/community.mysql
-#     version: "3.7.2"
-#   - name: community.postgresql
-#     url: https://github.com/ansible-collections/community.postgresql
-#     version: "3.0.0"
+  - name: community.crypto
+    url: https://github.com/ansible-collections/community.crypto
+    version: "2.15.0"
+  - name: community.general
+    url: https://github.com/ansible-collections/community.general
+    version: "7.3.0"
+  - name: community.mysql
+    url: https://github.com/ansible-collections/community.mysql
+    version: "3.7.2"
+  - name: community.postgresql
+    url: https://github.com/ansible-collections/community.postgresql
+    version: "3.1.0"
 #   - name: community.rabbitmq
 #     url: https://github.com/ansible-collections/community.rabbitmq
 #     version: "1.2.3"
-#   - name: hetzner.hcloud
-#     url: https://github.com/ansible-collections/hetzner.hcloud
-#     version: "1.15.0"
+  - name: hetzner.hcloud
+    url: https://github.com/ansible-collections/hetzner.hcloud
+    version: "2.1.0"
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
 #     version: "2.4.0"
