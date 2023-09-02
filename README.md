@@ -41,12 +41,22 @@ The `ans_distro_check` variable defaults to `true`, if it is set to `false` then
 
 ### ans_pkgs_debian
 
-A list of Debian packages that are required, for example;
+A list of Debian packages that are required on Debian Bookworm and Trixie, for example;
 
 ```yaml
 ans_pkgs:
   - ansible
-  - python3-jmespath
+  - python3-psycopg
+```
+
+### ans_pkgs_debian_bullseye
+
+A list of Debian packages that are required on Debian Bullseye, for example;
+
+```yaml
+ans_pkgs:
+  - ansible
+  - python3-psycopg2
 ```
 
 ### ans_pkgs_ubuntu

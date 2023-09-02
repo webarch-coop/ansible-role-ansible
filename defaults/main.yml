@@ -20,7 +20,7 @@ ans_cols:
 #     version: "3.4.8"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: "2.15.0"
+    version: "2.15.1"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     version: "7.3.0"
@@ -29,13 +29,13 @@ ans_cols:
     version: "3.7.2"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: "3.1.0"
+    version: "3.2.0"
 #   - name: community.rabbitmq
 #     url: https://github.com/ansible-collections/community.rabbitmq
 #     version: "1.2.3"
   - name: hetzner.hcloud
     url: https://github.com/ansible-collections/hetzner.hcloud
-    version: "2.1.0"
+    version: "2.1.1"
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
 #     version: "2.4.0"
@@ -60,6 +60,28 @@ ans_pkgs_debian:
   - python3-netaddr
   - python3-pip
   - python3-psycopg2
+  - python3-resolvelib
+  - python3-ruamel.yaml
+  - python3-setuptools
+  - python3-venv
+ans_pkgs_debian_bookworm:
+  - ansible
+  - ansible-lint
+  - jc
+  - jo
+  - libpq-dev
+  - pipx
+  - postgresql-client
+  - postgresql-common
+  - procps
+  - python3-argcomplete
+  - python3-dnspython
+  - python3-commonmark
+  - python3-jmespath
+  - python3-lxml
+  - python3-netaddr
+  - python3-pip
+  - python3-psycopg
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
@@ -131,9 +153,9 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/netaddr
     venv: ansible
     version: latest
-  - name: psycopg2
+  - name: psycopg
     type: lib
-    url: https://pypi.org/pypi/psycopg2
+    url: https://pypi.org/pypi/psycopg
     venv: ansible
     version: latest
   - name: yamllint
