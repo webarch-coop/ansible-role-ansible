@@ -12,15 +12,14 @@ variables:
   ANSIBLE_DIFF_ALWAYS: "1"
   ANSIBLE_DISPLAY_SKIPPED_HOSTS: "0"
   ANSIBLE_FORCE_COLOR: "1"
-  # GIT_STRATEGY: none
-  MOLECULE_VERBOSITY: "0"
+  MOLECULE_VERBOSITY: "2"
   PIPX_BIN_DIR: /usr/local/bin
   PIPX_HOME: /opt
   PY_COLORS: "1"
 stages:
-  # - bookworm
-  # - bullseye
-  # - jammy
+  - bookworm
+  - bullseye
+  - jammy
   - trixie
 trixie:
   image: debian:trixie-backports
@@ -30,36 +29,41 @@ trixie:
     - apt-get update -qq
     - apt-get dist-upgrade -qqy
     - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
-    - printenv
-    - pwd
-    - ls -lah
-    # - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
-    # - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
-    # - git clone ${CI_PROJECT_URL}.git
-    # - cd ${CI_PROJECT_NAME}
     - pipx install molecule
     - pipx inject molecule ansible jc jmespath
     - molecule test
-# bookworm:
-#   image: debian:bookworm-backports
-#   stage: bookworm
-#   script:
-#     - pipx install molecule
-#     - pipx inject molecule ansible jc jmespath
-#     - molecule test
-# bullseye:
-#   image: debian:bullseye-backports
-#   stage: bullseye
-#   script:
-#     - pipx install molecule
-#     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
-#     - molecule test
-# jammy:
-#   image: ubuntu:jammy
-#   stage: jammy
-#   script:
-#     - pipx install molecule
-#     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
-#     - molecule test
+bookworm:
+  image: debian:bookworm-backports
+  stage: bookworm
+  script:
+    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    - apt-get update -qq
+    - apt-get dist-upgrade -qqy
+    - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
+    - pipx install molecule
+    - pipx inject molecule ansible jc jmespath
+    - molecule test
+bullseye:
+  image: debian:bullseye-backports
+  stage: bullseye
+  script:
+    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    - apt-get update -qq
+    - apt-get dist-upgrade -qqy
+    - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg2 python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
+    - pipx install molecule
+    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - molecule test
+jammy:
+  image: ubuntu:jammy
+  stage: jammy
+  script:
+    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    - apt-get update -qq
+    - apt-get dist-upgrade -qqy
+    - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg2 python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
+    - pipx install molecule
+    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - molecule test
 # vim: syntax=yaml
 ...

@@ -47,7 +47,7 @@
       register: molecule_root_which_ansible_a
       failed_when: molecule_root_which_ansible_a.rc is not regex('^0|1$')
 
-    - name: Check ansible versions
+    - name: Check Ansible versions
       ansible.builtin.command: "{{ molecule_ansible_path }} --version"
       check_mode: false
       changed_when: false
@@ -56,11 +56,25 @@
       loop_control:
         loop_var: molecule_ansible_path
 
-    - name: Set facts for the ansible versions
+    - name: Set facts for the Ansible versions
       ansible.builtin.set_fact:
         molecule_root_ansible_versions: "{{ molecule_root_ansible_v | community.general.json_query('results[].{path: molecule_ansible_path, version: stdout_lines[0]}') }}"
 
     - name: Debug ansible versions
       ansible.builtin.debug:
         var: molecule_root_ansible_versions
+
+    - name: List collections
+      ansible.builtin.command: ansible-galaxy collection list --format=json
+      check_mode: false
+      changed_when: false
+      register: molecule_collections_list
+
+    - name: Set a fact for the collections that are present
+      ansible.builtin.set_fact:
+        molecule_collections: "{{ molecule_collections_list.stdout | from_json }}"
+
+    - name: Debug the ollections that are present
+      ansible.builtin.debug:
+        var: molecule_collections
 ...
