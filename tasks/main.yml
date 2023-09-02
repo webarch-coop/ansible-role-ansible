@@ -50,13 +50,25 @@
 
           when: ansible_distribution_release == "bullseye"
 
-        - name: Debian requirements present when root
+        - name: Debian Bookworm / Trixie requirements present when root
           ansible.builtin.apt:
             pkg: "{{ ans_pkgs_debian }}"
             state: present
           when:
             - ansible_effective_user_id == 0
             - ansible_distribution == "Debian"
+            - ansible_distribution_release is regex('^bookworm|trixie$')
+            - ansible_local.dpkg.installed is defined
+            - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
+
+        - name: Debian Bullesye requirements present when root
+          ansible.builtin.apt:
+            pkg: "{{ ans_pkgs_debian_bullseye }}"
+            state: present
+          when:
+            - ansible_effective_user_id == 0
+            - ansible_distribution == "Debian"
+            - ansible_distribution_release is regex('^buster|bullseye$')
             - ansible_local.dpkg.installed is defined
             - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
 
@@ -147,7 +159,7 @@
 
     - name: Include the Bash PATH and python-argcomplete tasks when the init system is not sh
       ansible.builtin.include_tasks: bash.yml
-      when: ans_init != "sh"
+      when: ans_init not regex('^b?a?sh$')
 
   when: ans
   tags:
