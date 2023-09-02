@@ -147,11 +147,11 @@
           loop_control:
             loop_var: ans_col
             label: "{{ ans_col.name }}"
-          when: >-
-            ( ( ansible_verbosity > 0 ) or ( ansible_check_mode | bool ) ) and
-            ( ( ans_col.version == "latest" ) or
-            ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
-            ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
+          # when: >-
+          #   ( ( ansible_verbosity > 0 ) or ( ansible_check_mode | bool ) ) and
+          #   ( ( ans_col.version == "latest" ) or
+          #   ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
+          #   ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
 
       when:
         - ans_cols is defined
@@ -159,7 +159,7 @@
 
     - name: Include the Bash PATH and python-argcomplete tasks when the init system is not sh
       ansible.builtin.include_tasks: bash.yml
-      when: ans_init not regex('^b?a?sh$')
+      when: ans_init is not regex('^b?a?sh$')
 
   when: ans
   tags:
