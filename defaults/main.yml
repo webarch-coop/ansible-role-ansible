@@ -59,12 +59,12 @@ ans_pkgs_debian:
   - python3-lxml
   - python3-netaddr
   - python3-pip
-  - python3-psycopg2
+  - python3-psycopg
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
   - python3-venv
-ans_pkgs_debian_bookworm:
+ans_pkgs_debian_bullseye:
   - ansible
   - ansible-lint
   - jc
@@ -81,7 +81,7 @@ ans_pkgs_debian_bookworm:
   - python3-lxml
   - python3-netaddr
   - python3-pip
-  - python3-psycopg
+  - python3-psycopg2
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
