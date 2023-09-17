@@ -148,7 +148,7 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_inject is defined
 
-        - name: Set a string for the pipx application  packages, extras and versions to be injected
+        - name: Set a string for the pipx application, packages, extras and versions to be injected
           ansible.builtin.set_fact:
             ans_pipx_inject_str: "{% for ans_pipx_inject_pkg in ans_pipx_inject %} {{ ans_pipx_inject_pkg }}{% endfor %}"
 

@@ -23,7 +23,7 @@ ans_cols:
     version: "2.15.1"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "7.3.0"
+    version: "7.4.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: "3.7.2"
@@ -45,6 +45,7 @@ ans_downgrade: false
 ans_pkgs_debian:
   - ansible
   - ansible-lint
+  - git
   - jc
   - jo
   - libpq-dev
@@ -52,6 +53,7 @@ ans_pkgs_debian:
   - postgresql-client
   - postgresql-common
   - procps
+  - python3-apt
   - python3-argcomplete
   - python3-dnspython
   - python3-commonmark
@@ -67,6 +69,7 @@ ans_pkgs_debian:
 ans_pkgs_debian_bullseye:
   - ansible
   - ansible-lint
+  - git
   - jc
   - jo
   - libpq-dev
@@ -74,6 +77,7 @@ ans_pkgs_debian_bullseye:
   - postgresql-client
   - postgresql-common
   - procps
+  - python3-apt
   - python3-argcomplete
   - python3-dnspython
   - python3-commonmark
@@ -89,11 +93,13 @@ ans_pkgs_debian_bullseye:
 ans_pkgs_ubuntu:
   - ansible
   - ansible-lint
+  - git
   - jc
   - jo
   - pipx
   - postgresql
   - procps
+  - python3-apt
   - python3-argcomplete
   - python3-dnspython
   - python3-commonmark
@@ -110,7 +116,7 @@ ans_pkgs_ubuntu:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 8.3.0
+    version: 8.4.0
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible

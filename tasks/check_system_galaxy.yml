@@ -40,6 +40,17 @@
             var: ans_system_col_existing
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
+        - name: Set a fact for the ansible-galaxy collection paths
+          ansible.builtin.set_fact:
+            ans_system_col_paths: "{{ ans_system_col_existing.keys() }}"
+          when: ans_system_col_existing is defined
+
+        - name: Debug ans_system_col_paths
+          ansible.builtin.debug:
+            var: ans_system_col_paths
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          when: ans_system_col_paths is defined
+
         - name: Set a fact for the lists of ansible-galaxy system collections existing
           ansible.builtin.set_fact:
             ans_system_col_existing: "{{ ans_system_col_existing[ans_col_path_system] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
