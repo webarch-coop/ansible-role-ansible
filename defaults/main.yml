@@ -55,6 +55,7 @@ ans_pkgs_debian:
   - procps
   - python3-apt
   - python3-argcomplete
+  - python3-debian
   - python3-dnspython
   - python3-commonmark
   - python3-jmespath
@@ -79,6 +80,7 @@ ans_pkgs_debian_bullseye:
   - procps
   - python3-apt
   - python3-argcomplete
+  - python3-debian
   - python3-dnspython
   - python3-commonmark
   - python3-jmespath
@@ -101,6 +103,7 @@ ans_pkgs_ubuntu:
   - procps
   - python3-apt
   - python3-argcomplete
+  - python3-debian
   - python3-dnspython
   - python3-commonmark
   - python3-jmespath
