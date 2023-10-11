@@ -23,7 +23,7 @@ ans_cols:
     version: "2.15.1"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "7.4.0"
+    version: "7.5.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: "3.7.2"
@@ -35,7 +35,7 @@ ans_cols:
 #     version: "1.2.3"
   - name: hetzner.hcloud
     url: https://github.com/ansible-collections/hetzner.hcloud
-    version: "2.1.1"
+    version: "2.1.2"
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
 #     version: "2.4.0"
@@ -119,7 +119,7 @@ ans_pkgs_ubuntu:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 8.4.0
+    version: 8.5.0
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
