@@ -54,7 +54,7 @@
       ansible.builtin.include_tasks: pipx_mod_install.yml
       when: ans_pipx_mod | bool
 
-    # TODO This yet work properly for packages like ansible-lint or molecule when venv is set to something other than ansible
+    # TODO This doesn't yet work properly for packages like ansible-lint or molecule when venv is set to something other than ansible
     - name: PyPI packages configured using pipx when not already available as system packages and not injected into the Ansible venv
       ansible.builtin.include_tasks: pipx_pkg.yml
       vars:

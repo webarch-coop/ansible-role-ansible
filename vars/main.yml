@@ -42,7 +42,6 @@ ans_pypi_extras: []
 ans_pypi_extras_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].provides_extra[]"
 ans_pypi_pkg_uninstall: []
 ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
-ans_pipx: false
 ans_pipx_app_ver_jmespath_query: "application[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 ans_pipx_apps_jmespath_query: "application[].name"
 ans_pipx_bin_jmespath_query: "files[?mode=='0775'].path"
