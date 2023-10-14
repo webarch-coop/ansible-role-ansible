@@ -51,15 +51,29 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_system_col_paths is defined
 
-        - name: Set a fact for the lists of ansible-galaxy system collections existing
+        - name: Check that the expected system and user collections paths are the ones found
+          ansible.builtin.assert:
+            that:
+              - ans_col_path_system in ans_system_col_paths
+              - ans_col_path_user in ans_system_col_paths
+            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+        - name: Set a fact for the lists of ansible-galaxy system and user collections existing
           ansible.builtin.set_fact:
             ans_system_col_existing: "{{ ans_system_col_existing[ans_col_path_system] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+            ans_user_col_existing: "{{ ans_system_col_existing[ans_col_path_user] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
 
         - name: Debug ans_system_col_existing
           ansible.builtin.debug:
             var: ans_system_col_existing
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_system_col_existing is defined
+
+        - name: Debug ans_user_col_existing
+          ansible.builtin.debug:
+            var: ans_user_col_existing
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          when: ans_user_col_existing is defined
 
       when: ans_system_galaxy_json | bool
 
