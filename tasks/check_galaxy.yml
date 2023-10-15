@@ -1,0 +1,96 @@
+# Copyright 2019-2023 Chris Croome
+#
+# This file is part of the Webarchitects Ansible role.
+#
+# The Webarchitects Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+- name: Check Ansible Galaxy Collections
+  block:
+
+    - name: Check if the installed version of ansible-galaxy supports JSON output
+      ansible.builtin.command: ansible-galaxy collection list --format json
+      environment: "{{ ans_env }}"
+      check_mode: false
+      changed_when: false
+      register: ans_galaxy_json_check
+      failed_when: ans_galaxy_json_check.rc is not ansible.builtin.regex('^0|2$')
+
+    - name: Set a fact for JSON output support in ansible-galaxy
+      ansible.builtin.set_fact:
+        ans_galaxy_json: "{% if ans_galaxy_json_check.rc == 0 %}true{% else %}false{% endif %}"
+
+    - name: System ansible-galaxy supports JSON output
+      block:
+
+        - name: Debug ansible-galaxy collections
+          ansible.builtin.debug:
+            var: ans_galaxy_json_check.stdout_lines[-1]
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        - name: Set a fact for the ansible-galaxy collections present
+          ansible.builtin.set_fact:
+            ans_col_existing: "{{ ans_galaxy_json_check.stdout_lines[-1] | from_json }}"
+
+        - name: Debug ans_col_existing
+          ansible.builtin.debug:
+            var: ans_col_existing
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+
+        - name: Set a fact for the ansible-galaxy collection paths
+          ansible.builtin.set_fact:
+            ans_col_paths: "{{ ans_col_existing.keys() }}"
+          when: ans_col_existing is defined
+
+        - name: Debug ans_col_paths
+          ansible.builtin.debug:
+            var: ans_col_paths
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          when: ans_col_paths is defined
+
+      when: ans_galaxy_json | bool
+
+    - name: Set a fact for the versions of community.general present
+      ansible.builtin.set_fact:
+        ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | community.general.version_sort }}"
+
+    - name: Set a fact for latest version of community.general present
+      ansible.builtin.set_fact:
+        ans_col_comgen_version: "{{ ans_col_comgen_versions | last }}"
+      when:
+        - ans_col_comgen_versions is defined
+        - ans_col_comgen_versions != []
+
+    - name: Set facts based on the version of community.general available
+      block:
+
+        - name: Set ans_galaxy_install_mod to true when community.general 3.5.0 or greater is available as than means community.general.ansible_galaxy_install can be used
+          ansible.builtin.set_fact:
+            ans_galaxy_install_mod: true
+          when: ans_col_comgen_version is version('3.5.0', 'ge')
+
+        - name: Set ans_pipx_mod to true when community.general 6.6.0 or greater is available as than means community.general.pipx can be used
+          ansible.builtin.set_fact:
+            ans_pipx_mod: true
+          when: ans_col_comgen_version is version('6.6.0', 'ge')
+
+        - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
+          ansible.builtin.set_fact:
+            ans_pipx_mod_info: true
+          when: ans_col_comgen_version is version('5.6.0', 'ge')
+
+        - name: Set ans_comgen to true when community.general 6.2.0 or greater is available
+          ansible.builtin.set_fact:
+            ans_comgen: true
+          when: ans_col_comgen_version is version('6.2.0', 'ge')
+
+      when:
+        - ans_col_comgen_version is defined
+        - ans_col_comgen_version | type_debug != "NoneType"
+
+  tags:
+    - ansible
+...

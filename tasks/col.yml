@@ -11,6 +11,11 @@
 - name: Install Ansible collection
   block:
 
+    - name: Debug ans_col
+      ansible.builtin.debug:
+        var: ans_col
+        verbosity: 2
+
     - name: Get the latest collection version running the HTTP request in a block in case a rescue is needed
       block:
 
@@ -74,26 +79,23 @@
 
       when: ans_latest_headers.location is not regex('releases$')
 
-    - name: "Set a fact if the required Ansible collection version is provided by a system package for {{ ans_col.name }}"
+    - name: "Set a fact for the versions of the required Ansible collection when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
-        ans_col_system_version_present: "{{ ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_cols_jmespath_query) | ansible.builtin.unique | community.general.version_sort }}"
 
-    - name: "Set a fact if the required Ansible collection version is provided by a user package for {{ ans_col.name }}"
+    - name: "Set a fact for the latest version present for Ansible collection {{ ans_col.name }}"
       ansible.builtin.set_fact:
-        ans_col_user_version_present: "{{ ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+        ans_col_version_present: "{{ ans_col_versions_present | last }}"
+      when:
+        - ans_col_versions_present is defined
+        - ans_col_versions_present != []
 
     - name: "Debug Ansible collection version variables for {{ ans_col.name }}"
       ansible.builtin.debug:
         msg:
           - "ans_col_version_latest: {{ ans_col_version_latest }}"
           - "ans_col_version_required: {{ ans_col_version_required }}"
-          - "ans_col_system_version_present: {{ ans_col_system_version_present }}"
-          - "ans_col_user_version_present: {{ ans_col_user_version_present }}"
-
-    - name: Debug ans_col
-      ansible.builtin.debug:
-        var: ans_col
-        verbosity: 2
+          - "ans_col_version_present: {{ ans_col_version_present }}"
 
     - name: Install Ansible Galaxy collection
       block:
@@ -107,9 +109,7 @@
           block:
 
             - name: "Ansible collection install using command module for {{ ans_col.name }}"
-              ansible.builtin.command: >-
-                {{ ans_galaxy_path }} collection install
-                {{ ans_col.name }}:{{ ans_col_version_required }} --force
+              ansible.builtin.command: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --force"
               changed_when: true
               register: ans_col_install
 
@@ -125,28 +125,20 @@
               when: ans_core_installed_version is version(ans_ansible_core_min_version, '>')
 
             - name: "Ansible collection install using command module without certificate verification for {{ ans_col.name }}"
-              ansible.builtin.command: >-
-                {{ ans_galaxy_path }} collection install
-                {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force
+              ansible.builtin.command: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force"
               changed_when: true
 
           when: not ans_comgen | bool
 
       when: >-
         ( ( not ans_downgrade | bool ) and
-        ( ( ans_col_system_version_present is defined ) and
-        ( ans_col_system_version_present | length > 0 ) and
-        ( ans_col_version_required is version(ans_col_system_version_present, '>') ) ) or
-        ( ( ans_col_user_version_present is defined ) and
-        ( ans_col_user_version_present | length > 0 ) and
-        ( ans_col_version_required is version(ans_col_user_version_present, '>') ) ) ) or
+        ( ( ans_col_version_present is defined ) and
+        ( ans_col_version_present | length > 0 ) and
+        ( ans_col_version_required is version(ans_col_version_present, '>') ) ) ) or
         ( ( ans_downgrade | bool ) and
-        ( ( ans_col_system_version_present is defined ) and
-        ( ans_col_system_version_present | length > 0 ) and
-        ( ans_col_version_required is version(ans_col_system_version_present, '<') ) ) or
-        ( ( ans_col_user_version_present is defined ) and
-        ( ans_col_user_version_present | length > 0 ) and
-        ( ans_col_version_required is version(ans_col_user_version_present, '<') ) ) )
+        ( ( ans_col_version_present is defined ) and
+        ( ans_col_version_present | length > 0 ) and
+        ( ans_col_version_required is version(ans_col_version_present, '<') ) ) )
 
     # TODO
     # - name: Remove Ansible Galaxy collection
