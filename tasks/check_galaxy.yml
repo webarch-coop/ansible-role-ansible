@@ -19,7 +19,7 @@
       register: ans_galaxy_json_check
       failed_when: ans_galaxy_json_check.rc is not ansible.builtin.regex('^0|2$')
 
-    - name: "Set a fact for JSON output support in ansible-galaxy {{ ans_galaxy_json_chk }}"
+    - name: "Set a fact for JSON output support in ansible-galaxy to {{ ans_galaxy_json_chk }}"
       ansible.builtin.set_fact:
         ans_galaxy_json: "{{ ans_galaxy_json_chk }}"
       vars:
@@ -58,19 +58,19 @@
     - name: Prior to ansible-galaxy version 2.13.1 there is no JSON output
       block:
 
-        - name: Check system ansible-galaxy output
-          ansible.builtin.command: "{{ ans_galaxy_path }} collection list"
+        - name: Check ansible-galaxy output
+          ansible.builtin.command: ansible-galaxy collection list
           check_mode: false
           changed_when: false
           register: ans_galaxy_txt
 
-        - name: Check ansible-galaxy system collections
+        - name: Check ansible-galaxy collections
           block:
 
-            - name: Check ansible-galaxy system collections
+            - name: Check ansible-galaxy collections
               ansible.builtin.shell: >-
                 set -e -o pipefail &&
-                {{ ans_galaxy_path }} collection list |
+                ansible-galaxy collection list |
                 grep -e '^#[ ]{{ ans_col_path_system }}$' --after-context=1000 |
                 grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
                 sed 's/ /=/' | sed 's/ //g' | jo
@@ -85,7 +85,7 @@
                 var: ans_galaxy_col_list.stdout
                 verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-            - name: Set a fact for the ansible-galaxy system collections existing
+            - name: Set a fact for the ansible-galaxy collections existing
               ansible.builtin.set_fact:
                 ans_col_existing: "{{ ans_galaxy_col_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
 
