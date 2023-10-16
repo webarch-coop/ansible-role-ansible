@@ -99,6 +99,11 @@
           ansible.builtin.set_fact:
             ans_col_comgen_version: "{{ ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
 
+        - name: Debug ans_col_comgen_version
+          ansible.builtin.debug:
+            var: ans_col_comgen_version
+            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
       when: not ans_galaxy_json | bool
 
     - name: Set facts based on the version of community.general available
