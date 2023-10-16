@@ -66,6 +66,7 @@
 
       when: ans_galaxy_json | bool
 
+    # Debian Bullseye Ansible provides community.general version 1.3.6
     - name: Prior to ansible-galaxy version 2.13.1 there is no JSON output
       block:
 
