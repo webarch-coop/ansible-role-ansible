@@ -93,7 +93,7 @@
         - name: Debug system ans_col_existing
           ansible.builtin.debug:
             var: ans_col_existing
-            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Set a fact for the ansible-galaxy community.general version
           ansible.builtin.set_fact:
@@ -102,7 +102,7 @@
         - name: Debug ans_col_comgen_version
           ansible.builtin.debug:
             var: ans_col_comgen_version
-            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
       when: not ans_galaxy_json | bool
 
