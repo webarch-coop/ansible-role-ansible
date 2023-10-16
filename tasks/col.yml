@@ -81,7 +81,13 @@
 
     - name: "Set a fact for the versions of the required Ansible collection when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
+        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_cols_jmespath_query) | ansible.builtin.unique | sort }}"
+      when: not ans_col_comgen_ver_sort | true
+
+    - name: "Set a fact for the versions of the required Ansible collection when present for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
         ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_cols_jmespath_query) | ansible.builtin.unique | community.general.version_sort }}"
+      when: ans_col_comgen_ver_sort | true
 
     - name: "Set a fact for the latest version present for Ansible collection {{ ans_col.name }}"
       ansible.builtin.set_fact:
