@@ -107,6 +107,10 @@ argument_specs:
             type: str
             required: false
             description: The version of PyPI package.
+      ans_pipx_path:
+        type: str
+        required: true
+        description: The path to pipx for community.general.pipx_info.
       ans_pipx_root_env:
         type: dict
         required: false
