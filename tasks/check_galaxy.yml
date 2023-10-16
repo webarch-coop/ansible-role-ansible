@@ -53,6 +53,17 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_col_paths is defined
 
+        - name: Set a fact for the versions of community.general present
+          ansible.builtin.set_fact:
+            ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
+
+        - name: Set a fact for latest version of community.general present
+          ansible.builtin.set_fact:
+            ans_col_comgen_version: "{{ ans_col_comgen_versions | last }}"
+          when:
+            - ans_col_comgen_versions is defined
+            - ans_col_comgen_versions != []
+
       when: ans_galaxy_json | bool
 
     - name: Prior to ansible-galaxy version 2.13.1 there is no JSON output
@@ -84,18 +95,11 @@
             var: ans_col_existing
             # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
+        - name: Set a fact for the ansible-galaxy community.general version
+          ansible.builtin.set_fact:
+            ans_col_comgen_version: "{{ ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
+
       when: not ans_galaxy_json | bool
-
-    - name: Set a fact for the versions of community.general present
-      ansible.builtin.set_fact:
-        ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
-
-    - name: Set a fact for latest version of community.general present
-      ansible.builtin.set_fact:
-        ans_col_comgen_version: "{{ ans_col_comgen_versions | last }}"
-      when:
-        - ans_col_comgen_versions is defined
-        - ans_col_comgen_versions != []
 
     - name: Set facts based on the version of community.general available
       block:
