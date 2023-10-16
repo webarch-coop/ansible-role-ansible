@@ -97,7 +97,7 @@
 
         - name: Set a fact for the ansible-galaxy community.general version
           ansible.builtin.set_fact:
-            ans_col_comgen_version: "{{ ans_system_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
+            ans_col_comgen_version: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
 
         - name: Debug ans_col_comgen_version
           ansible.builtin.debug:
