@@ -15,6 +15,7 @@
       community.general.pipx_info:
         include_deps: true
         include_injected: true
+        executable: "{{ ans_pipx_path }}"
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_info
 
