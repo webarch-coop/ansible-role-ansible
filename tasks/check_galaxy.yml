@@ -63,7 +63,7 @@
             set -e -o pipefail &&
             ansible-galaxy collection list |
             grep -v -e '^#' -e '^Collection' -e '^-' -e '^$' |
-            sed 's/ /=/' | sed 's/ //g' | jo
+            sed 's/ /=/' | sed 's/ //g' | sort | jo
           args:
             executable: "{{ ans_bash }}"
           check_mode: false
