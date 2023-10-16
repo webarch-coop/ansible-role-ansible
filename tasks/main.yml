@@ -61,7 +61,6 @@
                 - ansible_distribution == "Debian"
                 - ansible_distribution_release is regex('^bookworm|trixie$')
                 - ansible_local.dpkg.installed is defined
-                - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
 
             - name: Debian Bullesye requirements present
               ansible.builtin.apt:
@@ -71,7 +70,6 @@
                 - ansible_distribution == "Debian"
                 - ansible_distribution_release is regex('^buster|bullseye$')
                 - ansible_local.dpkg.installed is defined
-                - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
 
             - name: Ubuntu requirements present
               ansible.builtin.apt:
@@ -80,7 +78,6 @@
               when:
                 - ansible_distribution == "Ubuntu"
                 - ansible_local.dpkg.installed is defined
-                - ans_pkgs | ansible.builtin.difference(ansible_local.dpkg.installed) != []
 
           when: ansible_effective_user_id == 0
 
