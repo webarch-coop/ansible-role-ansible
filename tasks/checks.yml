@@ -459,6 +459,12 @@
     - name: Set a fact for the init system
       ansible.builtin.set_fact:
         ans_init: "{{ ans_ps.stdout }}"
+      when: ans_ps.rc == 0
+
+    - name: When the init check exit code is 47 assume is is because this is a chroot
+      ansible.builtin.set_fact:
+        php_init: chroot
+      when: ans_ps.rc == 47
 
     - name: Debug the ini system when it is not systemd
       ansible.builtin.debug:
