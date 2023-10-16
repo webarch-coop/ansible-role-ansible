@@ -58,43 +58,31 @@
     - name: Prior to ansible-galaxy version 2.13.1 there is no JSON output
       block:
 
-        - name: Check ansible-galaxy output
-          ansible.builtin.command: ansible-galaxy collection list
+        - name: Check ansible-galaxy collections
+          ansible.builtin.shell: >-
+            set -e -o pipefail &&
+            ansible-galaxy collection list |
+            grep -v -e '^#' -e '^Collection' -e '^-' -e '^$' |
+            sed 's/ /=/' | sed 's/ //g' | jo
+          args:
+            executable: "{{ ans_bash }}"
           check_mode: false
           changed_when: false
-          register: ans_galaxy_txt
+          register: ans_galaxy_col_list
 
-        - name: Check ansible-galaxy collections
-          block:
+        - name: Debug ansible-galaxy collections
+          ansible.builtin.debug:
+            var: ans_galaxy_col_list.stdout
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-            - name: Check ansible-galaxy collections
-              ansible.builtin.shell: >-
-                set -e -o pipefail &&
-                ansible-galaxy collection list |
-                grep -e '^#[ ]{{ ans_col_path_system }}$' --after-context=1000 |
-                grep -v -e '^$' -e '^Collection' -e '^-' -e '^#' |
-                sed 's/ /=/' | sed 's/ //g' | jo
-              args:
-                executable: "{{ ans_bash }}"
-              check_mode: false
-              changed_when: false
-              register: ans_galaxy_col_list
+        - name: Set a fact for the ansible-galaxy collections existing
+          ansible.builtin.set_fact:
+            ans_col_existing: "{{ ans_galaxy_col_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
 
-            - name: Debug ansible-galaxy collections
-              ansible.builtin.debug:
-                var: ans_galaxy_col_list.stdout
-                verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-
-            - name: Set a fact for the ansible-galaxy collections existing
-              ansible.builtin.set_fact:
-                ans_col_existing: "{{ ans_galaxy_col_list.stdout | from_json | dict2items(key_name='name', value_name='version') }}"
-
-            - name: Debug system ans_col_existing
-              ansible.builtin.debug:
-                var: ans_col_existing
-                verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
-          when: ans_col_path_system in ans_galaxy_txt.stdout
+        - name: Debug system ans_col_existing
+          ansible.builtin.debug:
+            var: ans_col_existing
+            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
       when: not ans_galaxy_json | bool
 
