@@ -81,7 +81,7 @@
 
     - name: "Set a fact for the versions of the required Ansible collection when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
-        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_cols_jmespath_query) | ansible.builtin.unique | sort }}"
+        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
       when: >-
         ( ans_col_comgen_ver_sort is not defined ) or
         ( ans_col_comgen_ver_sort is defined and not ans_col_comgen_ver_sort | bool )
