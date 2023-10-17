@@ -35,16 +35,16 @@
 
         - name: Set a fact for the ansible-galaxy collections present
           ansible.builtin.set_fact:
-            ans_col_existing: "{{ ans_galaxy_json_check.stdout_lines[-1] | from_json }}"
+            ans_col_existing_json: "{{ ans_galaxy_json_check.stdout_lines[-1] | from_json }}"
 
         - name: Debug ans_col_existing
           ansible.builtin.debug:
-            var: ans_col_existing
+            var: ans_col_existing_json
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
         - name: Set a fact for the ansible-galaxy collection paths
           ansible.builtin.set_fact:
-            ans_col_paths: "{{ ans_col_existing.keys() }}"
+            ans_col_paths: "{{ ans_col_existing_json.keys() }}"
           when: ans_col_existing is defined
 
         - name: Debug ans_col_paths
@@ -55,7 +55,7 @@
 
         - name: Set a fact for the versions of community.general present
           ansible.builtin.set_fact:
-            ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
+            ans_col_comgen_versions: "{{ ans_col_existing_json | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
 
         - name: Set a fact for latest version of community.general present
           ansible.builtin.set_fact:
@@ -63,6 +63,18 @@
           when:
             - ans_col_comgen_versions is defined
             - ans_col_comgen_versions != []
+
+        - name: Set a fact for the lists of ansible-galaxy system collections existing
+          ansible.builtin.set_fact:
+            ans_col_existing: "{{ ans_col_existing + ans_col_existing_json[ans_col_path] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+          loop: "{{ ans_col_paths }}"
+          loop_control:
+            loop_var: ans_col_path
+
+        - name: Debug system ans_col_existing
+          ansible.builtin.debug:
+            var: ans_col_existing
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
       when: ans_galaxy_json | bool
 

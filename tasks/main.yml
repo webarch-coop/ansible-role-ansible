@@ -97,8 +97,7 @@
             msg:
               - "ans_col.name: {{ ans_col.name }}"
               - "ans_col.version {{ ans_col.version }}"
-              - "ans_col_system_version_present: {{ ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
-              - "ans_col_user_version_present: {{ ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+              - "ans_col_version_present: {{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
             verbosity: 1
           loop: "{{ ans_cols }}"
           loop_control:
@@ -114,8 +113,7 @@
           # when: >-
           #   ( ( ansible_verbosity > 0 ) or ( ansible_check_mode | bool ) ) and
           #   ( ( ans_col.version == "latest" ) or
-          #   ( ( ans_col.version != ans_system_col_existing | community.general.json_query(ans_col_jmespath_query) ) and
-          #   ( ans_col.version != ans_user_col_existing | community.general.json_query(ans_col_jmespath_query) ) ) )
+          #   ( ( ans_col.version != ans_col_existing | community.general.json_query(ans_col_jmespath_query) )
 
       when:
         - ans_cols is defined
