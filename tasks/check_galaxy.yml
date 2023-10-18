@@ -53,17 +53,6 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_col_paths is defined
 
-        - name: Set a fact for the versions of community.general present
-          ansible.builtin.set_fact:
-            ans_col_comgen_versions: "{{ ans_col_existing_json | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
-
-        - name: Set a fact for latest version of community.general present
-          ansible.builtin.set_fact:
-            ans_col_comgen_version: "{{ ans_col_comgen_versions | last }}"
-          when:
-            - ans_col_comgen_versions is defined
-            - ans_col_comgen_versions != []
-
         - name: Set a fact for the lists of ansible-galaxy system collections existing
           ansible.builtin.set_fact:
             ans_col_existing: "{{ ans_col_existing + ans_col_existing_json[ans_col_path] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
@@ -108,48 +97,55 @@
             var: ans_col_existing
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
-        - name: Set a fact for the ansible-galaxy community.general version
-          ansible.builtin.set_fact:
-            ans_col_comgen_version: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_ver_jmespath_query) }}"
-
-        - name: Debug ans_col_comgen_version
-          ansible.builtin.debug:
-            var: ans_col_comgen_version
-            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
-
       when: not ans_galaxy_json | bool
 
-    - name: Set facts based on the version of community.general available
-      block:
+    - name: Set a fact for the versions of community.general present
+      ansible.builtin.set_fact:
+        ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
 
-        - name: Set ans_col_comgen_ver_sort to true when community.general 2.2.0 or greater is available as than means community.general.version_sort can be used
-          ansible.builtin.set_fact:
-            ans_col_comgen_ver_sort: true
-          when: ans_col_comgen_version is version('2.2.0', 'ge')
-
-        - name: Set ans_galaxy_install_mod to true when community.general 3.5.0 or greater is available as than means community.general.ansible_galaxy_install can be used
-          ansible.builtin.set_fact:
-            ans_galaxy_install_mod: true
-          when: ans_col_comgen_version is version('3.5.0', 'ge')
-
-        - name: Set ans_pipx_mod to true when community.general 6.6.0 or greater is available as than means community.general.pipx can be used
-          ansible.builtin.set_fact:
-            ans_pipx_mod: true
-          when: ans_col_comgen_version is version('6.6.0', 'ge')
-
-        - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
-          ansible.builtin.set_fact:
-            ans_pipx_mod_info: true
-          when: ans_col_comgen_version is version('5.6.0', 'ge')
-
-        - name: Set ans_comgen to true when community.general 6.2.0 or greater is available
-          ansible.builtin.set_fact:
-            ans_comgen: true
-          when: ans_col_comgen_version is version('6.2.0', 'ge')
-
+    - name: Set a fact for latest version of community.general present
+      ansible.builtin.set_fact:
+        ans_col_comgen_version: "{{ ans_col_comgen_versions | last }}"
       when:
-        - ans_col_comgen_version is defined
-        - ans_col_comgen_version | type_debug != "NoneType"
+        - ans_col_comgen_versions is defined
+        - ans_col_comgen_versions != []
+
+    - name: The version of community.general present needs to be defined
+      ansible.builtin.assert:
+        that:
+          - ans_col_comgen_version is defined
+          - ans_col_comgen_version is version('1.0.0', 'gt')
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+    - name: Debug ans_col_comgen_version
+      ansible.builtin.debug:
+        var: ans_col_comgen_version
+        # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Set ans_col_comgen_ver_sort to true when community.general 2.2.0 or greater is available as than means community.general.version_sort can be used
+      ansible.builtin.set_fact:
+        ans_col_comgen_ver_sort: true
+      when: ans_col_comgen_version is version('2.2.0', 'ge')
+
+    - name: Set ans_galaxy_install_mod to true when community.general 3.5.0 or greater is available as than means community.general.ansible_galaxy_install can be used
+      ansible.builtin.set_fact:
+        ans_galaxy_install_mod: true
+      when: ans_col_comgen_version is version('3.5.0', 'ge')
+
+    - name: Set ans_pipx_mod to true when community.general 6.6.0 or greater is available as than means community.general.pipx can be used
+      ansible.builtin.set_fact:
+        ans_pipx_mod: true
+      when: ans_col_comgen_version is version('6.6.0', 'ge')
+
+    - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
+      ansible.builtin.set_fact:
+        ans_pipx_mod_info: true
+      when: ans_col_comgen_version is version('5.6.0', 'ge')
+
+    - name: Set ans_comgen to true when community.general 6.2.0 or greater is available
+      ansible.builtin.set_fact:
+        ans_comgen: true
+      when: ans_col_comgen_version is version('6.2.0', 'ge')
 
   tags:
     - ansible

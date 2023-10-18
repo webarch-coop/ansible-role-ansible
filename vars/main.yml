@@ -19,11 +19,11 @@ ans_bash: "{% if ansible_env.SHELL is defined and ansible_env.SHELL is regex('ba
 ans_bin: /usr/bin
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
 ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
-ans_col_comgen_vers_jmespath_query: '*.["community.general"][].version'
+ans_col_comgen_vers_jmespath_query: "[?name=='community.general'].version"
 ans_col_existing: []
 ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
-# ans_cols_jmespath_query: '*.["{{ ans_col.name }}"][].version'
+ans_col_vers_jmespath_query: "[?name=='{{ ans_col.name }}'].version"
 ans_comgen: false
 ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collections"

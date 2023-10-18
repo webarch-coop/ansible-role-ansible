@@ -79,28 +79,37 @@
 
       when: ans_latest_headers.location is not regex('releases$')
 
-    - name: "Set a fact for the versions of the required Ansible collection when present for {{ ans_col.name }}"
-      ansible.builtin.set_fact:
-        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
-      when: >-
-        ( ans_col_comgen_ver_sort is not defined ) or
-        ( ans_col_comgen_ver_sort is defined and not ans_col_comgen_ver_sort | bool )
-
     - name: Debug ans_col_existing
       ansible.builtin.debug:
         var: ans_col_existing
         verbosity: 2
 
-    - name: "Set a fact for the versions of the required Ansible collection when present for {{ ans_col.name }}"
+    - name: "Set a fact for the versions of the required Ansible collection using sort when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
-        ans_col_version_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) | ansible.builtin.unique | sort}}"
+      when: >-
+        ( ans_col_comgen_ver_sort is not defined ) or
+        ( ( ans_col_comgen_ver_sort is defined ) and
+        ( not ans_col_comgen_ver_sort | bool ) )
 
-    - name: "Set a fact for the latest version present for Ansible collection {{ ans_col.name }}"
+    - name: "Set a fact for the versions of the required Ansible collection using community.general.version_sort when present for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_vers_jmespath_query) | ansible.builtin.unique | community.general.version_sort }}"
+      when:
+        - ans_col_comgen_ver_sort is defined
+        - ans_col_comgen_ver_sort | bool
+
+    - name: Debug ans_col_versions_present
+      ansible.builtin.debug:
+        var: ans_col_versions_present
+        verbosity: 2
+
+    - name: "Set a fact for latest version of the required Ansible collection when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
         ans_col_version_present: "{{ ans_col_versions_present | last }}"
       when:
-        - ans_col_versions_present is defined
-        - ans_col_versions_present != []
+        - ans_col_comgen_versions is defined
+        - ans_col_comgen_versions != []
 
     - name: "Debug Ansible collection version variables for {{ ans_col.name }}"
       ansible.builtin.debug:
