@@ -123,7 +123,7 @@ ans_pypi_pkgs:
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
-    version: 6.22.0
+    version: latest
   - name: dnspython
     type: lib
     url: https://pypi.org/pypi/dnspython
