@@ -21,12 +21,12 @@ ans_cols:
 #   - name: community.crypto
 #     url: https://github.com/ansible-collections/community.crypto
 #     version: "2.15.1"
-#   - name: community.general
-#     url: https://github.com/ansible-collections/community.general
-#     version: "7.5.0"
-#   - name: community.mysql
-#     url: https://github.com/ansible-collections/community.mysql
-#     version: "3.7.2"
+  - name: community.general
+    url: https://github.com/ansible-collections/community.general
+    version: "8.0.0"
+  - name: community.mysql
+    url: https://github.com/ansible-collections/community.mysql
+    version: "3.8.0"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: "3.2.0"
