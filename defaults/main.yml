@@ -24,9 +24,9 @@ ans_cols:
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     version: "8.0.1"
-  - name: community.mysql
-    url: https://github.com/ansible-collections/community.mysql
-    version: "3.8.0"
+#  - name: community.mysql
+#    url: https://github.com/ansible-collections/community.mysql
+#    version: "3.8.0"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: "3.2.0"
