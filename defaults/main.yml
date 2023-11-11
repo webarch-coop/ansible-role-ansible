@@ -119,7 +119,7 @@ ans_pkgs_ubuntu:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 8.6.0
+    version: 8.6.1
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
