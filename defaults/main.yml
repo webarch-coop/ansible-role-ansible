@@ -23,7 +23,7 @@ ans_cols:
 #     version: "2.15.1"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "8.0.1"
+    version: "8.0.2"
 #  - name: community.mysql
 #    url: https://github.com/ansible-collections/community.mysql
 #    version: "3.8.0"
