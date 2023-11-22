@@ -11,7 +11,7 @@
 # Run the tasks in this role
 ans: false
 # Ansible collections required
-ans_cols:
+# ans_cols:
 #   - name: ansible.posix
 #     url: https://github.com/ansible-collections/ansible.posix
 #     version: "1.5.2"
@@ -21,15 +21,15 @@ ans_cols:
 #   - name: community.crypto
 #     url: https://github.com/ansible-collections/community.crypto
 #     version: "2.15.1"
-  - name: community.general
-    url: https://github.com/ansible-collections/community.general
-    version: "8.0.2"
-#  - name: community.mysql
-#    url: https://github.com/ansible-collections/community.mysql
-#    version: "3.8.0"
-  - name: community.postgresql
-    url: https://github.com/ansible-collections/community.postgresql
-    version: "3.2.0"
+#   - name: community.general
+#     url: https://github.com/ansible-collections/community.general
+#     version: "8.0.2"
+#   - name: community.mysql
+#     url: https://github.com/ansible-collections/community.mysql
+#     version: "3.8.0"
+#   - name: community.postgresql
+#     url: https://github.com/ansible-collections/community.postgresql
+#     version: "3.2.0"
 #   - name: community.rabbitmq
 #     url: https://github.com/ansible-collections/community.rabbitmq
 #     version: "1.2.3"
@@ -119,7 +119,7 @@ ans_pkgs_ubuntu:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 8.6.1
+    version: 9.0.1
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
