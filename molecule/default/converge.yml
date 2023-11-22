@@ -20,9 +20,72 @@
       ansible.builtin.debug:
         var: ansible_effective_user_id
 
-    - name: Include ansible role as root
+    - name: Include ansible role as root for Python >= 3.10
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
+      when: ansible_facts.python_version is version('3.10' 'ge')
+
+    - name: Include ansible role as root for Python <= 3.10
+      ansible.builtin.include_role:
+        name: ansible
+      vars:  # noqa var-naming[no-role-prefix]
+        ans: true
+        ans_pypi_pkgs:
+          - name: ansible
+            url: https://pypi.org/pypi/ansible
+            version: 8.6.1
+          - name: ansible-lint
+            url: https://pypi.org/pypi/ansible-lint
+            venv: ansible
+            version: latest
+          - name: dnspython
+            type: lib
+            url: https://pypi.org/pypi/dnspython
+            venv: ansible
+            version: latest
+          - name: jc
+            url: https://pypi.org/pypi/jc
+            venv: ansible
+            version: latest
+          - name: jinja2-ansible-filters
+            type: lib
+            url: https://pypi.org/pypi/jinja2-ansible-filters
+            venv: ansible
+            version: latest
+          - name: jmespath
+            url: https://pypi.org/pypi/jmespath
+            venv: ansible
+            version: latest
+          - name: molecule
+            url: https://pypi.org/pypi/molecule
+            venv: ansible
+            version: latest
+          - name: lxml
+            type: lib
+            url: https://pypi.org/pypi/lxml
+            venv: ansible
+            version: latest
+          - name: molecule-plugins
+            extras:
+              - docker
+            url: https://pypi.org/pypi/molecule-plugins
+            venv: ansible
+            version: latest
+          - name: netaddr
+            type: lib
+            url: https://pypi.org/pypi/netaddr
+            venv: ansible
+            version: latest
+          - name: psycopg
+            type: lib
+            url: https://pypi.org/pypi/psycopg
+            venv: ansible
+            version: latest
+          - name: yamllint
+            url: https://pypi.org/pypi/yamllint
+            venv: ansible
+            version: latest
+      when: ansible_facts.python_version is version('3.10' 'lt')
 ...
