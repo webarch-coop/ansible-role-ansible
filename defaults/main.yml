@@ -64,6 +64,7 @@ ans_pkgs_debian:
   - python3-netaddr
   - python3-pip
   - python3-psycopg
+  - python3-pymysql
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
@@ -90,6 +91,7 @@ ans_pkgs_debian_bullseye:
   - python3-netaddr
   - python3-pip
   - python3-psycopg2
+  - python3-pymysql
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
@@ -114,6 +116,7 @@ ans_pkgs_ubuntu:
   - python3-netaddr
   - python3-pip
   - python3-psycopg2
+  - python3-pymysql
   - python3-resolvelib
   - python3-ruamel.yaml
   - python3-setuptools
@@ -168,6 +171,11 @@ ans_pypi_pkgs:
   - name: psycopg
     type: lib
     url: https://pypi.org/pypi/psycopg
+    venv: ansible
+    version: latest
+  - name: pymysql
+    type: lib
+    url: https://pypi.org/pypi/pymysql
     venv: ansible
     version: latest
   - name: yamllint
