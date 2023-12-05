@@ -78,6 +78,11 @@
             url: https://pypi.org/pypi/netaddr
             venv: ansible
             version: latest
+          - name: pymysql
+            type: lib
+            url: https://pypi.org/pypi/pymysql
+            venv: ansible
+            version: latest
           - name: psycopg
             type: lib
             url: https://pypi.org/pypi/psycopg
