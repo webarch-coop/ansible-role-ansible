@@ -11,19 +11,19 @@
 # Run the tasks in this role
 ans: false
 # Ansible collections required
-# ans_cols:
+ans_cols:
 #   - name: ansible.posix
 #     url: https://github.com/ansible-collections/ansible.posix
 #     version: "1.5.2"
-#   - name: community.docker
-#     url: https://github.com/ansible-collections/community.docker
-#     version: "3.4.8"
-#   - name: community.crypto
-#     url: https://github.com/ansible-collections/community.crypto
-#     version: "2.15.1"
-#   - name: community.general
-#     url: https://github.com/ansible-collections/community.general
-#     version: "8.0.2"
+  - name: community.docker
+    url: https://github.com/ansible-collections/community.docker
+    version: "3.4.11"
+  - name: community.crypto
+    url: https://github.com/ansible-collections/community.crypto
+    version: "2.16.1"
+  - name: community.general
+    url: https://github.com/ansible-collections/community.general
+    version: "8.1.0"
 #   - name: community.mysql
 #     url: https://github.com/ansible-collections/community.mysql
 #     version: "3.8.0"
