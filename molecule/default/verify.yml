@@ -74,7 +74,7 @@
       ansible.builtin.set_fact:
         molecule_collections: "{{ molecule_collections_list.stdout | from_json }}"
 
-    - name: Debug the ollections that are present
+    - name: Debug the collections that are present
       ansible.builtin.debug:
         var: molecule_collections
 ...
