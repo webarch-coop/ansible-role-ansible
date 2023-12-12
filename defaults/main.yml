@@ -190,11 +190,9 @@ ans_pipx_executable: "{{ ans_pipx_path }}"
 ans_pipx_path: /usr/bin/pipx
 ans_pipx_root_env:
   PIPX_BIN_DIR: /usr/local/bin
-  PIPX_DEFAULT_PYTHON: "{{ ans_python_path }}"
   PIPX_HOME: /opt
 ans_pipx_user_env:
   PIPX_BIN_DIR: "{{ ans_user_bin }}"
-  PIPX_DEFAULT_PYTHON: "{{ ans_python_path }}"
   PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
 ans_python_path: /usr/bin/python3
 ans_user_bin: "{{ ansible_env.HOME }}/.local/bin"
