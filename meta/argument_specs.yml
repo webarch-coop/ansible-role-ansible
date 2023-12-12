@@ -107,10 +107,6 @@ argument_specs:
             type: str
             required: false
             description: The version of PyPI package.
-      ans_pipx_executable:
-        type: str
-        required: true
-        description: The executable argument to use with the community.general.pipx_info module.
       ans_pipx_executable_version:
         type: str
         required: false

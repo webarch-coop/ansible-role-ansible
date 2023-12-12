@@ -26,7 +26,7 @@
 
     - name: Gather pipx_info
       community.general.pipx_info:
-        executable: "{{ ans_python_path }} -m pipx"
+        executable: "{{ ans_pipx_path }}"
         include_deps: true
         include_injected: true
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
