@@ -39,6 +39,22 @@
           - ans_python_version is version('3.7.3', 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
+    - name: Check the pipx version
+      ansible.builtin.command: "{{ ans_pipx_executable }} --version"
+      check_mode: false
+      changed_when: false
+      register: ans_pipx_executable_check
+
+    - name: Set a fact for the pipx executable version
+      ansible.builtin.set_fact:
+        ans_pipx_executable_version: "{{ ans_pipx_executable_check.stdout | trim | string }}"
+
+    - name: Check that the pipx executable version is >= 1.0.0
+      ansible.builtin.assert:
+        that:
+          - ans_pipx_executable_version is version('1.0.0', 'ge')
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
       ansible.builtin.assert:
         that:
