@@ -33,6 +33,11 @@
       ansible.builtin.set_fact:
         ans_python_version: "{{ (ans_python_version_check.stdout | split)[1] | trim | string }}"
 
+    - name: Python version
+      ansible.builtin.debug:
+        var: ans_python_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
         that:
@@ -40,19 +45,24 @@
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check the pipx version
-      ansible.builtin.command: "{{ ans_pipx_executable }} --version"
+      ansible.builtin.command: "{{ ans_pipx_path }} --version"
       check_mode: false
       changed_when: false
       register: ans_pipx_executable_check
 
-    - name: Set a fact for the pipx executable version
+    - name: Set a fact for the pipx version
       ansible.builtin.set_fact:
-        ans_pipx_executable_version: "{{ ans_pipx_executable_check.stdout | trim | string }}"
+        ans_pipx_version: "{{ ans_pipx_executable_check.stdout | trim | string }}"
+
+    - name: Pipx version
+      ansible.builtin.debug:
+        var: ans_pipx_version
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Check that the pipx executable version is >= 1.0.0
       ansible.builtin.assert:
         that:
-          - ans_pipx_executable_version is version('1.0.0', 'ge')
+          - ans_pipx_version is version('1.0.0', 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
@@ -370,13 +380,13 @@
         var: ansible_facts.packages.pipx[0].version
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-    - name: Set a fact for the pipx version
+    - name: Set a fact for the pipx package version
       ansible.builtin.set_fact:
-        ans_pipx_version: "{{ ansible_facts.packages.pipx[0].version | regex_replace('[-~].*$') | string }}"
+        ans_pipx_package_version: "{{ ansible_facts.packages.pipx[0].version | regex_replace('[-~].*$') | string }}"
 
-    - name: Pipx installed version
+    - name: Pipx package version
       ansible.builtin.debug:
-        var: ans_pipx_version
+        var: ans_pipx_package_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Pipx checks
