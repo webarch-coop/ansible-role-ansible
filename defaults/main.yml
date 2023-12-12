@@ -185,7 +185,8 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/yamllint
     venv: ansible
     version: latest
-ans_pipx_executable: "{{ ans_python_path }} -m pipx"
+# ans_pipx_executable: "{{ ans_python_path }} -m pipx"
+ans_pipx_executable: "{{ ans_pipx_path }}"
 ans_pipx_path: /usr/bin/pipx
 ans_pipx_root_env:
   PIPX_HOME: /opt
