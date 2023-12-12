@@ -31,7 +31,7 @@
 
     - name: Set a fact for the Python version
       ansible.builtin.set_fact:
-        ans_python_version: "{{ (ans_python_version_check.stdout).split[1] | trim | string }}"
+        ans_python_version: "{{ (ans_python_version_check.stdout | split)[1] | trim | string }}"
 
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
