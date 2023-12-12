@@ -128,6 +128,7 @@ ans_pypi_pkgs:
     version: 9.1.0
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
+    venv: ansible
     version: 2.16.2
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
@@ -185,8 +186,6 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/yamllint
     venv: ansible
     version: latest
-# ans_pipx_executable: "{{ ans_python_path }} -m pipx"
-ans_pipx_executable: "{{ ans_pipx_path }}"
 ans_pipx_path: /usr/bin/pipx
 ans_pipx_root_env:
   PIPX_BIN_DIR: /usr/local/bin
