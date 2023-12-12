@@ -8,7 +8,7 @@ This repo contains an Ansible role designed to be run by a non-root user [agains
 
 This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Jammy.
 
-Debian Bullseye only supports Ansible `8.6.1` as Ansible `>=9.0.0` requires [Python `>=3.10`](https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/9/CHANGELOG-v9.rst).
+Debian Bullseye only supports Ansible `8.7.0` as Ansible `>=9.0.0` requires [Python `>=3.10`](https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/9/CHANGELOG-v9.rst).
 
 ## Role variables
 
