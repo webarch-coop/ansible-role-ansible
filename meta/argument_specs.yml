@@ -107,6 +107,10 @@ argument_specs:
             type: str
             required: false
             description: The version of PyPI package.
+      ans_pipx_executable:
+        type: str
+        required: true
+        description: The executable argument to use with the community.general.pipx_info module.
       ans_pipx_path:
         type: str
         required: true
@@ -137,6 +141,10 @@ argument_specs:
             type: str
             required: false
             description: The PIPX_BIN_DIR environment variable value for pipx when run as a regular user.
+      ans_python_path:
+        type: str
+        required: true
+        description: The path to the system python3 binary.
       ans_user_bin:
         type: str
         required: false
