@@ -11,6 +11,34 @@
 - name: Ansible checks
   block:
 
+    - name: Check the Python path
+      ansible.builtin.stat:
+        path: "{{ ans_python_path }}"
+      register: ans_python_path_check
+
+    - name: Python needs to be available at the specified path
+      ansible.builtin.assert:
+        that:
+          - ans_python_path_check.stat.exists | bool
+          - ans_python_path_check.stat.executable | bool
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
+    - name: Check the Python version
+      ansible.builtin.command: "{{ ans_python_path }} --version"
+      check_mode: false
+      changed_when: false
+      register: ans_python_version_check
+
+    - name: Set a fact for the Python version
+      ansible.builtin.set_fact:
+        ans_python_version: "{{ (ans_python_version_check.stdout).split[1] | trim | string }}"
+
+    - name: Check that the Python version is >= 3.7.3
+      ansible.builtin.assert:
+        that:
+          - ans_python_version is version('3.7.3', 'ge')
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
     - name: Check that the URL and version of the PyPI packages are specified when the state is not set to absent
       ansible.builtin.assert:
         that:

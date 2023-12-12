@@ -145,6 +145,10 @@ argument_specs:
         type: str
         required: true
         description: The path to the system python3 binary.
+      ans_python_version:
+        type: str
+        required: false
+        description: The version of Python installed.
       ans_user_bin:
         type: str
         required: false
