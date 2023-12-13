@@ -11,37 +11,10 @@
 - name: Ansible checks
   block:
 
-    - name: Check the Python path
-      ansible.builtin.stat:
-        path: "{{ ans_python_path }}"
-      register: ans_python_path_check
-
-    - name: Python needs to be available at the specified path
-      ansible.builtin.assert:
-        that:
-          - ans_python_path_check.stat.exists | bool
-          - ans_python_path_check.stat.executable | bool
-        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-
-    - name: Check the Python version
-      ansible.builtin.command: "{{ ans_python_path }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_python_version_check
-
-    - name: Set a fact for the Python version
-      ansible.builtin.set_fact:
-        ans_python_version: "{{ ans_python_version_check.stdout | regex_replace('^Python[ ]$') | trim | string }}"
-
-    - name: Python version
-      ansible.builtin.debug:
-        var: ans_python_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
         that:
-          - ans_python_version is version('3.7.3', 'ge')
+          - ansible_python_version is version('3.7.3', 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check the pipx version
@@ -493,21 +466,6 @@
     - name: Set a fact for the system PyPI packages present
       ansible.builtin.set_fact:
         ans_pip_system_existing: "{{ ans_pip_system_list.stdout | ansible.builtin.from_json | ansible.builtin.difference(ans_pip_user_existing) }}"
-
-    - name: Check the version of Python being used
-      ansible.builtin.command: "{{ ansible_playbook_python }} --version"
-      check_mode: false
-      changed_when: false
-      register: ans_python_version_check
-
-    - name: Set a fact for the version of Python being used
-      ansible.builtin.set_fact:
-        ans_python_version: "{{ ans_python_version_check.stdout_lines[0].split(' ') | community.general.json_query('[1]') }}"
-
-    - name: Debug the Python version being used
-      ansible.builtin.debug:
-        var: ans_python_version
-        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Debug system PyPI packages present
       ansible.builtin.debug:

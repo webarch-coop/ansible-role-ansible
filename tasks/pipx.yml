@@ -34,8 +34,8 @@
 
         - name: User pip packages need to be removed with the following command
           ansible.builtin.fail:
-            msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkg_uninstall %} {{ ans_pypi_pkg }}{% endfor %}{% if ans_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
-          when: ans_python_version is version('3.11.2', 'lt')
+            msg: "python3 -m pip uninstall{% for ans_pypi_pkg in ans_pypi_pkg_uninstall %} {{ ans_pypi_pkg }}{% endfor %}{% if ansible_python_version is version('3.11.2', 'ge') %} --break-system-packages{% endif %}"
+          when: ansible_python_version is version('3.11.2', 'lt')
 
       when:
         - ans_pip_user_existing is defined
