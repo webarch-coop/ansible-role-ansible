@@ -27,6 +27,7 @@ trixie:
   image: debian:trixie-backports
   stage: trixie
   script:
+    - chmod 700 $(pwd)
     - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
     - apt-get update -qq
     - apt-get dist-upgrade -qqy
@@ -39,6 +40,7 @@ bookworm:
   image: debian:bookworm-backports
   stage: bookworm
   script:
+    - chmod 700 $(pwd)
     - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
     - apt-get update -qq
     - apt-get dist-upgrade -qqy
@@ -51,6 +53,7 @@ bullseye:
   image: debian:bullseye-backports
   stage: bullseye
   script:
+    - chmod 700 $(pwd)
     - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
     - apt-get update -qq
     - apt-get dist-upgrade -qqy
@@ -63,6 +66,7 @@ jammy:
   image: ubuntu:jammy
   stage: jammy
   script:
+    - chmod 700 $(pwd)
     - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
     - apt-get update -qq
     - apt-get dist-upgrade -qqy
