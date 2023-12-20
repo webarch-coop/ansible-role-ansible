@@ -16,7 +16,7 @@ variables:
   DEFAULT_MANAGED_STR: "Ansible managed"
   MOLECULE_VERBOSITY: "0"
   PIPX_BIN_DIR: /usr/local/bin
-  PIPX_HOME: /opt
+  PIPX_HOME: /opt/pipx
   PY_COLORS: "1"
 stages:
   - bookworm
