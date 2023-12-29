@@ -46,6 +46,11 @@
         var: ans_required_state
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
+    - name: Debug ans_pipx_mod
+      ansible.builtin.debug:
+        var: ans_pipx_mod
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
     - name: Include the pipx install tasks that use the command module
       ansible.builtin.include_tasks: pipx_cmd_install.yml
       when: not ans_pipx_mod | bool
