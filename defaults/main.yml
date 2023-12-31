@@ -29,7 +29,7 @@ ans_cols:
 #     version: "3.8.0"
 #   - name: community.postgresql
 #     url: https://github.com/ansible-collections/community.postgresql
-#     version: "3.2.0"
+#     version: "3.3.0"
 #   - name: community.rabbitmq
 #     url: https://github.com/ansible-collections/community.rabbitmq
 #     version: "1.2.3"
@@ -146,6 +146,10 @@ ans_pypi_pkgs:
   - name: jinja2-ansible-filters
     type: lib
     url: https://pypi.org/pypi/jinja2-ansible-filters
+    venv: ansible
+    version: latest
+  - name: j2lint
+    url: https://pypi.org/pypi/j2lint
     venv: ansible
     version: latest
   - name: jmespath
