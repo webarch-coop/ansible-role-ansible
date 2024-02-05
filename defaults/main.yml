@@ -143,6 +143,14 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/jc
     venv: ansible
     version: latest
+  - name: jinjanator
+    url: https://pypi.org/pypi/jinjanator
+    venv: ansible
+    version: latest
+  - name: jinjanator-plugin-ansible
+    url: https://pypi.org/pypi/jinjanator-plugin-ansible
+    venv: ansible
+    version: latest
   - name: jinja2-ansible-filters
     type: lib
     url: https://pypi.org/pypi/jinja2-ansible-filters
