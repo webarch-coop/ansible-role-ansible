@@ -41,6 +41,10 @@ The `ans_downgrade` variable defaults to `false`, if it is set to `true` then th
 
 The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_distribution` is not Debian or Ubuntu and `ansible_distribution_release` is not bullseye, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
 
+### ans_pipx_cmd
+
+A boolean, force the use of `ansible.builtin.command` rather than [community.general.pipx](https://docs.ansible.com/ansible/latest/collections/community/general/pipx_module.html), this is sometime needed on older servers, `ans_pipx_cmd` defaults to `false`.
+
 ### ans_pkgs_debian
 
 A list of Debian packages that are required on Debian Bookworm and Trixie, for example;

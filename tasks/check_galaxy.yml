@@ -135,7 +135,9 @@
     - name: Set ans_pipx_mod to true when community.general 6.6.0 or greater is available as than means community.general.pipx can be used
       ansible.builtin.set_fact:
         ans_pipx_mod: true
-      when: ans_col_comgen_version is version('6.6.0', 'ge')
+      when:
+        - ans_pipx_cmd | bool
+        - ans_col_comgen_version is version('6.6.0', 'ge')
 
     - name: Set ans_pipx_mod_info to true when community.general 5.6.0 or greater is available as that means community.general.pipx_info can be used
       ansible.builtin.set_fact:

@@ -107,6 +107,10 @@ argument_specs:
             type: str
             required: false
             description: The version of PyPI package.
+      ans_pipx_cmd:
+        type: bool
+        required: true
+        description: Force the use of command rather than community.general.pipx for installing packages using pipx, this is sometimes needed on older servers.
       ans_pipx_package_version:
         type: str
         required: false
