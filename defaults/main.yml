@@ -29,7 +29,7 @@ ans_cols:
     version: "3.8.0"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: "3.3.0"
+    version: "3.4.0"
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
     version: "1.2.3"
