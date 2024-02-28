@@ -195,4 +195,6 @@ ans_versions:
     core: 2.16.1
   - ansible: 9.2.0
     core: 2.16.3
+  - ansible: 9.3.0
+    core: 2.16.4
 ...
