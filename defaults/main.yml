@@ -17,16 +17,16 @@ ans_cols:
     version: "1.5.2"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: "3.7.0"
+    version: "3.8.0"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: "2.17.1"
+    version: "2.18.0"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "8.3.0"
+    version: "8.4.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: "3.8.0"
+    version: "3.9.0"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: "3.4.0"
