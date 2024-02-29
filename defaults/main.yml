@@ -14,7 +14,7 @@ ans: false
 ans_cols:
   - name: ansible.posix
     url: https://github.com/ansible-collections/ansible.posix
-    version: "1.5.2"
+    version: "1.5.4"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
     version: "3.8.0"
