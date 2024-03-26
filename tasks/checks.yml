@@ -12,7 +12,7 @@
   block:
 
     - name: Debug ansible_distribution_release
-      ansbile.builtin.debug:
+      ansible.builtin.debug:
         var: ansible_distribution_release
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
@@ -72,7 +72,7 @@
             manager: apt
 
         - name: Debug packages the ansible_distribution_release
-          ansbile.builtin.debug:
+          ansible.builtin.debug:
             msg: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 

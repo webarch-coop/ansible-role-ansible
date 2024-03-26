@@ -19,10 +19,10 @@ variables:
   PIPX_HOME: /opt/pipx
   PY_COLORS: "1"
 stages:
-  - bookworm
-  - bullseye
+  # - bookworm
+  # - bullseye
   - jammy
-  - trixie
+  # - trixie
 trixie:
   image: debian:trixie-backports
   stage: trixie
