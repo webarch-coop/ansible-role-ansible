@@ -38,6 +38,121 @@ ans_galaxy_install_mod: false
 # Don't use community.general.ansible_galaxy_install by default because of this issue
 # https://github.com/ansible-collections/community.general/issues/5661
 ans_pip_path: "{{ ans_bin }}/pip3"
+ans_pkgs:
+  - distro: bookworm
+    pkgs:
+      - ansible
+      - ansible-lint
+      - git
+      - jc
+      - jo
+      - libpq-dev
+      - pipx
+      - postgresql-client
+      - postgresql-common
+      - procps
+      - python3-apt
+      - python3-argcomplete
+      - python3-debian
+      - python3-dnspython
+      - python3-commonmark
+      - python3-jmespath
+      - python3-lxml
+      - python3-mysqldb
+      - python3-netaddr
+      - python3-pip
+      - python3-psycopg
+      - python3-pymysql
+      - python3-resolvelib
+      - python3-ruamel.yaml
+      - python3-setuptools
+      - python3-venv
+  - distro: bullseye
+    pkgs:
+      - ansible
+      - ansible-lint
+      - git
+      - jc
+      - jo
+      - libpq-dev
+      - pipx
+      - postgresql-client
+      - postgresql-common
+      - procps
+      - python3-apt
+      - python3-argcomplete
+      - python3-debian
+      - python3-dnspython
+      - python3-commonmark
+      - python3-jmespath
+      - python3-lxml
+      - python3-mysqldb
+      - python3-netaddr
+      - python3-pip
+      - python3-psycopg2
+      - python3-pymysql
+      - python3-resolvelib
+      - python3-ruamel.yaml
+      - python3-setuptools
+      - python3-venv
+  - distro: focal
+    pkgs:
+      - ansible
+      - ansible-lint
+      - git
+      - jc
+      - jo
+      - pipx
+      - postgresql
+      - procps
+      - python3-apt
+      - python3-argcomplete
+      - python3-debian
+      - python3-dnspython
+      - python3-commonmark
+      - python3-jmespath
+      - python3-lxml
+      - python3-mysqldb
+      - python3-netaddr
+      - python3-pip
+      - python3-psycopg2
+      - python3-pymysql
+      - python3-resolvelib
+      - python3-ruamel.yaml
+      - python3-setuptools
+      - python3-venv
+  - distro: trixie
+    pkgs:
+      # The ansible package is not currently in Trixie
+      # https://packages.debian.org/trixie/ansible
+      # - ansible
+      - ansible-core
+      - ansible-lint
+      - git
+      - jc
+      - jo
+      - libpq-dev
+      - pipx
+      - postgresql-client
+      - postgresql-common
+      - procps
+      - python3-apt
+      - python3-argcomplete
+      - python3-debian
+      - python3-dnspython
+      - python3-commonmark
+      - python3-jmespath
+      - python3-lxml
+      - python3-mysqldb
+      - python3-netaddr
+      - python3-pip
+      - python3-psycopg
+      - python3-pymysql
+      - python3-resolvelib
+      - python3-ruamel.yaml
+      - python3-setuptools
+      - python3-venv
+ans_pkgs_jmespath_query: "[?distro==`{{ ansible_distribution_release }}`].pkgs|[0]"
 ans_pypi_ansible_core_state_jmespath_query: "[?name=='ansible-core'].state|[0]"
 ans_pypi_ansible_core_version_jmespath_query: "[?name=='ansible-core'].version|[0]"
 ans_pypi_ansible_state_jmespath_query: "[?name=='ansible'].state|[0]"

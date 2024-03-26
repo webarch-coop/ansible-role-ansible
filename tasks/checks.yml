@@ -59,55 +59,19 @@
           ansible.builtin.package_facts:
             manager: apt
 
-        - name: Check the presence of the required Debian packages on Buster and Bullseye
+        - name: Check the presence of the required packages
           ansible.builtin.assert:
             that:
               - ans_deb_pkg in ansible_facts.packages.keys()
             fail_msg:
-              - "The {{ ans_deb_pkg }} is required"
+              - "The {{ ans_pkg }} is required"
               - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_pkgs_debian %} {{ ans_pkg_missing }}{% endfor %}"
+              - "sudo apt install{% for ans_pkg_missing in ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) %} {{ ans_pkg_missing }}{% endfor %}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_pkgs_debian_bullseye }}"
+          loop: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
           loop_control:
-            loop_var: ans_deb_pkg
-          when:
-            - ansible_effective_user_id != 0
-            - ansible_distribution == "Debian"
-            - ansible_distribution_release is regex('^buster|bullseye$')
-
-        - name: Check the presence of the required Debian packages on Bookworm and Trixie
-          ansible.builtin.assert:
-            that:
-              - ans_deb_pkg in ansible_facts.packages.keys()
-            fail_msg:
-              - "The {{ ans_deb_pkg }} is required"
-              - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_pkgs_debian %} {{ ans_pkg_missing }}{% endfor %}"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_pkgs_debian }}"
-          loop_control:
-            loop_var: ans_deb_pkg
-          when:
-            - ansible_effective_user_id != 0
-            - ansible_distribution == "Debian"
-            - ansible_distribution_release is regex('^bookworm|trixie$')
-
-        - name: Check the presence of the required Ubuntu packages
-          ansible.builtin.assert:
-            that:
-              - ans_deb_pkg in ansible_facts.packages.keys()
-            fail_msg:
-              - "The {{ ans_deb_pkg }} is required"
-              - "You can install all the requirements using:"
-              - "sudo apt install{% for ans_pkg_missing in ans_pkgs_ubuntu %} {{ ans_pkg_missing }}{% endfor %}"
-            quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_pkgs_ubuntu }}"
-          loop_control:
-            loop_var: ans_deb_pkg
-          when:
-            - ansible_effective_user_id != 0
-            - ansible_distribution == "Ubuntu"
+            loop_var: ans_pkg
+          when: ansible_effective_user_id != 0
 
         - name: Stat system ansible
           ansible.builtin.stat:
@@ -125,6 +89,9 @@
           ansible.builtin.stat:
             path: "{{ ans_col_path_system }}"
           register: ans_col_path_system_check
+          # NOTE that the ansible package is not available for Trixie
+          # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
+          when: ansible_distribution_release != "trixie"
 
         - name: The system installed ansible-galaxy python module location should be an existing directory
           ansible.builtin.assert:
@@ -132,6 +99,9 @@
               - ans_col_path_system_check.stat.exists | bool
               - ans_col_path_system_check.stat.isdir | bool
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+          # NOTE that the ansible package is not available for Trixie
+          # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
+          when: ansible_distribution_release != "trixie"
 
         - name: Include checks for ansible-galaxy
           ansible.builtin.include_tasks: check_galaxy.yml
