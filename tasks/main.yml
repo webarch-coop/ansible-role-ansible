@@ -21,12 +21,13 @@
     - name: Linux distribution check and requirements present
       block:
 
-        - name: This role has only been designed to be run on Debian Trixie, Debian Bullseye, Debian Bookworm and Ubuntu Jammy
+        - name: "This role has only been designed to be run on {{ ans_pkgs | community.general.json_query('[].distro') | join(', ') }}"
           ansible.builtin.assert:
             that:
               - ansible_distribution is regex('^Debian|Ubuntu$')
-              - ansible_distribution_release is regex('^trixie|bookworm|bullseye|jammy$')
+              - ansible_distribution_release in (ans_pkgs | community.general.json_query('[].distro'))
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+            fail_msg: "This role doesn't have support for {{ ansible_distribution }} {{ ansible_distribution_release }}."
 
         - name: Check that Backports are enabled on Debian Bullseye for pipx
           block:
@@ -51,34 +52,9 @@
           when: ansible_distribution_release == "bullseye"
 
         - name: Requirements present when root
-          block:
-
-            - name: Debian Bookworm / Trixie requirements present
-              ansible.builtin.apt:
-                pkg: "{{ ans_pkgs_debian }}"
-                state: present
-              when:
-                - ansible_distribution == "Debian"
-                - ansible_distribution_release is regex('^bookworm|trixie$')
-                - ansible_local.dpkg.installed is defined
-
-            - name: Debian Bullesye requirements present
-              ansible.builtin.apt:
-                pkg: "{{ ans_pkgs_debian_bullseye }}"
-                state: present
-              when:
-                - ansible_distribution == "Debian"
-                - ansible_distribution_release is regex('^buster|bullseye$')
-                - ansible_local.dpkg.installed is defined
-
-            - name: Ubuntu requirements present
-              ansible.builtin.apt:
-                pkg: "{{ ans_pkgs_ubuntu }}"
-                state: present
-              when:
-                - ansible_distribution == "Ubuntu"
-                - ansible_local.dpkg.installed is defined
-
+          ansible.builtin.apt:
+            pkg: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
+            state: present
           when: ansible_effective_user_id == 0
 
       when: ans_distro_check | bool
