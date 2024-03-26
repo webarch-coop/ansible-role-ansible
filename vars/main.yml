@@ -121,6 +121,32 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
+  - distro: noble
+    pkgs:
+      - ansible
+      - ansible-lint
+      - git
+      - jc
+      - jo
+      - pipx
+      - postgresql
+      - procps
+      - python3-apt
+      - python3-argcomplete
+      - python3-debian
+      - python3-dnspython
+      - python3-commonmark
+      - python3-jmespath
+      - python3-lxml
+      - python3-mysqldb
+      - python3-netaddr
+      - python3-pip
+      - python3-psycopg2
+      - python3-pymysql
+      - python3-resolvelib
+      - python3-ruamel.yaml
+      - python3-setuptools
+      - python3-venv
   - distro: trixie
     pkgs:
       # The ansible package is not currently in Trixie

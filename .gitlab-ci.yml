@@ -14,7 +14,7 @@ variables:
   ANSIBLE_FORCE_COLOR: "1"
   DEBIAN_FRONTEND: "noninteractive"
   DEFAULT_MANAGED_STR: "Ansible managed"
-  MOLECULE_VERBOSITY: "2"
+  MOLECULE_VERBOSITY: "0"
   PIPX_BIN_DIR: /usr/local/bin
   PIPX_HOME: /opt/pipx
   PY_COLORS: "1"
@@ -81,5 +81,4 @@ jammy:
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
     - molecule test --all
-# vim: syntax=yaml
 ...

@@ -21,7 +21,7 @@
     - name: Linux distribution check and requirements present
       block:
 
-        - name: "This role has only been designed to be run on {{ ans_pkgs | community.general.json_query('[].distro') | join(', ') }}"
+        - name: "This role has only been designed to be run on {{ (ans_pkgs | community.general.json_query('[].distro')) | join(', ') }}"
           ansible.builtin.assert:
             that:
               - ansible_distribution is regex('^Debian|Ubuntu$')
@@ -53,7 +53,7 @@
 
         - name: Requirements present when root
           ansible.builtin.apt:
-            pkg: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
+            pkg: "{{ (ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query)) }}"
             state: present
           when: ansible_effective_user_id == 0
 
