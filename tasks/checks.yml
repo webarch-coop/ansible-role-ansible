@@ -62,7 +62,7 @@
         - name: Check the presence of the required packages
           ansible.builtin.assert:
             that:
-              - ans_deb_pkg in ansible_facts.packages.keys()
+              - ans_pkg in ansible_facts.packages.keys()
             fail_msg:
               - "The {{ ans_pkg }} is required"
               - "You can install all the requirements using:"
