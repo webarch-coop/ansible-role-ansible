@@ -60,8 +60,8 @@ argument_specs:
             choices:
               - bookworm
               - bullseye
-              - focal
-              - nobel
+              - jammy
+              - noble
               - trixie
           pkgs:
             type: list

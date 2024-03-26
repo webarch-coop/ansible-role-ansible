@@ -14,7 +14,7 @@ variables:
   ANSIBLE_FORCE_COLOR: "1"
   DEBIAN_FRONTEND: "noninteractive"
   DEFAULT_MANAGED_STR: "Ansible managed"
-  MOLECULE_VERBOSITY: "0"
+  MOLECULE_VERBOSITY: "2"
   PIPX_BIN_DIR: /usr/local/bin
   PIPX_HOME: /opt/pipx
   PY_COLORS: "1"

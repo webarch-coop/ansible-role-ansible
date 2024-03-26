@@ -11,6 +11,18 @@
 - name: Ansible checks
   block:
 
+    - name: Debug ansible_distribution_release
+      ansbile.builtin.debug:
+        var: ansible_distribution_release
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
+    - name: Check that the ansible_distribution_release is supported
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution_release is in ans_pkgs | community.general.json_query('[].distro')
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+        fail_msg: "This role doesn't have support for {{ ansible_distribution }} {{ ansible_distribution_release }}."
+
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
         that:
@@ -58,6 +70,11 @@
         - name: Read package facts
           ansible.builtin.package_facts:
             manager: apt
+
+        - name: Debug packages the ansible_distribution_release
+          ansbile.builtin.debug:
+            msg: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Check the presence of the required packages
           ansible.builtin.assert:

@@ -95,7 +95,7 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
-  - distro: focal
+  - distro: jammy
     pkgs:
       - ansible
       - ansible-lint
