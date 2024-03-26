@@ -16,10 +16,15 @@
         var: ansible_distribution_release
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
+    - name: Debug supported distros
+      ansible.builtin.debug:
+        msg: "{{ ans_pkgs | community.general.json_query('[].distro') }}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+
     - name: Check that the ansible_distribution_release is supported
       ansible.builtin.assert:
         that:
-          - ansible_distribution_release is in ans_pkgs | community.general.json_query('[].distro')
+          - ansible_distribution_release in (ans_pkgs | community.general.json_query('[].distro'))
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
         fail_msg: "This role doesn't have support for {{ ansible_distribution }} {{ ansible_distribution_release }}."
 
@@ -71,7 +76,7 @@
           ansible.builtin.package_facts:
             manager: apt
 
-        - name: Debug packages the ansible_distribution_release
+        - name: Debug the packages required for the distro
           ansible.builtin.debug:
             msg: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
