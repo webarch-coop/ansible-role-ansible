@@ -133,14 +133,19 @@
         - name: Check the Ansible .deb version when not Bullseye or Jammy
           block:
 
-            - name: Set a fact for the Ansible .deb version
-              ansible.builtin.set_fact:
-                ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
+            - name: Check ansible .deb version present when not running trixie
+              block:
 
-            - name: Debug the Ansible installed version
-              ansible.builtin.debug:
-                var: ans_installed_version
-                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+                - name: Set a fact for the Ansible .deb version
+                  ansible.builtin.set_fact:
+                    ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
+
+                - name: Debug the Ansible installed version
+                  ansible.builtin.debug:
+                    var: ans_installed_version
+                    verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
+              when: ansible_distribution_release is not regex('^trixie$')
 
             - name: Check ansible-core .deb version present
               block:
