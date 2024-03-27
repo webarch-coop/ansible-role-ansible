@@ -108,15 +108,17 @@
       ansible.builtin.set_fact:
         ans_col_version_present: "{{ ans_col_versions_present | last }}"
       when:
+        - ans_col_versions_present is defined
+        - ans_col_versions_present != []
         - ans_col_comgen_versions is defined
         - ans_col_comgen_versions != []
 
     - name: "Debug Ansible collection version variables for {{ ans_col.name }}"
       ansible.builtin.debug:
         msg:
-          - "ans_col_version_latest: {{ ans_col_version_latest }}"
-          - "ans_col_version_required: {{ ans_col_version_required }}"
-          - "ans_col_version_present: {{ ans_col_version_present }}"
+          - "ans_col_version_latest: {{ ans_col_version_latest | default('') }}"
+          - "ans_col_version_required: {{ ans_col_version_required | default('') }}"
+          - "ans_col_version_present: {{ ans_col_version_present | default('') }}"
 
     - name: Install Ansible Galaxy collection
       block:
@@ -153,6 +155,9 @@
 
       when: >-
         ( ( not ans_downgrade | bool ) and
+        ( ans_col_version_required is defined ) and
+        ( ans_col_version_required | length > 0 ) ) and
+        ( ( ans_col_version_present is not defined ) or
         ( ( ans_col_version_present is defined ) and
         ( ans_col_version_present | length > 0 ) and
         ( ans_col_version_required is version(ans_col_version_present, '>') ) ) ) or
