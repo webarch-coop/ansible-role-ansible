@@ -17,6 +17,7 @@ variables:
   MOLECULE_VERBOSITY: "2"
   PIPX_BIN_DIR: /usr/local/bin
   PIPX_HOME: /opt/pipx
+  PRE_COMMIT_COLOR: always
   PY_COLORS: "1"
 stages:
   # - bookworm
