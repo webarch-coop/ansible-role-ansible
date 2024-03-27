@@ -194,6 +194,11 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/pymysql
     venv: ansible
     version: latest
+  - name: python-debian
+    type: lib
+    url: https://pypi.org/pypi/python-debian
+    venv: ansible
+    version: latest
   - name: yamllint
     url: https://pypi.org/pypi/yamllint
     venv: ansible
