@@ -1,0 +1,251 @@
+# Copyright 2019-2024 Chris Croome
+#
+# This file is part of the Webarchitects Ansible role.
+#
+# The Webarchitects Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+argument_specs:
+  main:
+    author: Chris Croome
+    description: An Ansible role for installing Ansible.
+    short_description: The main entry point for the Ansible role.
+    options:
+
+      ans_ansible_core_min_version:
+      ans_ansible_path:
+      ans_bash:
+      ans_bin:
+      ans_col_comgen_jmespath_query:
+      ans_col_comgen_ver_jmespath_query:
+      ans_col_comgen_vers_jmespath_query:
+      ans_col_existing:
+      ans_col_jmespath_query:
+      ans_col_list_jmespath_query:
+      ans_col_path_system:
+      ans_col_path_user:
+      ans_col_vers_jmespath_query:
+      ans_comgen:
+      ans_deb_name_jmespath_query:
+      ans_deb_version_jmespath_query:
+      ans_galaxy_install_mod:
+      ans_pip_path:
+      ans_pipx_app_ver_jmespath_query:
+      ans_pipx_apps_jmespath_query:
+      ans_pipx_bin_jmespath_query:
+      ans_pipx_info_ansible_version_jmespath_query:
+      ans_pipx_info_injected_pkgs_jmespath_query:
+      ans_pipx_info_pkgs_jmespath_query:
+      ans_pipx_inject:
+      ans_pipx_list_ansible_version_jmespath_query:
+      ans_pipx_list_injected_pkgs_jmespath_query:
+      ans_pipx_list_pkgs_jmespath_query:
+      ans_pipx_mod:
+      ans_pipx_mod_info:
+      ans_pkgs_debian:
+      ans_pkgs_debian_bullseye:
+      ans_pkgs_jmespath_query:
+      ans_pkgs_ubuntu:
+      ans_pypi_ansible_core_state_jmespath_query:
+      ans_pypi_ansible_core_version_jmespath_query:
+      ans_pypi_ansible_state_jmespath_query:
+      ans_pypi_ansible_version_jmespath_query:
+      ans_pypi_extras:
+      ans_pypi_extras_jmespath_query:
+      ans_pypi_pkg_version_jmespath_query:
+      ans_version_core_jmespath_query:
+      ans_versions:
+
+      ans_argcomplete_path_check:
+        description: Internal variable for the results from stat'ing the path to activate-global-python-argcomplete.
+        required: false
+        type: dict
+      ans_argcomplete_path_no_ext:
+        description: Internal variable for the results from stat'ing ~/.bash_completion.d/python-argcomplete.sh.
+        required: false
+        type: dict
+      ans_argcomplete_register_path_check:
+        description: Internal variable for the results from checking that the path to register-python-argcomplete exists.
+        required: false
+        type: dict
+      ans_argument_spec:
+        description: Internal variable for the argument spec.
+        required: false
+        type: dict
+      ans_bash_profile:
+        description: Internal variable for the results from stat'ing ~/.bash_profile.
+        required: false
+        type: dict
+      ans_bash_profile_copied:
+        description: Internal variable for the results from copying ~/.bash_profile.
+        required: false
+        type: dict
+#      ans_col:
+#        description: Internal variable for a list of existing and proposed Ansible collections.
+#        required: false
+#        type: dict
+      ans_col_install:
+        description: Internal variable for the results from running ansible-galaxy collection install.
+        required: false
+        type: dict
+      ans_col_path:
+        description: Internal loop variable.
+        required: false
+        type: list
+      ans_combined_argument_spec:
+        description: Internal variable for the combined argument spec.
+        required: false
+        type: dict
+      ans_debian_apt_cache_policy_pipx:
+        description: Internal variable for the results from running apt-cache policy pipx.
+        required: false
+        type: dict
+      ans_dpkg_argcomplete:
+        description: Internal variables for the results from running dpkg -L python3-argcomplete.
+        required: false
+        type: dict
+      ans_galaxy_col_list:
+        description: Internal dictionary generated from running ansible-galaxy collection list and converting the results into JSON.
+        required: false
+        type: dict
+      ans_galaxy_json_check:
+        description: Internal variables for the results from running ansible-galaxy collection list --format json.
+        required: false
+        type: dict
+      ans_internal_argument_spec:
+        description: Internal variable for the internal argument spec.
+        required: false
+        type: dict
+      ans_latest_headers:
+        description: Internal variable for the results from doing a HEAD request to GitHub.
+        required: false
+        type: dict
+      ans_pip_inspect:
+        description: Internal variable for the results from running python3 -m pip inspect.
+        required: false
+        type: dict
+      ans_pip_system_list:
+        description: Internal variable for the results from running python3 -m pip list --format=json.
+        required: false
+        type: dict
+      ans_pip_user_list:
+        description: Internal variable for the results from running python3 -m pip list --user --format=json.
+        required: false
+        type: dict
+      ans_pip_version_check:
+        description: Internal variable for the results from running python3 -m pip --version.
+        required: false
+        type: dict
+      ans_pipx_ansible_downgrade_installed:
+        description: Internal variable for the results from downgrading Ansible using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_ansible_downgrade_removed:
+        description: Internal variable for the results from removing Ansible using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_ansible_injected:
+        description: Internal variable for the results from injecting packages using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_ansible_installed:
+        description: Internal variable for the results from installing Ansible using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_ansible_removed:
+        description: Internal variable for the results from removing Ansible using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_ansible_upgraded:
+        description: Internal variable for the results from upgrading Ansible using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_completion:
+        description: Internal variable for the results from stat'ing ~/.local/pipx/tmp/pipx-completion.sh.
+        required: false
+        type: dict
+      ans_pipx_executable_check:
+        description: Internal variable for the results from running pipx --version.
+        required: false
+        type: dict
+      ans_pipx_existing_venvs:
+        description: Internal variable for a list of existing pipx venvs.
+        required: false
+        type: list
+      ans_pipx_existing_version:
+        description: Internal variable for the existing pipx version for a PyPi package.
+        required: false
+        type: str
+      ans_pipx_info:
+        description: Internal variabled for the results from community.general.pipx_info.
+        required: false
+        type: dict
+      ans_pipx_lib_injected:
+        description: Internal variable for the results from injecting libraries using community.general.pipx.
+        required: false
+        type: dict
+      ans_pipx_list_json:
+        description: Internal variable for the results from running pipx list --include-injected --json.
+        required: false
+        type: dict
+      ans_pipx_pkg_state:
+        description: Internal variable for the pipx package state.
+        required: false
+        type: str
+      ans_pipx_venv_bin_file_paths:
+        description: Internal variable for a list of binary files in the Ansible venv bin.
+        elements: str
+        required: false
+        type: list
+      ans_pipx_venv_bin_files:
+        description: Internal variable for the results from running ansible.builtin.find to find files in the Ansible venv bin.
+        required: false
+        type: dict
+      ans_pkg:
+        description: Internal loop variable for the loop through ans_pkgs.
+        required: false
+        type: dict
+      ans_ps:
+        description: Internal variable for the results from running ps -p 1 -o comm=.
+        required: false
+        type: dict
+      ans_pypi:
+        description: Internal variable for the results from doing a GET request for a list of available PyPi versions.
+        required: false
+        type: dict
+      ans_pypi_pkg:
+        description: Internal loop variable for the loop through ans_pypi_pkgs.
+        required: false
+        type: dict
+      ans_pypi_pkg_state:
+        description: Internal variable for the proposed state of the PyPi package.
+        required: false
+        type: str
+      ans_pypi_pkg_uninstall:
+        description: Internal variable for a list of pip user packages that should be removed.
+        required: false
+        type: list
+      ans_pypi_version_latest:
+        description: Internal variable for the latest version of a PyPi package.
+        required: false
+        type: str
+      ans_pypi_version_required:
+        description: Internal variable for the PyPii package version required.
+        required: false
+        type: str
+      ans_pypi_versions_available:
+        description: Internal variable for a list of PyPi package versions available.
+        required: false
+        type: list
+      ans_stat_ansible:
+        description: Internal variable for the results from stat'ing the path to ansible.
+        required: false
+        type: dict
+      ans_venv_executable:
+        description: Internal variable for a list of binaries in the Ansible venv bin.
+        required: false
+        type: list
+...

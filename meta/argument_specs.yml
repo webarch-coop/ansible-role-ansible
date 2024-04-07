@@ -15,147 +15,149 @@ argument_specs:
     short_description: The main entry point for the Ansible role.
     options:
       ans:
-        type: bool
-        required: true
         description: Run the tasks in this role.
+        required: true
+        type: bool
       ans_cols:
-        type: list
-        required: false
         description: Ansible collections to install.
         elements: dict
         options:
           name:
-            type: str
-            required: true
             description: The name of the Ansible collection to install.
+            required: true
+            type: str
           url:
-            type: str
-            required: true
             description: The URL of the Ansible collection to install.
-          version:
-            type: str
             required: true
+            type: str
+          version:
             description: The version of the Ansible collection to install.
-      ans_distro_check:
-        type: bool
-        required: true
-        description: Enable or disable the ansible_distribution and ansible_distribution_release check.
-      ans_downgrade:
-        type: bool
-        required: true
-        description: Enable or disable the installing of older versions of packages than the system packages.
-      ans_env:
-        type: dict
-        required: true
-        description: An internal dictionary of environment variables to use when running ansible.
-      ans_pkgs:
+            required: true
+            type: str
+        required: false
         type: list
+      ans_distro_check:
+        description: Enable or disable the ansible_distribution and ansible_distribution_release check.
         required: true
+        type: bool
+      ans_downgrade:
+        description: Enable or disable the installing of older versions of packages than the system packages.
+        required: true
+        type: bool
+      ans_env:
+        description: An internal dictionary of environment variables to use when running ansible.
+        required: true
+        type: dict
+      ans_pipx_cmd:
+        description: Force the use of command rather than community.general.pipx for installing packages using pipx, this is sometimes needed on older servers.
+        required: true
+        type: bool
+      ans_pipx_package_version:
+        description: The version of the pipx package.
+        required: false
+        type: str
+      ans_pipx_path:
+        description: The path to pipx for community.general.pipx_info.
+        required: true
+        type: str
+      ans_pipx_root_env:
+        description: The pipx environment variables for the root user.
+        options:
+          PIPX_BIN_DIR:
+            description: The PIPX_BIN_DIR environment variable value for pipx when run as root.
+            required: false
+            type: str
+          PIPX_HOME:
+            description: The PIPX_HOME environment variable value for pipx when run as root.
+            required: false
+            type: str
+        required: false
+        type: dict
+      ans_pipx_user_env:
+        description: The pipx environment variables for a regular user.
+        options:
+          PIPX_BIN_DIR:
+            description: The PIPX_BIN_DIR environment variable value for pipx when run as a regular user.
+            required: false
+            type: str
+          PIPX_HOME:
+            description: The PIPX_HOME environment variable value for pipx when run as a regular user.
+            required: false
+            type: str
+        required: false
+        type: dict
+      ans_pkgs:
         description: A list of distributions and packages required.
         options:
           distro:
-            type: str
-            required: true
-            description: The ansible_distribution_release.
             choices:
               - bookworm
               - bullseye
               - jammy
               - noble
               - trixie
+            description: The ansible_distribution_release.
+            required: true
+            type: str
           pkgs:
-            type: list
+            description: A list of required packages.
             elements: str
             required: true
-            description: A list of required packages.
-      ans_pypi_pkgs:
-        type: list
+            type: list
         required: true
+        type: list
+      ans_pypi_pkgs:
         description: A list of PyPI, Python Package Index packages to install.
         elements: dict
         options:
-          name:
-            type: str
-            required: true
-            description: The name of the PyPI package.
           extras:
-            type: list
-            required: false
             description: A list of extras, optional variants of a package, which may include additional dependencies.
             elements: str
+            required: false
+            type: list
+          name:
+            description: The name of the PyPI package.
+            required: true
+            type: str
           state:
-            type: str
-            required: false
-            description: The state to pass to the ansible.builtin.pip module.
             choices:
-              - "absent"
-              - "forcereinstall"
-              # Use version for latest
-              # - "latest"
-              - "present"
-          type:
-            type: str
+              - absent
+              - forcereinstall
+              - present
+            description: The state to pass to the ansible.builtin.pip module.
             required: false
-            description: The type of the PyPI package.
+            type: str
+          type:
             choices:
               - app
               - lib
+            description: The type of the PyPI package.
+            required: false
+            type: str
           url:
-            type: str
-            required: false
             description: The URL of the PyPI package.
+            required: false
+            type: str
           venv:
-            type: str
-            required: false
             description: The pipx venv to inject the package into, if it exists and pip is not being used.
+            required: false
+            type: str
           version:
-            type: str
-            required: false
             description: The version of PyPI package.
-      ans_pipx_cmd:
-        type: bool
+            required: false
+            type: str
         required: true
-        description: Force the use of command rather than community.general.pipx for installing packages using pipx, this is sometimes needed on older servers.
-      ans_pipx_package_version:
-        type: str
-        required: false
-        description: The version of the pipx package.
-      ans_pipx_path:
-        type: str
-        required: true
-        description: The path to pipx for community.general.pipx_info.
-      ans_pipx_root_env:
-        type: dict
-        required: false
-        description: The pipx environment variables for the root user.
-        options:
-          PIPX_HOME:
-            type: str
-            required: false
-            description: The PIPX_HOME environment variable value for pipx when run as root.
-          PIPX_BIN_DIR:
-            type: str
-            required: false
-            description: The PIPX_BIN_DIR environment variable value for pipx when run as root.
-      ans_pipx_user_env:
-        type: dict
-        required: false
-        description: The pipx environment variables for a regular user.
-        options:
-          PIPX_HOME:
-            type: str
-            required: false
-            description: The PIPX_HOME environment variable value for pipx when run as a regular user.
-          PIPX_BIN_DIR:
-            type: str
-            required: false
-            description: The PIPX_BIN_DIR environment variable value for pipx when run as a regular user.
+        type: list
       ans_python_path:
-        type: str
-        required: true
         description: The path to the system python3 binary.
-      ans_user_bin:
+        required: true
         type: str
-        required: false
+      ans_user_bin:
         description: The non-root user bin dir.
+        required: false
+        type: str
+      ans_verify:
+        description: Verify the ans_ variables usng the arg spec.
+        required: true
+        type: bool
 ...

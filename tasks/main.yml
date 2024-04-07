@@ -18,6 +18,10 @@
 - name: Ansible tasks
   block:
 
+    - name: Ansible include verify tasks
+      ansible.builtin.include_tasks: verify.yml
+      when: ans_verify | bool
+
     - name: Linux distribution check and requirements present
       block:
 

@@ -72,7 +72,7 @@
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_downgrade_removed is defined
 
-        - name: Install Ansible using pipx
+        - name: Install downgrade of Ansible using pipx
           community.general.pipx:
             executable: "{{ ans_pipx_path }}"
             name: ansible

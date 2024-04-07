@@ -14,7 +14,7 @@
     - name: Debug ans_col
       ansible.builtin.debug:
         var: ans_col
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
 
     - name: Reset Ansible collection variables
       ansible.builtin.set_fact:
@@ -163,7 +163,7 @@
         ( ( not ans_downgrade | bool ) and
         ( ans_col_version_required is defined ) and
         ( ans_col_version_required | length > 0 ) ) and
-        ( ( ans_col_version_present is not defined ) or
+        ( ( ans_col_version_present | length == 0 ) or
         ( ( ans_col_version_present is defined ) and
         ( ans_col_version_present | length > 0 ) and
         ( ans_col_version_required is version(ans_col_version_present, '>') ) ) ) or
