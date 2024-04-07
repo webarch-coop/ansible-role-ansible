@@ -252,6 +252,7 @@
       ansible.builtin.include_tasks: pipx_pkg.yml
       vars:
         ans_pypi_pkg_existing_version: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
+        ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
       when:
         - ans_pypi_pkg.name != "ansible"
         - ( ans_pypi_pkg.venv is not defined ) or ( ( ans_pypi_pkg.venv is defined ) and ( ans_pypi_pkg.venv != "ansible" ) )

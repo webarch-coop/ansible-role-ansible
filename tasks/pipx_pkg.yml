@@ -58,6 +58,8 @@
     - name: "Set a fact for the system PyPi package version number if present for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:
         ans_pypi_system_version_present: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
+      vars:
+        ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 
     - name: Debug ans_pypi_pkg
       ansible.builtin.debug:
@@ -72,6 +74,8 @@
     - name: "Set a fact for the existing pipx version for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:
         ans_pipx_existing_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_app_ver_jmespath_query) }}"
+      vars:
+        ans_pipx_app_ver_jmespath_query: "application[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
 
     - name: "Debug the existing version for pipx package {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:

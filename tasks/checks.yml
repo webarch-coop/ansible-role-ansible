@@ -295,6 +295,7 @@
         ans_core_required_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
       vars:
         ans_version: "{{ ans_required_version }}"
+        ans_version_core_jmespath_query: "[?ansible=='{{ ans_version }}'].core|[0]"
       when: >-
         ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is not defined ) or
         ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug == "NoneType" )

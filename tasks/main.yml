@@ -72,13 +72,20 @@
     - name: Ansible Collection tasks
       block:
 
+        - name: Debug existing Ansible collections
+          ansible.builtin.debug:
+            var: ans_col_existing
+            verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+
         - name: Debug existing and proposed Ansible collections
           ansible.builtin.debug:
             msg:
               - "ans_col.name: {{ ans_col.name }}"
               - "ans_col.version {{ ans_col.version }}"
               - "ans_col_version_present: {{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
-            verbosity: 1
+            verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
+          vars:
+            ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
           loop: "{{ ans_cols }}"
           loop_control:
             loop_var: ans_col
@@ -86,6 +93,8 @@
 
         - name: Install Ansible collections when not already available as system or user collections
           ansible.builtin.include_tasks: col.yml
+          # vars:
+          #   ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
           loop: "{{ ans_cols }}"
           loop_control:
             loop_var: ans_col

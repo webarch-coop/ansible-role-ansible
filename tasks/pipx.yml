@@ -23,6 +23,8 @@
               - "ans_pypi_system_version_present: {{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
               - "ans_pypi_user_version_present: {{ ans_pip_user_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          vars:
+            ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
           loop: "{{ ans_pypi_pkgs }}"
           loop_control:
             loop_var: ans_pypi_pkg
@@ -64,6 +66,7 @@
       ansible.builtin.include_tasks: pipx_pkg.yml
       vars:
         ans_pypi_pkg_existing_version: "{{ ans_pip_system_existing | community.general.json_query(ans_pypi_pkg_version_jmespath_query) }}"
+        ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
       when:
         - ans_pipx_mod | bool
         - ans_pypi_pkg.name != "ansible"
