@@ -126,10 +126,10 @@ ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
     version: 9.4.0
-  # - name: ansible-core
-  #   url: https://pypi.org/pypi/ansible-core
-  #   venv: ansible
-  #   version: 2.16.5
+  - name: ansible-core
+    url: https://pypi.org/pypi/ansible-core
+    venv: ansible
+    version: 2.16.6
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
