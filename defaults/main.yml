@@ -20,7 +20,7 @@ ans_cols:
     version: "3.8.1"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: "2.18.0"
+    version: "2.19.0"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     version: "8.5.0"
