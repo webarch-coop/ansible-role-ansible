@@ -17,7 +17,7 @@ ans_cols:
     version: "1.5.4"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: "3.8.1"
+    version: "3.9.0"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: "2.19.0"
@@ -125,7 +125,7 @@ ans_pkgs_ubuntu:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 9.4.0
+    version: 9.5.1
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     venv: ansible
