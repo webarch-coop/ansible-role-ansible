@@ -20,6 +20,12 @@
       ansible.builtin.debug:
         var: ansible_effective_user_id
 
+    - name: A fact for the Python version is required
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.python_version is defined
+        quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
+
     - name: Include ansible role as root for Python >= 3.10.0
       ansible.builtin.include_role:
         name: ansible
