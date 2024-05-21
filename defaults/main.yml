@@ -17,7 +17,7 @@ ans_cols:
     version: "1.5.4"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: "3.10.0"
+    version: "3.10.1"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: "2.20.0"
