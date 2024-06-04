@@ -17,13 +17,13 @@ ans_cols:
     version: "1.5.4"
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: "3.10.1"
+    version: "3.10.3"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: "2.20.0"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "9.0.0"
+    version: "9.0.1"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: "3.9.0"
@@ -38,7 +38,7 @@ ans_cols:
 #     version: "3.1.1"
 #   - name: kubernetes.core
 #     url: https://github.com/ansible-collections/kubernetes.core
-#     version: "3.1.0"
+#     version: "4.0.0"
 ans_distro_check: true
 ans_downgrade: false
 # Debian / Ubuntu packages required
@@ -125,7 +125,7 @@ ans_pkgs_ubuntu:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 9.6.0
+    version: 10.0.0
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     venv: ansible
