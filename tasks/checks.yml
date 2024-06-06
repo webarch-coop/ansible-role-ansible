@@ -71,7 +71,7 @@
             fail_msg:
               - "The {{ ans_pkg }} package is required"
               - "You can install all the requirements using:"
-              - "sudo apt install {{ ans_pkgs | join(' ') }}"
+              - "sudo apt install {{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) | join(' ') }}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
           loop: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
           loop_control:
