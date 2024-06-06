@@ -103,7 +103,7 @@ ans_pkgs_ubuntu:
   - jc
   - jo
   - pipx
-  - postgresql
+  - postgresql-client
   - procps
   - python3-apt
   - python3-argcomplete
