@@ -189,6 +189,10 @@ ans_pypi_pkgs:
     url: https://pypi.org/pypi/psycopg
     venv: ansible
     version: latest
+  - name: pymarkdownlnt
+    url: https://pypi.org/pypi/pymarkdownlnt
+    venv: ansible
+    version: latest
   - name: pymysql
     type: lib
     url: https://pypi.org/pypi/pymysql
