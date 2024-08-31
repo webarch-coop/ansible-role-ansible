@@ -129,7 +129,7 @@
           when: >-
             ( ansible_distribution_release is regex('^bullseye|jammy$') ) and
             ( ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1" ) or
-            ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.17+dfsg-0+deb11u1" )
+            ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.17+dfsg-0+deb11u1" ) )
 
         - name: Check the Ansible .deb version when not Bullseye or Jammy
           block:
