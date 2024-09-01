@@ -26,19 +26,13 @@ ans_cols:
     version: "9.3.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: "3.9.0"
+    version: "3.10.0"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: "3.4.1"
+    version: "3.5.0"
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
     version: "1.3.0"
-#   - name: hetzner.hcloud
-#     url: https://github.com/ansible-collections/hetzner.hcloud
-#     version: "4.0.1"
-#   - name: kubernetes.core
-#     url: https://github.com/ansible-collections/kubernetes.core
-#     version: "5.0.0"
 ans_distro_check: true
 ans_downgrade: false
 # Debian / Ubuntu packages required
