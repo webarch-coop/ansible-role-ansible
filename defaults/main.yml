@@ -20,13 +20,13 @@ ans_cols:
     version: "3.12.1"
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: "2.21.1"
+    version: "2.22.0"
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: "9.3.0"
+    version: "9.4.0"
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: "3.10.2"
+    version: "3.10.3"
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: "3.5.0"
@@ -123,7 +123,7 @@ ans_pypi_pkgs:
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     venv: ansible
-    version: 2.17.3
+    version: 2.17.4
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
