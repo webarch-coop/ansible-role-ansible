@@ -176,7 +176,7 @@
           when: ans_pipx_ansible_injected is defined
 
         - name: Inject PyPI library packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-deps ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
+          ansible.builtin.command: "{{ ans_pipx_path }} inject ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
           environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_lib_injected
           changed_when: ( "installed package" in ans_pipx_lib_injected.stdout )
