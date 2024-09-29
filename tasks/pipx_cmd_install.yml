@@ -28,7 +28,7 @@
       when: ans_pipx_ansible_installed is defined
 
     - name: Upgrade Ansible using pipx
-      ansible.builtin.command: "{{ ans_pipx_path }} upgrade --include-deps ansible=={{ ans_required_version }}"
+      ansible.builtin.command: "{{ ans_pipx_path }} upgrade ansible=={{ ans_required_version }}"
       environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_upgraded
       changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
