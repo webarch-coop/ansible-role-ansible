@@ -87,25 +87,28 @@ argument_specs:
         required: false
         type: dict
       ans_pkgs:
+        type: list
+        required: true
         description: A list of distributions and packages required.
         options:
-          distro:
+          name:
+            type: str
+            required: true
+            description: The Debian / Ubuntu version, ansible_facts.distribution_release.
             choices:
               - bookworm
               - bullseye
               - jammy
               - noble
               - trixie
-            description: The ansible_distribution_release.
-            required: true
-            type: str
-          pkgs:
-            description: A list of required packages.
-            elements: str
-            required: true
+          pkgs_absent:
             type: list
-        required: true
-        type: list
+            required: false
+            description: A list of deb packages that should be absent for this version of Debian / Ubuntu.
+          pkgs_present:
+            type: list
+            required: false
+            description: A list of deb packages that should be present for this version of Debian / Ubuntu.
       ans_pypi_pkgs:
         description: A list of PyPI, Python Package Index packages to install.
         elements: dict
