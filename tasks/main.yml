@@ -30,10 +30,10 @@
         - name: "This role has only been designed to be run on {{ (ans_pkgs | community.general.json_query('[].distro')) | join(', ') }}"
           ansible.builtin.assert:
             that:
-              - ansible_distribution is regex('^Debian|Ubuntu$')
-              - ansible_distribution_release in (ans_pkgs | community.general.json_query('[].distro'))
+              - ansible_facts.distribution is regex('^Debian|Ubuntu$')
+              - ansible_facts.distribution_release in (ans_pkgs | community.general.json_query('[].distro'))
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-            fail_msg: "This role doesn't have support for {{ ansible_distribution }} {{ ansible_distribution_release }}."
+            fail_msg: "This role doesn't have support for {{ ansible_facts.distribution }} {{ ansible_facts.distribution_release }}."
 
         - name: Check that Backports are enabled on Debian Bullseye for pipx
           block:
@@ -55,13 +55,13 @@
                   - "apt-cache policy pipx stderr {{ ans_debian_apt_cache_policy_pipx.stderr }}"
                 quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
-          when: ansible_distribution_release == "bullseye"
+          when: ansible_facts.distribution_release == "bullseye"
 
         - name: Requirements present when root
           ansible.builtin.apt:
             pkg: "{{ (ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query)) }}"
             state: present
-          when: ansible_effective_user_id == 0
+          when: ansible_facts.effective_user_id == 0
 
       when: ans_distro_check | bool
 

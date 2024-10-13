@@ -16,7 +16,7 @@
         executable: "{{ ans_pipx_path }}"
         include_deps: true
         include_injected: true
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_info
 
     - name: Debug pipx info

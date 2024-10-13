@@ -37,7 +37,7 @@ argument_specs:
         required: false
         type: list
       ans_distro_check:
-        description: Enable or disable the ansible_distribution and ansible_distribution_release check.
+        description: Enable or disable the ansible_facts.distribution and ansible_facts.distribution_release check.
         required: true
         type: bool
       ans_downgrade:

@@ -13,7 +13,7 @@
 
     - name: Install Ansible using pipx
       ansible.builtin.command: "{{ ans_pipx_path }} install --include-deps ansible=={{ ans_required_version }}"
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_installed
       changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
       when:
@@ -29,7 +29,7 @@
 
     - name: Upgrade Ansible using pipx
       ansible.builtin.command: "{{ ans_pipx_path }} upgrade ansible=={{ ans_required_version }}"
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_upgraded
       changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
       when:
@@ -52,7 +52,7 @@
 
         - name: Remove Ansible using pipx
           ansible.builtin.command: "{{ ans_pipx_path }} uninstall ansible"
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_downgrade_removed
           changed_when: ( "uninstalled" in ans_pipx_ansible_downgrade_removed.stdout )
 
@@ -64,7 +64,7 @@
 
         - name: Install Ansible using pipx
           ansible.builtin.command: "{{ ans_pipx_path }} install --include-deps ansible=={{ ans_required_version }}"
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_downgrade_installed
           changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
 
@@ -83,7 +83,7 @@
 
     - name: Remove Ansible using pipx
       ansible.builtin.command: "{{ ans_pipx_path }} uninstall ansible"
-      environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_removed
       changed_when: ( "uninstalled" in ans_pipx_ansible_removed.srdout )
       when:
@@ -160,7 +160,7 @@
 
         - name: Inject PyPI application packages into the Ansible venv
           ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_inject_str }}"
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           changed_when: ( "installed package" in ans_pipx_ansible_injected.stdout )
           when:
@@ -177,7 +177,7 @@
 
         - name: Inject PyPI library packages into the Ansible venv
           ansible.builtin.command: "{{ ans_pipx_path }} inject ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
-          environment: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_lib_injected
           changed_when: ( "installed package" in ans_pipx_lib_injected.stdout )
           when:
@@ -213,7 +213,7 @@
           ansible.builtin.find:
             file_type: file
             follow: false
-            path: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env.PIPX_HOME }}{% else %}{{ ans_pipx_user_env.PIPX_HOME }}{% endif %}/venvs/ansible/bin"
+            path: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env.PIPX_HOME }}{% else %}{{ ans_pipx_user_env.PIPX_HOME }}{% endif %}/venvs/ansible/bin"
           register: ans_pipx_venv_bin_files
 
         - name: Debug ans_pipx_venv_bin_files
@@ -234,7 +234,7 @@
           ansible.builtin.file:
             state: link
             src: "{{ ans_venv_executable }}"
-            dest: "{% if ansible_effective_user_id == 0 %}{{ ans_pipx_root_env.PIPX_BIN_DIR }}{% else %}{{ ans_pipx_user_env.PIPX_BIN_DIR }}{% endif %}/{{ ans_venv_executable | ansible.builtin.basename }}"
+            dest: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env.PIPX_BIN_DIR }}{% else %}{{ ans_pipx_user_env.PIPX_BIN_DIR }}{% endif %}/{{ ans_venv_executable | ansible.builtin.basename }}"
             follow: false
             mode: "0777"
           loop: "{{ ans_pipx_venv_bin_file_paths }}"

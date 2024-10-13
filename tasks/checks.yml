@@ -14,7 +14,7 @@
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
         that:
-          - ansible_python_version is version('3.7.3', 'ge')
+          - ansible_facts.python_version is version('3.7.3', 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check the pipx version
@@ -76,7 +76,7 @@
           loop: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
           loop_control:
             loop_var: ans_pkg
-          when: ansible_effective_user_id != 0
+          when: ansible_facts.effective_user_id != 0
 
         - name: Stat system ansible
           ansible.builtin.stat:
@@ -96,7 +96,7 @@
           register: ans_col_path_system_check
           # NOTE that the ansible package is not available for Trixie
           # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
-          when: ansible_distribution_release != "trixie"
+          when: ansible_facts.distribution_release != "trixie"
 
         - name: The system installed ansible-galaxy python module location should be an existing directory
           ansible.builtin.assert:
@@ -106,7 +106,7 @@
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
           # NOTE that the ansible package is not available for Trixie
           # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
-          when: ansible_distribution_release != "trixie"
+          when: ansible_facts.distribution_release != "trixie"
 
         - name: Include checks for ansible-galaxy
           ansible.builtin.include_tasks: check_galaxy.yml
@@ -127,7 +127,7 @@
           ansible.builtin.set_fact:
             ans_core_installed_version: "2.10.8"
           when: >-
-            ( ansible_distribution_release is regex('^bullseye|jammy$') ) and
+            ( ansible_facts.distribution_release is regex('^bullseye|jammy$') ) and
             ( ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1" ) or
             ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.17+dfsg-0+deb11u1" ) )
 
@@ -146,7 +146,7 @@
                     var: ans_installed_version
                     verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
-              when: ansible_distribution_release is not regex('^trixie$')
+              when: ansible_facts.distribution_release is not regex('^trixie$')
 
             - name: Check ansible-core .deb version present
               block:
@@ -162,7 +162,7 @@
 
               when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
 
-          when: ansible_distribution_release is not regex('^bullseye|jammy$')
+          when: ansible_facts.distribution_release is not regex('^bullseye|jammy$')
 
         - name: Ansible core installed version
           ansible.builtin.debug:
