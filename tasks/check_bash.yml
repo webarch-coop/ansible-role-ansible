@@ -125,9 +125,7 @@
             - ansible_facts.env.SHELL is regex('bash$')
             - ansible_facts.effective_user_id == 0
 
-      when: >-
-        ( ( ansible_facts.distribution == "Debian" ) and ( "python3-argcomplete" in ans_pkgs_debian ) ) or
-        ( ( ansible_facts.distribution == "Ubuntu" ) and ( "python3-argcomplete" in ans_pkgs_ubuntu ) )
+      when: ( "python3-argcomplete" in ans_pkgs_present )
 
     - name: Check ~/.bash_profile
       ansible.builtin.stat:
