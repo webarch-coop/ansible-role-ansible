@@ -48,6 +48,10 @@ argument_specs:
         description: An internal dictionary of environment variables to use when running ansible.
         required: true
         type: dict
+      ans_jpq:
+        description: A dictionary of JMESPath queries for use with the community.general.json_query module.
+        required: true
+        type: dict
       ans_pipx_cmd:
         description: Force the use of command rather than community.general.pipx for installing packages using pipx, this is sometimes needed on older servers.
         required: true

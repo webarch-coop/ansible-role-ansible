@@ -92,6 +92,16 @@ argument_specs:
         type: bool
         required: false
         description: Internal variable to indicate that community.general 3.5.0 or greater is available.
+      ans_pkgs_absent:
+        type: list
+        elements: str
+        required: false
+        description: Internal generated list of packages that should be absent.
+      ans_pkgs_present:
+        type: list
+        elements: str
+        required: false
+        description: Internal generated list of packages that should be present.
       ans_pip_path:
         type: str
         required: false
