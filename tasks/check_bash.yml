@@ -85,9 +85,9 @@
                 - ans_argcomplete_user_path | length > 0
 
           when:
-            - ansible_env.SHELL is defined
-            - ansible_env.SHELL is regex('bash$')
-            - ansible_effective_user_id != 0
+            - ansible_facts.env.SHELL is defined
+            - ansible_facts.env.SHELL is regex('bash$')
+            - ansible_facts.effective_user_id != 0
 
         - name: Check if Bash completion is present for the root user
           block:
@@ -121,13 +121,13 @@
                 - ans_argcomplete_root_path | length > 0
 
           when:
-            - ansible_env.SHELL is defined
-            - ansible_env.SHELL is regex('bash$')
-            - ansible_effective_user_id == 0
+            - ansible_facts.env.SHELL is defined
+            - ansible_facts.env.SHELL is regex('bash$')
+            - ansible_facts.effective_user_id == 0
 
       when: >-
-        ( ( ansible_distribution == "Debian" ) and ( "python3-argcomplete" in ans_pkgs_debian ) ) or
-        ( ( ansible_distribution == "Ubuntu" ) and ( "python3-argcomplete" in ans_pkgs_ubuntu ) )
+        ( ( ansible_facts.distribution == "Debian" ) and ( "python3-argcomplete" in ans_pkgs_debian ) ) or
+        ( ( ansible_facts.distribution == "Ubuntu" ) and ( "python3-argcomplete" in ans_pkgs_ubuntu ) )
 
     - name: Check ~/.bash_profile
       ansible.builtin.stat:
@@ -136,9 +136,9 @@
 
     - name: Set a fact for paths in the PATH environmental variable and the ~/.local/bin path
       ansible.builtin.set_fact:
-        ans_paths: "{{ (ansible_env.PATH).split(':') }}"
-        ans_local_path: "{{ ansible_env.HOME }}/.local/bin"
-      when: ansible_env.PATH is defined
+        ans_paths: "{{ (ansible_facts.env.PATH).split(':') }}"
+        ans_local_path: "{{ ansible_facts.env.HOME }}/.local/bin"
+      when: ansible_facts.env.PATH is defined
 
     - name: Debug the paths in the PATH environmental variable
       ansible.builtin.debug:

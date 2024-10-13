@@ -18,7 +18,7 @@ anshostvars: "{{ dict(ansvarnames | list | ansible.builtin.zip(q('vars', *ansvar
 # https://packages.debian.org/bookworm/ansible-core
 ans_ansible_core_min_version: "2.10.8"
 ans_ansible_path: "{{ ans_bin }}/ansible"
-ans_bash: "{% if ansible_env.SHELL is defined and ansible_env.SHELL is regex('bash$') %}{{ ansible_env.SHELL }}{% else %}/bin/bash{% endif %}"
+ans_bash: "{% if ansible_facts.env.SHELL is defined and ansible_facts.env.SHELL is regex('bash$') %}{{ ansible_facts.env.SHELL }}{% else %}/bin/bash{% endif %}"
 ans_bin: /usr/bin
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
 ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
@@ -27,7 +27,7 @@ ans_col_existing: []
 ans_col_list_jmespath_query: "[*].{name: name,version: value.version}"
 ans_comgen: false
 ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
-ans_col_path_user: "{{ ansible_env.HOME }}/.ansible/collections/ansible_collections"
+ans_col_path_user: "{{ ansible_facts.env.HOME }}/.ansible/collections/ansible_collections"
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
 ans_env:
@@ -44,7 +44,7 @@ ans_jpq:
   pkgs_absent: "[?name=='{{ ansible_facts.distribution_release }}'].pkgs_absent|[0]"
   pkgs_present: "[?name=='{{ ansible_facts.distribution_release }}'].pkgs_present|[0]"
 ans_pip_path: "{{ ans_bin }}/pip3"
-ans_pkgs_jmespath_query: "[?distro==`{{ ansible_distribution_release }}`].pkgs|[0]"
+ans_pkgs_jmespath_query: "[?distro==`{{ ansible_facts.distribution_release }}`].pkgs|[0]"
 ans_pypi_ansible_core_state_jmespath_query: "[?name=='ansible-core'].state|[0]"
 ans_pypi_ansible_core_version_jmespath_query: "[?name=='ansible-core'].version|[0]"
 ans_pypi_ansible_state_jmespath_query: "[?name=='ansible'].state|[0]"

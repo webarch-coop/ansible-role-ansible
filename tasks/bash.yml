@@ -47,7 +47,7 @@
                 validate: bash -n %s
               when: ans_pipx_completion.stat.exists | bool
 
-          when: ansible_effective_user_id == 0
+          when: ansible_facts.effective_user_id == 0
 
         - name: Non-root tasks
           block:
@@ -62,43 +62,43 @@
 
             - name: Path for pipx TMPDIR present
               ansible.builtin.file:
-                path: "{{ ansible_env.HOME }}/.local/pipx/tmp"
+                path: "{{ ansible_facts.env.HOME }}/.local/pipx/tmp"
                 state: directory
                 mode: "0700"
 
             - name: Users ~/.bash_completion.d directory present
               ansible.builtin.file:
-                path: "{{ ansible_env.HOME }}/.bash_completion.d"
+                path: "{{ ansible_facts.env.HOME }}/.bash_completion.d"
                 state: directory
                 mode: "0700"
 
             - name: Bash completion for pipx generated using argcomplete
-              ansible.builtin.shell: "{{ ans_argcomplete_register_path }} pipx > {{ ansible_env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
+              ansible.builtin.shell: "{{ ans_argcomplete_register_path }} pipx > {{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
               args:
-                creates: "{{ ansible_env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
+                creates: "{{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
                 executable: "{{ ans_bash }}"
               environment: "{{ ans_pipx_user_env }}"
               when: ans_argcomplete_register_path is defined
 
             - name: Stat Bash completion for pipx
               ansible.builtin.stat:
-                path: "{{ ansible_env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
+                path: "{{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
               register: ans_pipx_completion
 
             - name: User Bash completion for pipx in place
               ansible.builtin.copy:
-                src: "{{ ansible_env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
-                dest: "{{ ansible_env.HOME }}/.bash_completion.d/pipx-completion.sh"
+                src: "{{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
+                dest: "{{ ansible_facts.env.HOME }}/.bash_completion.d/pipx-completion.sh"
                 mode: "0644"
                 remote_src: true
                 validate: bash -n %s
               when: ans_pipx_completion.stat.exists | bool
 
-          when: ansible_effective_user_id != 0
+          when: ansible_facts.effective_user_id != 0
 
       when:
-        - ansible_env.SHELL is defined
-        - ansible_env.SHELL is regex('bash$')
+        - ansible_facts.env.SHELL is defined
+        - ansible_facts.env.SHELL is regex('bash$')
         - ans_argcomplete_path is defined
         - ans_argcomplete_path | length > 0
 
@@ -119,7 +119,7 @@
             msg:
               - "Please check that {{ ans_local_path }} is in your PATH environmental variable"
               - "For example add the following two lines to ~/.bash_profile"
-              - "PATH={{ ansible_env.HOME }}/.local/bin:${PATH}"
+              - "PATH={{ ansible_facts.env.HOME }}/.local/bin:${PATH}"
               - "export PATH=${PATH}"
           when:
             - not ans_bash_profile_copied.changed | bool
@@ -129,7 +129,7 @@
         - ans_paths is defined
         - ans_local_path is defined
         - ans_local_path not in ans_paths
-        - ansible_effective_user_id != 0
+        - ansible_facts.effective_user_id != 0
 
   tags:
     - ansible

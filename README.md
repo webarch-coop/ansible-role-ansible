@@ -39,7 +39,7 @@ The `ans_downgrade` variable defaults to `false`, if it is set to `true` then th
 
 ### ans_distro_check
 
-The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_distribution` is not Debian or Ubuntu and `ansible_distribution_release` is not bullseye, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
+The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_facts.distribution` is not Debian or Ubuntu and `ansible_facts.distribution_release` is not bullseye, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
 
 ### ans_pipx_cmd
 
@@ -111,7 +111,7 @@ Note that the `url` is used to download a JSON file that lists all the versions 
 
 ### ans_user_bin
 
-An optional path for the non-root users `bin` directory, `ans_user_bin` defaults to `{{ ansible_env.HOME }}/.local/bin`.
+An optional path for the non-root users `bin` directory, `ans_user_bin` defaults to `{{ ansible_facts.env.HOME }}/.local/bin`.
 
 ## Usage
 

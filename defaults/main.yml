@@ -277,8 +277,8 @@ ans_pipx_root_env:
   PIPX_HOME: /opt/pipx
 ans_pipx_user_env:
   PIPX_BIN_DIR: "{{ ans_user_bin }}"
-  PIPX_HOME: "{{ ansible_env.HOME }}/.local/pipx"
+  PIPX_HOME: "{{ ansible_facts.env.HOME }}/.local/pipx"
 ans_python_path: /usr/bin/python3
-ans_user_bin: "{{ ansible_env.HOME }}/.local/bin"
+ans_user_bin: "{{ ansible_facts.env.HOME }}/.local/bin"
 ans_verify: true
 ...
