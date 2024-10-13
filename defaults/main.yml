@@ -68,6 +68,7 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
+    # Note, nothing is yet done with the pkgs_absent list
     pkgs_absent: []
   - name: bookworm
     pkgs_present:
@@ -97,6 +98,7 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
+    # Note, nothing is yet done with the pkgs_absent list
     pkgs_absent: []
   - name: trixie
     pkgs_present:
@@ -129,6 +131,7 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
+    # Note, nothing is yet done with the pkgs_absent list
     pkgs_absent: []
   - name: jammy
     pkgs_present:
@@ -156,6 +159,7 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
+    # Note, nothing is yet done with the pkgs_absent list
     pkgs_absent: []
   - name: noble
     pkgs_present:
@@ -183,6 +187,7 @@ ans_pkgs:
       - python3-ruamel.yaml
       - python3-setuptools
       - python3-venv
+    # Note, nothing is yet done with the pkgs_absent list
     pkgs_absent: []
 # Python PyPI packages required
 ans_pypi_pkgs:

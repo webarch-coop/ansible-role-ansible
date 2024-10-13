@@ -45,31 +45,9 @@ The `ans_distro_check` variable defaults to `true`, if it is set to `false` then
 
 A boolean, force the use of `ansible.builtin.command` rather than [community.general.pipx](https://docs.ansible.com/ansible/latest/collections/community/general/pipx_module.html), this is sometime needed on older servers, `ans_pipx_cmd` defaults to `false`.
 
-### ans_pkgs_debian
+### ans_pkgs
 
-A list of Debian packages that are required on Debian Bookworm and Trixie, for example;
-
-```yaml
-ans_pkgs_debian:
-  - ansible
-  - python3-psycopg
-```
-
-### ans_pkgs_debian_bullseye
-
-A list of Debian packages that are required on Debian Bullseye, for example;
-
-```yaml
-ans_pkgs_debian_bullseye:
-  - ansible
-  - python3-psycopg2
-```
-
-### ans_pkgs_ubuntu
-
-A list of Ubuntu packages that are required.
-
-See the [defaults/main.yml](defaults/main.yml) file for the default list of packages.
+A list of dictionaries of Linux distros and the packages that should be present and absent for each distro.
 
 If this role is run usidng `sudo` or as `root` these packages will be automatically installed, when it is run as a non-root user this role will fail if these packages are not present.
 
