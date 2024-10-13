@@ -36,6 +36,17 @@ argument_specs:
             type: str
         required: false
         type: list
+      ans_distros:
+        choices:
+          - bookworm
+          - bullseye
+          - jammy
+          - noble
+          - trixie
+        description: Internal list of Debian and Ubuntu distos generated from the ans_pkgs list.
+        elements: str
+        required: true
+        type: list
       ans_distro_check:
         description: Enable or disable the ansible_facts.distribution and ansible_facts.distribution_release check.
         required: true

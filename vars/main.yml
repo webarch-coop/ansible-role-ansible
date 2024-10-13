@@ -30,6 +30,7 @@ ans_col_path_system: /usr/lib/python3/dist-packages/ansible_collections
 ans_col_path_user: "{{ ansible_facts.env.HOME }}/.ansible/collections/ansible_collections"
 ans_deb_name_jmespath_query: '"ansible-core"[0].name'
 ans_deb_version_jmespath_query: '"ansible-core"[0].version'
+ans_distros: "{{ (ans_pkgs | community.general.json_query('[].name')) }}"
 ans_env:
   ANSIBLE_FORCE_COLOR: "0"
   ANSIBLE_NOCOLOR: "1"
@@ -44,7 +45,6 @@ ans_jpq:
   pkgs_absent: "[?name=='{{ ansible_facts.distribution_release }}'].pkgs_absent|[0]"
   pkgs_present: "[?name=='{{ ansible_facts.distribution_release }}'].pkgs_present|[0]"
 ans_pip_path: "{{ ans_bin }}/pip3"
-ans_pkgs_jmespath_query: "[?distro==`{{ ansible_facts.distribution_release }}`].pkgs|[0]"
 ans_pypi_ansible_core_state_jmespath_query: "[?name=='ansible-core'].state|[0]"
 ans_pypi_ansible_core_version_jmespath_query: "[?name=='ansible-core'].version|[0]"
 ans_pypi_ansible_state_jmespath_query: "[?name=='ansible'].state|[0]"

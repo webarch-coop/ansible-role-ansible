@@ -27,11 +27,11 @@
     - name: Linux distribution check and requirements present
       block:
 
-        - name: "This role has only been designed to be run on {{ (ans_pkgs | community.general.json_query('[].distro')) | join(', ') }}"
+        - name: "This role has only been designed to be run on {{ ans_distros | join(', ') }}"
           ansible.builtin.assert:
             that:
               - ansible_facts.distribution is regex('^Debian|Ubuntu$')
-              - ansible_facts.distribution_release in (ans_pkgs | community.general.json_query('[].distro'))
+              - ansible_facts.distribution_release in ans_distros
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
             fail_msg: "This role doesn't have support for {{ ansible_facts.distribution }} {{ ansible_facts.distribution_release }}."
 
@@ -59,7 +59,7 @@
 
         - name: Requirements present when root
           ansible.builtin.apt:
-            pkg: "{{ (ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query)) }}"
+            pkg: "{{ ans_pkgs_present }}"
             state: present
           when: ansible_facts.effective_user_id == 0
 

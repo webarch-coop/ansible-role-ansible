@@ -61,7 +61,7 @@
 
         - name: Debug the packages required for the distro
           ansible.builtin.debug:
-            msg: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
+            msg: "{{ ans_pkgs_present }}"
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
 
         - name: Check the presence of the required packages
@@ -71,9 +71,9 @@
             fail_msg:
               - "The {{ ans_pkg }} package is required"
               - "You can install all the requirements using:"
-              - "sudo apt install {{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) | join(' ') }}"
+              - "sudo apt install {{ ans_pkgs_present | join(' ') }}"
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          loop: "{{ ans_pkgs | community.general.json_query(ans_pkgs_jmespath_query) }}"
+          loop: "{{ ans_pkgs_present }}"
           loop_control:
             loop_var: ans_pkg
           when: ansible_facts.effective_user_id != 0
