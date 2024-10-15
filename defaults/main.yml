@@ -17,10 +17,10 @@ ans_cols:
     version: 1.6.1
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 3.13.0
+    version: 3.13.1
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 2.22.1
+    version: 2.22.2
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     version: 9.5.0
