@@ -13,6 +13,8 @@
     name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
     force: true
     type: collection
+  retries: 10
+  delay: 2
   register: ans_col_install
   tags:
     - ans
