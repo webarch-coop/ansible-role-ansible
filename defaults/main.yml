@@ -20,7 +20,7 @@ ans_cols:
     version: 4.0.0
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 2.22.2
+    version: 2.22.3
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     version: 9.5.0
