@@ -23,7 +23,7 @@ ans_cols:
     version: 2.22.3
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: 9.5.0
+    version: 10.0.0
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: 3.10.3
@@ -193,7 +193,9 @@ ans_pypi_pkgs:
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     venv: ansible
-    version: 2.17.5
+    # TODO switch to 2.18.x when Debian Buster no longer needs to be supported
+    # https://packages.debian.org/buster/python3
+    version: 2.17.6
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
