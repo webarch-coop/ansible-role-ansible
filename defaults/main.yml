@@ -104,7 +104,9 @@ ans_pkgs:
       - ansible-core
       - ansible-lint
       - git
-      - jc
+      # jc is currently missing
+      # https://packages.debian.org/trixie/jc
+      # - jc
       - jo
       - libpq-dev
       - pipx
