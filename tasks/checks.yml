@@ -258,7 +258,7 @@
       ansible.builtin.set_fact:
         ans_required_state: present
       when:
-        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | abnsible.builtin.type_debug == "NoneType"
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | ansible.builtin.type_debug == "NoneType"
 
     - name: Debug the required Ansible state
       ansible.builtin.debug:
