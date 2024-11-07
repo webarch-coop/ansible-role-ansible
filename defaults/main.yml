@@ -14,25 +14,25 @@ ans: false
 ans_cols:
   - name: ansible.posix
     url: https://github.com/ansible-collections/ansible.posix
-    version: 1.6.2
+    version: 1.6.2  # ansible.posix
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 4.0.0
+    version: 4.0.0  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 2.22.3
+    version: 2.22.3  # community.crypto
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: 10.0.0
+    version: 10.0.0  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: 3.10.3
+    version: 3.10.3  # community.mysql
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: 3.7.0
+    version: 3.7.0  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
-    version: 1.3.0
+    version: 1.3.0  # community.rabbitmq
 ans_distro_check: true
 ans_downgrade: false
 ans_pkgs:
@@ -191,13 +191,13 @@ ans_pkgs:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    version: 10.6.0
+    version: 10.6.0  # ansible
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     venv: ansible
     # TODO switch to 2.18.x when Debian Buster no longer needs to be supported
     # https://packages.debian.org/buster/python3
-    version: 2.17.6
+    version: 2.17.6  # ansible-core
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
