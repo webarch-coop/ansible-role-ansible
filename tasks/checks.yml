@@ -231,9 +231,7 @@
           ansible.builtin.set_fact:
             ans_required_state: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) }}"
           when:
-            # - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) is defined
-            # - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | ansible.builtin.type_debug != "NoneType"
-            - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) != []
+            - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | ansible.builtin.type_debug != "NoneType"
 
       rescue:
 
@@ -259,11 +257,8 @@
     - name: Set a fact for the required Ansible state to present when not defined
       ansible.builtin.set_fact:
         ans_required_state: present
-      when: >-
-        ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) == []
-      #   ( ans_required_state is not defined ) and
-      #   ( ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | abnsible.builtin.type_debug == "NoneType" ) or
-      #   ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) == [] ) )
+      when:
+        - ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | abnsible.builtin.type_debug == "NoneType"
 
     - name: Debug the required Ansible state
       ansible.builtin.debug:
