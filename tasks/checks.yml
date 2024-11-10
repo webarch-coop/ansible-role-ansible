@@ -11,10 +11,17 @@
 - name: Ansible checks
   block:
 
+    # Debian Trixie currently has 3.12.7+ as the Python version
+    - name: Set a fact for the Python version
+      ansible.builtin.set_fact:
+        ans_python_version: "{{ ansible_facts.python_version | ansible.builtin.regex_replace('[+].*$') }}"
+
+    # Debian Buster Package: python3 (3.7.3-1)
+    # https://packages.debian.org/buster/python3
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
         that:
-          - ansible_facts.python_version is version('3.7.3', 'ge')
+          - ans_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check the pipx version

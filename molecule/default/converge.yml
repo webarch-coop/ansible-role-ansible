@@ -20,10 +20,20 @@
       ansible.builtin.debug:
         var: ansible_facts.effective_user_id
 
-    - name: A fact for the Python version is required
+    - name: Debug ansible_facts.python_version
+      ansible.builtin.debug:
+        var: ansible_facts.python_version
+
+    - name: Set a fact for the Python version
+      ansible.builtin.set_fact:
+        molecule_python_version: "{{ ansible_facts.python_version | ansible.builtin.regex_replace('[+].*$') }}"
+
+    # Debian Buster Package: python3 (3.7.3-1)
+    # https://packages.debian.org/buster/python3
+    - name: The Python version semver is required
       ansible.builtin.assert:
         that:
-          - ansible_facts.python_version is defined
+          - molecule_python_version is is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
     - name: Include ansible role as root for Python >= 3.10.0
@@ -31,7 +41,7 @@
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
-      when: ansible_facts.python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
+      when: molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
 
     - name: Include ansible role as root for Python <= 3.10.0
       ansible.builtin.include_role:
@@ -100,5 +110,5 @@
             url: https://pypi.org/pypi/yamllint
             venv: ansible
             version: latest
-      when: ansible_facts.python_version is ansible.builtin.version('3.10.0', 'lt', version_type='semver')
+      when: molecule_python_version is ansible.builtin.version('3.10.0', 'lt', version_type='semver')
 ...
