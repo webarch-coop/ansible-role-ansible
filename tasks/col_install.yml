@@ -8,14 +8,24 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: "Ansible collection install using ansible_galaxy_install module for {{ ans_col.name }}"
-  community.general.ansible_galaxy_install:
-    name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
-    force: true
-    type: collection
-  retries: 10
-  delay: 2
-  register: ans_col_install
+- name: Run Ansible collection install in a block to catch failures
+  block:
+
+    - name: "Ansible collection install using ansible_galaxy_install module for {{ ans_col.name }}"
+      community.general.ansible_galaxy_install:
+        name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
+        force: true
+        type: collection
+      retries: 10
+      delay: "{{ 2**retry_num }}"
+      register: ans_col_install
+
+  rescue:
+
+    - name: "Failure downloading Ansible collection install using ansible_galaxy_install module for {{ ans_col.name }}"
+      ansible.builtin.fail:
+        fail_msg: "{{ ans_col_install }}"
+
   tags:
     - ans
 ...
