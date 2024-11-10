@@ -33,7 +33,7 @@
     - name: The Python version semver is required
       ansible.builtin.assert:
         that:
-          - molecule_python_version is is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
+          - molecule_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
     - name: Include ansible role as root for Python >= 3.10.0
