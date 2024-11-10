@@ -11,7 +11,8 @@
 - name: Ansible checks
   block:
 
-    # Debian Trixie currently has 3.12.7+ as the Python version
+    # This shouldn't be needed but Trixie appended a + for a while
+    # https://git.coop/webarch/ansible/-/jobs/61377#L1525
     - name: Set a fact for the Python version
       ansible.builtin.set_fact:
         ans_python_version: "{{ ansible_facts.python_version | ansible.builtin.regex_replace('[+].*$') }}"

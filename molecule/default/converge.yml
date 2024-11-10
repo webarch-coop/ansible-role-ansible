@@ -24,6 +24,8 @@
       ansible.builtin.debug:
         var: ansible_facts.python_version
 
+    # This shouldn't be needed but Trixie appended a + for a while
+    # https://git.coop/webarch/ansible/-/jobs/61377#L1525
     - name: Set a fact for the Python version
       ansible.builtin.set_fact:
         molecule_python_version: "{{ ansible_facts.python_version | ansible.builtin.regex_replace('[+].*$') }}"
