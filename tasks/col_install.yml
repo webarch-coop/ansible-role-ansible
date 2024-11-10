@@ -17,7 +17,7 @@
         force: true
         type: collection
       retries: 10
-      delay: "{{ 2**retry_num }}"
+      delay: 5
       register: ans_col_install
 
   rescue:
