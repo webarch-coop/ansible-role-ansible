@@ -33,28 +33,8 @@ stages:
   - bookworm
   - bullseye
   - jammy
-  - trixie
   - noble
-trixie:
-  image: debian:trixie-backports
-  stage: trixie
-  script:
-    - chmod 700 $(pwd)
-    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
-    - apt-get update -qq
-    - apt-get dist-upgrade -qqy
-    # Install packages for pipx
-    # NOTE that the jc package is not available for Trixie
-    # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
-    - apt-get install -qqy ansible ansible-core ansible-lint git jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
-    - pre-commit install
-    - pre-commit run --all-files
-    - pipx install molecule
-    - pipx inject molecule ansible jc jmespath
-    - ansible-galaxy collection install community.general
-    - pre-commit install
-    - pre-commit run --all-files
-    - molecule test --all
+  - trixie
 bookworm:
   image: debian:bookworm-backports
   stage: bookworm
@@ -69,8 +49,6 @@ bookworm:
     - pre-commit run --all-files
     - pipx install molecule
     - pipx inject molecule ansible jc jmespath
-    - pre-commit install
-    - pre-commit run --all-files
     - molecule test --all
 bullseye:
   image: debian:bullseye-backports
@@ -82,28 +60,13 @@ bullseye:
     - apt-get dist-upgrade -qqy
     # Install packages for pipx
     - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg2 python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
-    - pipx install molecule
-    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
     # https://github.com/ansible/ansible-lint/releases
     # Newer versions of ansible-lint can't be installed on Bullseye as they require Python >= 3.10
     - mv .pre-commit-config-gitlab-ci.yaml .pre-commit-config.yaml
     - pre-commit install
     - pre-commit run --all-files
-    - molecule test --all
-noble:
-  image: ubuntu:noble
-  stage: noble
-  script:
-    - chmod 700 $(pwd)
-    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
-    - apt-get update -qq
-    - apt-get dist-upgrade -qqy
-    # Install packages for pipx
-    - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg2 python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
-    - pre-commit install
-    - pre-commit run --all-files
     - molecule test --all
 jammy:
   image: ubuntu:jammy
@@ -115,9 +78,40 @@ jammy:
     - apt-get dist-upgrade -qqy
     # Install packages for pipx
     - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg2 python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
+    - pre-commit run --all-files
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - molecule test --all
+noble:
+  image: ubuntu:noble
+  stage: noble
+  script:
+    - chmod 700 $(pwd)
+    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    - apt-get update -qq
+    - apt-get dist-upgrade -qqy
+    # Install packages for pipx
+    - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg2 python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
     - pre-commit install
     - pre-commit run --all-files
+    - pipx install molecule
+    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - molecule test --all
+trixie:
+  image: debian:trixie-backports
+  stage: trixie
+  script:
+    - chmod 700 $(pwd)
+    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    - apt-get update -qq
+    - apt-get dist-upgrade -qqy
+    # Install packages for pipx
+    # NOTE that the jc package is not available for Trixie
+    # https://packages.debian.org/trixie/jc
+    - apt-get install -qqy ansible ansible-core ansible-lint git jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv
+    - pre-commit install
+    - pre-commit run --all-files
+    - pipx install molecule
+    - pipx inject --include-apps --include-deps molecule ansible jc jmespath
     - molecule test --all
 ...

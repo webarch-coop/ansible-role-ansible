@@ -82,9 +82,9 @@
         - name: Debug existing and proposed Ansible collections
           ansible.builtin.debug:
             msg:
-              - "ans_col.name: {{ ans_col.name }}"
+              - "ans_col.name {{ ans_col.name }}"
               - "ans_col.version {{ ans_col.version }}"
-              - "ans_col_version_present: {{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
+              - "ans_col_version_present {{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) }}"
             verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
           vars:
             ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
