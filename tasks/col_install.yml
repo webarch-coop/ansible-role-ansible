@@ -16,7 +16,7 @@
         name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
         force: true
         type: collection
-      retries: 10
+      retries: 24
       delay: 5
       register: ans_col_install
 
@@ -24,7 +24,7 @@
 
     - name: "Failure downloading Ansible collection install using ansible_galaxy_install module for {{ ans_col.name }}"
       ansible.builtin.fail:
-        fail_msg: "{{ ans_col_install }}"
+        msg: "{{ ans_col_install }}"
 
   tags:
     - ans
