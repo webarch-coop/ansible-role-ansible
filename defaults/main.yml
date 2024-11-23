@@ -17,7 +17,7 @@ ans_cols:
     version: 1.6.2  # ansible.posix
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 4.0.1  # community.docker
+    version: 4.1.0  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: 2.22.3  # community.crypto
