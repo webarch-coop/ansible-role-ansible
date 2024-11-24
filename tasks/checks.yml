@@ -129,15 +129,12 @@
             var: ansible_facts.packages.ansible[0].version
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
 
-        # https://packages.debian.org/bullseye/ansible
-        # https://packages.ubuntu.com/jammy/ansible
         - name: Set a fact for the Bullseye and Jammy packaged version of Ansible
           ansible.builtin.set_fact:
             ans_core_installed_version: "2.10.8"
           when: >-
             ( ansible_facts.distribution_release is regex('^bullseye|jammy$') ) and
-            ( ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.8+dfsg-1" ) or
-            ( ansible_facts.packages.ansible[0].version == "2.10.7+merged+base+2.10.17+dfsg-0+deb11u1" ) )
+            ( ( ansible_facts.packages.ansible[0].version in ans_buster_versions )
 
         - name: Check the Ansible .deb version when not Bullseye or Jammy
           block:

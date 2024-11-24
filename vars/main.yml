@@ -20,6 +20,10 @@ ans_ansible_core_min_version: "2.10.8"
 ans_ansible_path: "{{ ans_bin }}/ansible"
 ans_bash: "{% if ansible_facts.env.SHELL is defined and ansible_facts.env.SHELL is regex('bash$') %}{{ ansible_facts.env.SHELL }}{% else %}/bin/bash{% endif %}"
 ans_bin: /usr/bin
+ans_bullseye_versions:
+  - 2.10.7+merged+base+2.10.8+dfsg-1
+  - 2.10.7+merged+base+2.10.17+dfsg-0+deb11u1
+  - 2.10.7+merged+base+2.10.17+dfsg-0+deb11u2
 ans_col_comgen_jmespath_query: "[?name=='community.general']"
 ans_col_comgen_ver_jmespath_query: "[?name=='community.general'].version|[0]"
 ans_col_comgen_vers_jmespath_query: "[?name=='community.general'].version"
