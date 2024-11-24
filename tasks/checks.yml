@@ -22,7 +22,7 @@
     - name: Check that the Python version is >= 3.7.3
       ansible.builtin.assert:
         that:
-          - ans_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
+          - ans_python_version is ansible.builtin.version('3.7.3', 'ge')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check the pipx version
