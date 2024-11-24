@@ -132,9 +132,9 @@
         - name: Set a fact for the Bullseye and Jammy packaged version of Ansible
           ansible.builtin.set_fact:
             ans_core_installed_version: "2.10.8"
-          when: >-
-            ( ansible_facts.distribution_release is regex('^bullseye|jammy$') ) and
-            ( ( ansible_facts.packages.ansible[0].version in ans_buster_versions )
+          when:
+            - ansible_facts.distribution_release is regex('^bullseye|jammy$')
+            - ansible_facts.packages.ansible[0].version in ans_buster_versions
 
         - name: Check the Ansible .deb version when not Bullseye or Jammy
           block:
