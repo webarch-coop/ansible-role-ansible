@@ -21,6 +21,9 @@ ans_cols:
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: 2.23.0  # community.crypto
+  - name: community.dns
+    url: https://github.com/ansible-collections/community.dns
+    version: 2.9.9  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     version: 10.2.0  # community.general
