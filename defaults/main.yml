@@ -20,7 +20,7 @@ ans_cols:
     version: 4.3.0  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 2.23.0  # community.crypto
+    version: 2.24.0  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
     version: 3.1.1  # community.dns
