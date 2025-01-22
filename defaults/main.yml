@@ -32,7 +32,7 @@ ans_cols:
     version: 3.12.0  # community.mysql
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: 3.10.0  # community.postgresql
+    version: 3.10.1  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
     version: 1.4.0  # community.rabbitmq
