@@ -33,9 +33,9 @@ before_script:
   - chmod 700 $(pwd)
   - whoami
   - pwd
-  - echo "CI_BUILDS_DIR: ${CI_BUILDS_DIR}"
-  - echo "CI_PROJECT_DIR: ${CI_PROJECT_DIR}"
-  - echo "CI_PROJECT_PATH: ${CI_PROJECT_PATH}"
+  - echo CI_BUILDS_DIR ${CI_BUILDS_DIR}
+  - echo CI_PROJECT_DIR ${CI_PROJECT_DIR}
+  - echo CI_PROJECT_PATH ${CI_PROJECT_PATH}
 stages:
   - bookworm
   - bullseye
