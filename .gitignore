@@ -1,5 +1,6 @@
-vars/versions.yml
-galaxy/*
 *.retry
-.*.swp
 .*.swo
+.*.swp
+.ansible
+galaxy/*
+vars/versions.yml
