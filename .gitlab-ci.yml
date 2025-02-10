@@ -34,10 +34,6 @@ before_script:
   - chmod 700 $(pwd)
   - whoami
   - pwd
-  - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
-  - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
-  - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
-  - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
 stages:
   - bookworm
   - bullseye
@@ -85,6 +81,16 @@ bullseye:
     - pre-commit run --all-files
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - which ansible
+    - ansible --version
+    - which yamllint
+    - yamllint --version
+    - which molecule
+    - molecule --version
+    - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
+    - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
+    - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
+    - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
     - molecule test --all
 jammy:
   image: ubuntu:jammy
@@ -99,6 +105,16 @@ jammy:
     - pre-commit run --all-files
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - which ansible
+    - ansible --version
+    - which yamllint
+    - yamllint --version
+    - which molecule
+    - molecule --version
+    - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
+    - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
+    - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
+    - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
     - molecule test --all
 noble:
   image: ubuntu:noble
@@ -114,6 +130,16 @@ noble:
     - pre-commit run --all-files
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - which ansible
+    - ansible --version
+    - which yamllint
+    - yamllint --version
+    - which molecule
+    - molecule --version
+    - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
+    - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
+    - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
+    - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
     - molecule test --all
 trixie:
   image: debian:trixie-backports
@@ -131,5 +157,15 @@ trixie:
     - pre-commit run --all-files
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath
+    - which ansible
+    - ansible --version
+    - which yamllint
+    - yamllint --version
+    - which molecule
+    - molecule --version
+    - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
+    - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
+    - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
+    - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
     - molecule test --all
 ...
