@@ -29,6 +29,8 @@
           loop_control:
             loop_var: ans_pypi_pkg
             label: "{{ ans_pypi_pkg.name }}"
+          tags:
+            - debug
 
         - name: Set a fact for the pip user packages that should be removed
           ansible.builtin.set_fact:
@@ -47,11 +49,15 @@
       ansible.builtin.debug:
         var: ans_required_state
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Debug ans_pipx_mod
       ansible.builtin.debug:
         var: ans_pipx_mod
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Include the pipx install tasks that use the command module
       ansible.builtin.include_tasks: pipx_cmd_install.yml

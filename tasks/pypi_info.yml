@@ -20,6 +20,8 @@
             method: GET
             return_content: true
           check_mode: false
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           changed_when: false
           register: ans_pypi
 
@@ -49,7 +51,9 @@
     - name: "Debug available PyPi versions for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:
         var: ans_pypi.json.releases
-        verbosity: 3
+        verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: "Create an array of the PyPi versions available and set a variable for the latest version for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:

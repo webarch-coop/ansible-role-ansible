@@ -32,6 +32,8 @@
           ansible.builtin.debug:
             var: ans_galaxy_json_check.stdout_lines[-1]
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the ansible-galaxy collections present
           ansible.builtin.set_fact:
@@ -41,6 +43,8 @@
           ansible.builtin.debug:
             var: ans_col_existing_json
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the ansible-galaxy collection paths
           ansible.builtin.set_fact:
@@ -52,6 +56,8 @@
             var: ans_col_paths
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_col_paths is defined
+          tags:
+            - debug
 
         - name: Set a fact for the lists of ansible-galaxy system collections existing
           ansible.builtin.set_fact:
@@ -64,6 +70,8 @@
           ansible.builtin.debug:
             var: ans_col_existing
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
 
       when: ans_galaxy_json | bool
 
@@ -87,6 +95,8 @@
           ansible.builtin.debug:
             var: ans_galaxy_col_list.stdout
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the ansible-galaxy collections existing
           ansible.builtin.set_fact:
@@ -96,6 +106,8 @@
           ansible.builtin.debug:
             var: ans_col_existing
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
 
       when: not ans_galaxy_json | bool
 
@@ -120,7 +132,9 @@
     - name: Debug ans_col_comgen_version
       ansible.builtin.debug:
         var: ans_col_comgen_version
-        # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Set ans_col_comgen_ver_sort to true when community.general 2.2.0 or greater is available as than means community.general.version_sort can be used
       ansible.builtin.set_fact:

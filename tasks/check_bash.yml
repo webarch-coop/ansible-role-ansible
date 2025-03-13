@@ -29,6 +29,8 @@
           ansible.builtin.debug:
             var: ans_argcomplete_path
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
 
         - name: Check that the path to activate-global-python-argcomplete
           ansible.builtin.stat:
@@ -43,6 +45,8 @@
           ansible.builtin.debug:
             var: ans_argcomplete_register_path
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
 
         - name: Check that the path to register-python-argcomplete exists
           ansible.builtin.stat:
@@ -83,6 +87,8 @@
               when:
                 - ans_argcomplete_user_path is defined
                 - ans_argcomplete_user_path | length > 0
+              tags:
+                - debug
 
           when:
             - ansible_facts.env.SHELL is defined
@@ -119,6 +125,8 @@
               when:
                 - ans_argcomplete_root_path is defined
                 - ans_argcomplete_root_path | length > 0
+              tags:
+                - debug
 
           when:
             - ansible_facts.env.SHELL is defined
@@ -143,6 +151,8 @@
         var: ans_paths
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
       when: ans_paths is defined
+      tags:
+        - debug
 
   tags:
     - ansible

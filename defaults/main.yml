@@ -38,6 +38,9 @@ ans_cols:
     version: 1.4.0  # community.rabbitmq
 ans_distro_check: true
 ans_downgrade: false
+ans_download:
+  delay: 3
+  retries: 6
 ans_pkgs:
   - name: bullseye
     pkgs_present:

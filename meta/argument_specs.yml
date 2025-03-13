@@ -55,6 +55,19 @@ argument_specs:
         description: Enable or disable the installing of older versions of packages than the system packages.
         required: true
         type: bool
+      ans_download:
+        description: Dictionary of variables for download retries and delay.
+        required: true
+        type: dict
+        options:
+          delay:
+            description: Download retry delay.
+            required: true
+            type: int
+          retries:
+            description: Download failure retries.
+            required: true
+            type: int
       ans_env:
         description: An internal dictionary of environment variables to use when running ansible.
         required: true

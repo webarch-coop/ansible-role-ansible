@@ -15,6 +15,8 @@
       ansible.builtin.debug:
         var: ans_col
         verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Reset Ansible collection variables
       ansible.builtin.set_fact:
@@ -33,6 +35,8 @@
             follow_redirects: none
           check_mode: false
           changed_when: false
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           register: ans_latest_headers
 
       rescue:
@@ -40,6 +44,8 @@
         - name: "Debug the results of the HEAD request for {{ ans_col.name }}"
           ansible.builtin.debug:
             var: ans_latest_headers.msg
+          tags:
+            - debug
 
         - name: "Fail if the GET request failure didn't occur when running the minimum Ansible version for {{ ans_col.name }}"
           ansible.builtin.fail:
@@ -54,6 +60,8 @@
             validate_certs: false
           check_mode: false
           changed_when: false
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           register: ans_latest_headers
 
     - name: Setting the latest variable is not possible
@@ -88,7 +96,9 @@
     - name: Debug ans_col_existing
       ansible.builtin.debug:
         var: ans_col_existing
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: "Set a fact for the versions of the required Ansible collection using sort when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
@@ -116,7 +126,9 @@
     - name: Debug ans_col_versions_present
       ansible.builtin.debug:
         var: ans_col_versions_present
-        verbosity: 2
+        verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: "Set a fact for latest version of the required Ansible collection when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
@@ -133,6 +145,8 @@
           - "ans_col_version_latest: {{ ans_col_version_latest }}"
           - "ans_col_version_required: {{ ans_col_version_required }}"
           - "ans_col_version_present: {{ ans_col_version_present }}"
+      tags:
+        - debug
 
     - name: Install Ansible Galaxy collection
       block:
@@ -148,6 +162,8 @@
             - name: "Ansible collection install using command module for {{ ans_col.name }}"
               ansible.builtin.command: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --force"
               changed_when: true
+              retries: "{{ ans_download.retries }}"
+              delay: "{{ ans_download.delay }}"
               register: ans_col_install
 
           rescue:
@@ -156,6 +172,8 @@
               ansible.builtin.debug:
                 var: ans_col_install.stderr
                 verbosity: 1
+              tags:
+                - debug
 
             - name: Fail if the collection install failure didn't occur when running the minimum Ansible version
               ansible.builtin.fail:
@@ -164,6 +182,8 @@
             - name: "Ansible collection install using command module without certificate verification for {{ ans_col.name }}"
               ansible.builtin.command: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force"
               changed_when: true
+              retries: "{{ ans_download.retries }}"
+              delay: "{{ ans_download.delay }}"
 
           when: not ans_comgen | bool
 

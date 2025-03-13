@@ -15,11 +15,15 @@
       ansible.builtin.debug:
         var: ansvarnames
         verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Debug the hostvars variable names that start with ans_
       ansible.builtin.debug:
         var: anshostvars
         verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for the argument spec and internal argument spec
       ansible.builtin.set_fact:
@@ -34,6 +38,8 @@
       ansible.builtin.debug:
         var: ans_combined_argument_spec['argument_specs']['main']['options']
         verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Check ans_ variables using the combined argument spec
       ansible.builtin.validate_argument_spec:
