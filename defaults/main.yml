@@ -17,10 +17,10 @@ ans_cols:
     version: 2.0.0  # ansible.posix
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 4.5.0  # community.docker
+    version: 4.5.1  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 2.25.0  # community.crypto
+    version: 2.26.0  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
     version: 3.2.1  # community.dns
@@ -29,15 +29,18 @@ ans_cols:
     version: 10.4.0  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: 3.12.0  # community.mysql
+    version: 3.13.0  # community.mysql
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: 3.11.0  # community.postgresql
+    version: 3.12.0  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
     version: 1.4.0  # community.rabbitmq
 ans_distro_check: true
 ans_downgrade: false
+ans_download:
+  delay: 3
+  retries: 6
 ans_pkgs:
   - name: bullseye
     pkgs_present:

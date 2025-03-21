@@ -39,6 +39,8 @@
       ansible.builtin.debug:
         var: ans_pipx_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Check that the pipx executable version is >= 1.0.0
       ansible.builtin.assert:
@@ -71,6 +73,8 @@
           ansible.builtin.debug:
             msg: "{{ ans_pkgs_present }}"
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
 
         - name: Check the presence of the required packages
           ansible.builtin.assert:
@@ -128,6 +132,8 @@
           ansible.builtin.debug:
             var: ansible_facts.packages.ansible[0].version
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the Bullseye and Jammy packaged version of Ansible
           ansible.builtin.set_fact:
@@ -150,6 +156,8 @@
                   ansible.builtin.debug:
                     var: ans_installed_version
                     verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+                  tags:
+                    - debug
 
               when: ansible_facts.distribution_release is not regex('^trixie$')
 
@@ -160,6 +168,8 @@
                   ansible.builtin.debug:
                     msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
                     verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+                  tags:
+                    - debug
 
                 - name: Set a fact for the .deb package ansible-core version
                   ansible.builtin.set_fact:
@@ -173,11 +183,15 @@
           ansible.builtin.debug:
             var: ans_core_installed_version
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
 
         - name: Debug the running Ansible version
           ansible.builtin.debug:
             var: ansible_version
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the running version of Ansible
           ansible.builtin.set_fact:
@@ -201,11 +215,15 @@
       ansible.builtin.debug:
         var: ans_available_versions
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Debug the latest Ansible version available
       ansible.builtin.debug:
         var: ans_latest_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Check the latest Ansible core version
       ansible.builtin.include_tasks: pypi_info.yml
@@ -223,11 +241,15 @@
       ansible.builtin.debug:
         var: ans_core_available_versions
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Debug the latest Ansible core version available
       ansible.builtin.debug:
         var: ans_core_latest_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for the required Ansible state in a block to catch failures
       block:
@@ -243,18 +265,26 @@
         - name: Debug ans_pypi_pkgs
           ansible.builtin.debug:
             var: ans_pypi_pkgs
+          tags:
+            - debug
 
         - name: Debug ans_pypi_ansible_state_jmespath_query
           ansible.builtin.debug:
             var: ans_pypi_ansible_state_jmespath_query
+          tags:
+            - debug
 
         - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query)
           ansible.builtin.debug:
             var: ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query)
+          tags:
+            - debug
 
         - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | ansible.builtin.type_debug
           ansible.builtin.debug:
             var: ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_state_jmespath_query) | ansible.builtin.type_debug
+          tags:
+            - debug
 
         - name: There was a failure setting a value for ans_required_state
           ansible.builtin.fail:
@@ -269,6 +299,8 @@
       ansible.builtin.debug:
         var: ans_required_state
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for the required Ansible version
       block:
@@ -290,16 +322,22 @@
         var: ans_required_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       when: ans_required_version is defined
+      tags:
+        - debug
 
     - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query)
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Debug ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug }}"
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for the required version of ansible-core when it is defined and set to latest
       ansible.builtin.set_fact:
@@ -342,6 +380,8 @@
           - "ans_running_version: {{ ans_running_version }}"
           - "ans_core_installed_version:{% if ans_core_installed_version is defined %} {{ ans_core_installed_version }}{% endif %}"
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Check that the ansible-galaxy version number based variables have been set
       ansible.builtin.assert:
@@ -360,6 +400,8 @@
       ansible.builtin.debug:
         var: ansible_facts.packages.pipx[0].version
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for the pipx package version
       ansible.builtin.set_fact:
@@ -382,6 +424,8 @@
           ansible.builtin.debug:
             var: ans_core_required_version
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
 
         # TODO This doesn't result in ans_pipx being true when downgrading ansible in a pipx venv
         - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
@@ -397,6 +441,8 @@
             var: ans_pipx
             verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
           when: ans_pipx is defined
+          tags:
+            - debug
 
         - name: Include pipx list tasks as community.general >= 5.6.0 is not present so the community.general.pipx_info module cannot be used
           ansible.builtin.include_tasks: check_pipx_list.yml
@@ -433,6 +479,8 @@
       ansible.builtin.debug:
         var: ans_pip_version
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Pip inspect metadata
       block:
@@ -463,6 +511,8 @@
       ansible.builtin.debug:
         var: ans_pip_user_existing
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Check the system PyPI packages
       ansible.builtin.command: python3 -m pip list --format=json
@@ -479,6 +529,8 @@
       ansible.builtin.debug:
         var: ans_pip_system_existing
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     # When in a docker container ans_init.stdout == "sh" or "bash"
     - name: Check if system has been booted with systemd as init system
@@ -501,11 +553,15 @@
       ansible.builtin.debug:
         var: ans_init
       when: ans_init != "systemd"
+      tags:
+        - debug
 
     - name: Debug the Python path on the Ansible controler
       ansible.builtin.debug:
         var: ansible_playbook_python
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Include PATH and python-argcomplete check when the init system is not sh or ash or bash
       ansible.builtin.include_tasks: check_bash.yml

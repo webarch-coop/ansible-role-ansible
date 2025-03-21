@@ -23,6 +23,8 @@
       ansible.builtin.debug:
         var: ans_pipx_info
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for the pipx installed packages
       ansible.builtin.set_fact:
@@ -32,11 +34,15 @@
       ansible.builtin.debug:
         msg: "{{ ans_pipx_info | community.general.json_query(ans_pipx_apps_jmespath_query) }}"
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Debug ans_pipx_pkgs
       ansible.builtin.debug:
         var: ans_pipx_pkgs
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Debug the Ansible version and variable type
       ansible.builtin.debug:
@@ -44,6 +50,8 @@
           - "Value: {{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
           - "Type: {{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug }}"
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Set pipx variables when Ansible is a pipx application
       block:
@@ -57,6 +65,8 @@
           ansible.builtin.debug:
             var: ans_pipx_installed_version
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the pipx Ansible venv existing injected packages
           ansible.builtin.set_fact:
@@ -66,6 +76,8 @@
           ansible.builtin.debug:
             var: ans_pipx_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
 
       when: ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug != "NoneType"
 

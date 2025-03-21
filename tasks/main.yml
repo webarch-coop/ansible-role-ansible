@@ -78,6 +78,8 @@
           ansible.builtin.debug:
             var: ans_col_existing
             verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
 
         - name: Debug existing and proposed Ansible collections
           ansible.builtin.debug:
@@ -92,6 +94,8 @@
           loop_control:
             loop_var: ans_col
             label: "{{ ans_col.name }}"
+          tags:
+            - debug
 
         - name: Install Ansible collections when not already available as system or user collections
           ansible.builtin.include_tasks: col.yml

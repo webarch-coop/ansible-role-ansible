@@ -16,8 +16,8 @@
         name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
         force: true
         type: collection
-      retries: 24
-      delay: 5
+      retries: "{{ ans_download.retries }}"
+      delay: "{{ ans_download.delay }}"
       register: ans_col_install
 
   rescue:

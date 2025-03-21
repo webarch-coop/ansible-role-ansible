@@ -19,6 +19,8 @@
       ansible.builtin.debug:
         var: ans_pypi_pkg_state
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: Include PyPi info tasks when the PyPI package is not set to be absent
       ansible.builtin.include_tasks: pypi_info.yml
@@ -36,6 +38,8 @@
       ansible.builtin.debug:
         var: ans_pipx_info
         verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for existing pipx venvs
       ansible.builtin.set_fact:
@@ -45,6 +49,8 @@
       ansible.builtin.debug:
         var: ans_pipx_existing_venvs
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+      tags:
+        - debug
 
     - name: A venv must exist before a package can be injected into it
       ansible.builtin.assert:
@@ -65,11 +71,15 @@
       ansible.builtin.debug:
         var: ans_pypi_pkg
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: "Debug PyPI package proposed state for {{ ans_pypi_pkg.name }}"
       ansible.builtin.debug:
         msg: "{{ ans_pypi_pkg.state | default('present') }}"
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: "Set a fact for the existing pipx version for {{ ans_pypi_pkg.name }}"
       ansible.builtin.set_fact:
@@ -81,6 +91,8 @@
       ansible.builtin.debug:
         var: ans_pipx_existing_version
         verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Configure pipx package when it is not injected
       block:
@@ -126,6 +138,8 @@
             install_deps: false
             state: "{{ ans_pipx_pkg_state }}"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           when: ans_pipx_pkg_state is defined
 
       when: ans_pypi_pkg.venv is not defined
@@ -140,6 +154,8 @@
             inject_packages: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_pkg.version }}"
             state: inject
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           register: ans_pipx_ansible_injected
 
       when:

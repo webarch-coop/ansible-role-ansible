@@ -19,6 +19,8 @@
         install_deps: true
         state: install
       environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      retries: "{{ ans_download.retries }}"
+      delay: "{{ ans_download.delay }}"
       register: ans_pipx_ansible_installed
       when:
         - ans_required_state == "present"
@@ -30,6 +32,8 @@
         var: ans_pipx_ansible_installed
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       when: ans_pipx_ansible_installed is defined
+      tags:
+        - debug
 
     - name: Upgrade Ansible using pipx
       community.general.pipx:
@@ -39,6 +43,8 @@
         install_deps: true
         state: upgrade
       environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+      retries: "{{ ans_download.retries }}"
+      delay: "{{ ans_download.delay }}"
       register: ans_pipx_ansible_upgraded
       when:
         - ans_required_state == "present"
@@ -54,6 +60,8 @@
         var: ans_pipx_ansible_upgraded
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       when: ans_pipx_ansible_upgraded is defined
+      tags:
+        - debug
 
     - name: Downgrade Ansible using pipx
       block:
@@ -71,6 +79,8 @@
             var: ans_pipx_ansible_downgrade_removed
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_downgrade_removed is defined
+          tags:
+            - debug
 
         - name: Install downgrade of Ansible using pipx
           community.general.pipx:
@@ -80,6 +90,8 @@
             install_deps: true
             state: install
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           register: ans_pipx_ansible_downgrade_installed
 
         - name: Debug ans_pipx_ansible_downgrade_installed
@@ -87,6 +99,8 @@
             var: ans_pipx_ansible_downgrade_installed
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_downgrade_installed is defined
+          tags:
+            - debug
 
       when:
         - ans_downgrade | bool
@@ -112,6 +126,8 @@
         var: ans_pipx_ansible_removed
         verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       when: ans_pipx_ansible_removed is defined
+      tags:
+        - debug
 
     - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
       ansible.builtin.include_tasks: check_pipx_list.yml
@@ -129,6 +145,8 @@
             var: ans_pipx_injected
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_injected is defined
+          tags:
+            - debug
 
         - name: Set an array for the pipx application packages, extras and versions to be injected
           ansible.builtin.set_fact:
@@ -152,6 +170,8 @@
             var: ans_pipx_inject
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           when: ans_pipx_inject is defined
+          tags:
+            - debug
 
         - name: Inject PyPI application packages into the Ansible venv
           community.general.pipx:
@@ -162,6 +182,8 @@
             install_apps: true
             install_deps: true
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           register: ans_pipx_ansible_injected
           when:
             - ans_pipx_inject is defined
@@ -172,6 +194,8 @@
             var: ans_pipx_ansible_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_ansible_injected is defined
+          tags:
+            - debug
 
         - name: Inject PyPI library packages into the Ansible venv
           community.general.pipx:
@@ -182,6 +206,8 @@
             install_apps: false
             install_deps: false
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
+          retries: "{{ ans_download.retries }}"
+          delay: "{{ ans_download.delay }}"
           register: ans_pipx_lib_injected
           when:
             - ans_pypi_pkg.name != "ansible"
@@ -201,6 +227,8 @@
             var: ans_pipx_lib_injected
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           when: ans_pipx_lib_injected is defined
+          tags:
+            - debug
 
         - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
           ansible.builtin.include_tasks: check_pipx_list.yml
@@ -221,6 +249,8 @@
           ansible.builtin.debug:
             var: ans_pipx_venv_bin_files
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
 
         - name: Set a fact for the executable paths
           ansible.builtin.set_fact:
@@ -230,6 +260,8 @@
           ansible.builtin.debug:
             var: ans_pipx_venv_bin_file_paths
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
 
         - name: Ensure all Ansible venv bin files are symlinked
           ansible.builtin.file:
