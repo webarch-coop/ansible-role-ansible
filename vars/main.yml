@@ -255,4 +255,6 @@ ans_versions:
     core: 2.18.2
   - ansible: 11.3.0
     core: 2.18.3
+  - ansible: 11.4.0
+    core: 2.18.4
 ...
