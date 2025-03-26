@@ -23,10 +23,10 @@ ans_cols:
     version: 2.26.0  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
-    version: 3.2.1  # community.dns
+    version: 3.2.2  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: 10.4.0  # community.general
+    version: 10.5.0  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: 3.13.0  # community.mysql
