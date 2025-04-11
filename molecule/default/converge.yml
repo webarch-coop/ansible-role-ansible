@@ -51,7 +51,7 @@
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
         ans_download:
-          delay: 10
+          delay: 30
           retries: 60
         ans_pypi_pkgs:
           # Newer versions of Ansible can't be installed due to the version of Python on Bullseye
