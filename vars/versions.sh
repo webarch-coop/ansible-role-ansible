@@ -7,6 +7,8 @@
 # Changelog URLs can be found here
 # https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-community-changelogs
 
+set -e
+
 declare -a base_changelog_urls=(
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/2.10/CHANGELOG-v2.10.rst"
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/3/CHANGELOG-v3.rst"
@@ -26,7 +28,7 @@ echo "---"
 echo "ans_versions:"
 for url in "${base_changelog_urls[@]}"
   do
-    wget -q "${url}" -O CHANGELOG
+    wget -q "${url}" -O CHANGELOG || exit 1
     readarray -t strings < <(grep "contains Ansible-base version" CHANGELOG | sort -V)
     for line in "${strings[@]}"
       do
@@ -38,7 +40,7 @@ for url in "${base_changelog_urls[@]}"
 done
 for url in "${core_changelog_urls[@]}"
   do
-    wget -q "${url}" -O CHANGELOG
+    wget -q "${url}" -O CHANGELOG || exit 1
     readarray -t strings < <(grep -i "contains Ansible-core version" CHANGELOG | sort -V)
     for line in "${strings[@]}"
       do
