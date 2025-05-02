@@ -20,7 +20,7 @@ ans_cols:
     version: 5.1.2  # ansible.utils
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 4.5.2  # community.docker
+    version: 4.6.0  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: 2.26.1  # community.crypto
