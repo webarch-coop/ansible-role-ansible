@@ -35,7 +35,7 @@ ans_cols:
     version: 3.13.0  # community.mysql
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: 3.13.0  # community.postgresql
+    version: 4.0.1  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
     version: 1.4.0  # community.rabbitmq
@@ -208,7 +208,7 @@ ans_pypi_pkgs:
     venv: ansible
     # TODO switch to 2.18.x when Debian Buster no longer needs to be supported
     # https://packages.debian.org/buster/python3
-    version: 2.17.11  # ansible-core
+    version: 2.17.12  # ansible-core
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
