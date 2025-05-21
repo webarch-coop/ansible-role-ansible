@@ -17,7 +17,7 @@ repos:
         name: YAML Lint
   # https://github.com/jackdewinter/pymarkdown/releases
   - repo: https://github.com/jackdewinter/pymarkdown.git
-    rev: v0.9.29
+    rev: v0.9.30
     hooks:
       - id: pymarkdown
         name: Markdown Lint
@@ -33,7 +33,7 @@ repos:
         language: python
         additional_dependencies:
           # https://github.com/kellyjonbrazil/jc/releases
-          - jc==1.25.4
+          - jc==1.25.5
           # https://github.com/jmespath/jmespath.py/tags
           - jmespath==1.0.1
 ...
