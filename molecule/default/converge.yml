@@ -25,7 +25,7 @@
         var: ansible_facts.python_version
 
     - name: Check the pipx version
-      ansible.builtin.command: "{{ ans_pipx_path }} --version"
+      ansible.builtin.command: "/usr/bin/pipx --version"
       check_mode: false
       changed_when: false
       register: molecule_pipx_executable_check
