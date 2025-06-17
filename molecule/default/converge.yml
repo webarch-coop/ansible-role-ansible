@@ -58,8 +58,8 @@
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
         ans_download:
-          delay: 30
-          retries: 60
+          delay: 10
+          retries: 20
         ans_cols:
           - name: ansible.posix
             url: https://github.com/ansible-collections/ansible.posix
@@ -102,8 +102,8 @@
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
         ans_download:
-          delay: 30
-          retries: 60
+          delay: 10
+          retries: 20
       when:
         - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
         - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
@@ -114,8 +114,8 @@
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
         ans_download:
-          delay: 30
-          retries: 60
+          delay: 10
+          retries: 20
         ans_pypi_pkgs:
           # Newer versions of Ansible can't be installed due to the version of Python on Bullseye
           - name: ansible
