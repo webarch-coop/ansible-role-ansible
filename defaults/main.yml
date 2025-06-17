@@ -29,7 +29,7 @@ ans_cols:
     version: 3.2.5  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    version: 10.7.0  # community.general
+    version: 11.0.0  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: 3.14.0  # community.mysql
