@@ -122,9 +122,7 @@ trixie:
     - apt-get update -qq
     - apt-get dist-upgrade -qqy
     # Install packages for pipx
-    # NOTE that the jc package is not available for Trixie
-    # https://packages.debian.org/trixie/jc
-    - apt-get install -qqy ansible ansible-core ansible-lint git jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv yamllint
+    - apt-get install -qqy ansible ansible-core ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv yamllint
     - pre-commit install
     - pre-commit run --all-files
     - pipx install molecule

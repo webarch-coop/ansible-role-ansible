@@ -24,6 +24,20 @@
       ansible.builtin.debug:
         var: ansible_facts.python_version
 
+    - name: Check the pipx version
+      ansible.builtin.command: "{{ ans_pipx_path }} --version"
+      check_mode: false
+      changed_when: false
+      register: molecule_pipx_executable_check
+
+    - name: Set a fact for the pipx version
+      ansible.builtin.set_fact:
+        molecule_pipx_version: "{{ molecule_pipx_executable_check.stdout | trim | string }}"
+
+    - name: Pipx version
+      ansible.builtin.debug:
+        var: molecule_pipx_version
+
     # This shouldn't be needed but Trixie appended a + for a while
     # https://git.coop/webarch/ansible/-/jobs/61377#L1525
     - name: Set a fact for the Python version
@@ -38,12 +52,61 @@
           - molecule_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
+    - name: Include ansible role as root for Python >= 3.10.0 and pipx >= 1.7.0
+      ansible.builtin.include_role:
+        name: ansible
+      vars:  # noqa var-naming[no-role-prefix]
+        ans: true
+        ans_download:
+          delay: 30
+          retries: 60
+        ans_cols:
+          - name: ansible.posix
+            url: https://github.com/ansible-collections/ansible.posix
+            version: 2.0.0  # ansible.posix
+          - name: ansible.utils
+            url: https://github.com/ansible-collections/ansible.utils
+            version: 6.0.0  # ansible.utils
+          - name: community.docker
+            url: https://github.com/ansible-collections/community.docker
+            version: 4.6.1  # community.docker
+          - name: community.crypto
+            url: https://github.com/ansible-collections/community.crypto
+            version: 2.26.3  # community.crypto
+          - name: community.dns
+            url: https://github.com/ansible-collections/community.dns
+            version: 3.2.5  # community.dns
+          - name: community.general
+            url: https://github.com/ansible-collections/community.general
+            # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
+            # https://packages.debian.org/bookworm/pipx
+            # and noble has 1.4.3
+            # https://packages.ubuntu.com/noble/pipx
+            version: 11.0.0  # community.general
+          - name: community.mysql
+            url: https://github.com/ansible-collections/community.mysql
+            version: 3.14.0  # community.mysql
+          - name: community.postgresql
+            url: https://github.com/ansible-collections/community.postgresql
+            version: 4.1.0  # community.postgresql
+          - name: community.rabbitmq
+            url: https://github.com/ansible-collections/community.rabbitmq
+            version: 1.5.0  # community.rabbitmq
+      when:
+        - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
+        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')
+
     - name: Include ansible role as root for Python >= 3.10.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
-      when: molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
+        ans_download:
+          delay: 30
+          retries: 60
+      when:
+        - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
+        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
 
     - name: Include ansible role as root for Python <= 3.10.0
       ansible.builtin.include_role:
@@ -115,5 +178,7 @@
             url: https://pypi.org/pypi/yamllint
             venv: ansible
             version: latest
-      when: molecule_python_version is ansible.builtin.version('3.10.0', 'lt', version_type='semver')
+      when:
+        - molecule_python_version is ansible.builtin.version('3.10.0', 'lt', version_type='semver')
+        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
 ...
