@@ -23,7 +23,7 @@ ans_cols:
     version: 4.6.1  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 2.26.3  # community.crypto
+    version: 3.0.0  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
     version: 3.2.5  # community.dns
@@ -111,15 +111,11 @@ ans_pkgs:
     pkgs_absent: []
   - name: trixie
     pkgs_present:
-      # The ansible package is not currently in Trixie
-      # https://packages.debian.org/trixie/ansible
-      # - ansible
+      - ansible
       - ansible-core
       - ansible-lint
       - git
-      # jc is currently missing
-      # https://packages.debian.org/trixie/jc
-      # - jc
+      - jc
       - jo
       - libpq-dev
       - pipx
