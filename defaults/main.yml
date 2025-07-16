@@ -42,7 +42,7 @@ ans_cols:
     version: 4.1.0  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
-    version: 1.5.0  # community.rabbitmq
+    version: 1.6.0  # community.rabbitmq
 ans_distro_check: true
 ans_downgrade: false
 ans_download:
@@ -208,7 +208,7 @@ ans_pypi_pkgs:
     venv: ansible
     # TODO switch to 2.18.x when Debian Buster no longer needs to be supported
     # https://packages.debian.org/buster/python3
-    version: 2.17.12  # ansible-core
+    version: 2.17.13  # ansible-core
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
