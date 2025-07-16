@@ -52,6 +52,7 @@
           - molecule_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
+    # Debian Trixie
     - name: Include ansible role as root for Python >= 3.10.0 and pipx >= 1.7.0
       ansible.builtin.include_role:
         name: ansible
@@ -72,17 +73,17 @@
             version: 4.6.1  # community.docker
           - name: community.crypto
             url: https://github.com/ansible-collections/community.crypto
-            version: 2.26.3  # community.crypto
+            version: 3.0.0  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
-            version: 3.2.5  # community.dns
+            version: 3.2.6  # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
             # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
             # https://packages.debian.org/bookworm/pipx
             # and noble has 1.4.3
             # https://packages.ubuntu.com/noble/pipx
-            version: 11.0.0  # community.general
+            version: 11.1.0  # community.general
           - name: community.mysql
             url: https://github.com/ansible-collections/community.mysql
             version: 3.14.0  # community.mysql
@@ -91,12 +92,98 @@
             version: 4.1.0  # community.postgresql
           - name: community.rabbitmq
             url: https://github.com/ansible-collections/community.rabbitmq
-            version: 1.5.0  # community.rabbitmq
+            version: 1.6.0  # community.rabbitmq
+        ans_pypi_pkgs:
+          - name: ansible
+            url: https://pypi.org/pypi/ansible
+            version: latest
+          - name: ansible-core
+            url: https://pypi.org/pypi/ansible-core
+            venv: ansible
+            version: latest
+          - name: ansible-lint
+            url: https://pypi.org/pypi/ansible-lint
+            venv: ansible
+            version: latest
+          - name: dnspython
+            type: lib
+            url: https://pypi.org/pypi/dnspython
+            venv: ansible
+            version: latest
+          - name: jc
+            url: https://pypi.org/pypi/jc
+            venv: ansible
+            version: latest
+          - name: jinjanator
+            url: https://pypi.org/pypi/jinjanator
+            venv: ansible
+            version: latest
+          - name: jinjanator-plugin-ansible
+            url: https://pypi.org/pypi/jinjanator-plugin-ansible
+            venv: ansible
+            version: latest
+          - name: jinja2-ansible-filters
+            type: lib
+            url: https://pypi.org/pypi/jinja2-ansible-filters
+            venv: ansible
+            version: latest
+          - name: j2lint
+            url: https://pypi.org/pypi/j2lint
+            venv: ansible
+            version: latest
+          - name: jmespath
+            url: https://pypi.org/pypi/jmespath
+            venv: ansible
+            version: latest
+          - name: molecule
+            url: https://pypi.org/pypi/molecule
+            venv: ansible
+            version: latest
+          - name: lxml
+            type: lib
+            url: https://pypi.org/pypi/lxml
+            venv: ansible
+            version: latest
+          - name: molecule-plugins
+            extras:
+              - docker
+            url: https://pypi.org/pypi/molecule-plugins
+            venv: ansible
+            version: latest
+          - name: netaddr
+            type: lib
+            url: https://pypi.org/pypi/netaddr
+            venv: ansible
+            version: latest
+          - name: psycopg
+            type: lib
+            url: https://pypi.org/pypi/psycopg
+            venv: ansible
+            version: latest
+          - name: pymarkdownlnt
+            url: https://pypi.org/pypi/pymarkdownlnt
+            venv: ansible
+            version: latest
+          - name: pymysql
+            type: lib
+            url: https://pypi.org/pypi/pymysql
+            venv: ansible
+            version: latest
+          - name: python-debian
+            type: lib
+            url: https://pypi.org/pypi/python-debian
+            venv: ansible
+            version: latest
+          - name: yamllint
+            url: https://pypi.org/pypi/yamllint
+            venv: ansible
+            version: latest
       when:
         - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
         - molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')
 
-    - name: Include ansible role as root for Python >= 3.10.0
+    # Debian Bookworm
+    - name: Include ansible role as root for Python >= 3.10.0 and pipx < 1.7.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
@@ -108,6 +195,7 @@
         - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
         - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
 
+    # Debian Bullseye
     - name: Include ansible role as root for Python <= 3.10.0
       ansible.builtin.include_role:
         name: ansible
