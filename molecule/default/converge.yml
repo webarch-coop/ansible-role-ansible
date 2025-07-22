@@ -57,7 +57,7 @@
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
     # Debian Trixie
-    - name: Include ansible role as root for Python >= 3.10.0 and pipx >= 1.7.0
+    - name: Include ansible role with Trixie vars as root for Python >= 3.10.0 and pipx >= 1.7.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
@@ -188,7 +188,7 @@
         (molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')))
 
     # Debian Bookworm, Ubuntu Jammy and Ubuntu Noble
-    - name: Include ansible role as root for Python >= 3.10.0 and pipx < 1.7.0
+    - name: Include ansible role with Bookworm, Jammy and Ubuntu vars as root for Python >= 3.10.0 and pipx < 1.7.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
@@ -204,7 +204,7 @@
         (molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')))
 
     # Debian Bullseye
-    - name: Include ansible role as root for Python <= 3.10.0
+    - name: Include ansible role with Bullseye vars as root for Python <= 3.10.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
