@@ -147,7 +147,7 @@ stages:
 #     - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
 #     - molecule test --all
 bullseye:
-  image: debian:bullseye-backports
+  image: debian:bullseye
   stage: bullseye
   script:
     - chmod 700 $(pwd)
