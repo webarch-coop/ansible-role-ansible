@@ -16,6 +16,10 @@
     - localhost
   tasks:
 
+    - name: Debug ansible_facts.distribution_release
+      ansible.builtin.debug:
+        var: ansible_facts.distribution_release
+
     - name: Debug ansible_facts.effective_user_id
       ansible.builtin.debug:
         var: ansible_facts.effective_user_id
@@ -178,11 +182,12 @@
             url: https://pypi.org/pypi/yamllint
             venv: ansible
             version: latest
-      when:
-        - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
-        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')
+      when: >-
+        (ansible_facts.distribution_release == "bullseye") or
+        ((molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')) and
+        (molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')))
 
-    # Debian Bookworm
+    # Debian Bookworm, Ubuntu Jammy and Ubuntu Noble
     - name: Include ansible role as root for Python >= 3.10.0 and pipx < 1.7.0
       ansible.builtin.include_role:
         name: ansible
@@ -191,9 +196,12 @@
         ans_download:
           delay: 10
           retries: 20
-      when:
-        - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
-        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
+      when: >-
+        (ansible_facts.distribution_release == "bookworm") or
+        (ansible_facts.distribution_release == "jammy") or
+        (ansible_facts.distribution_release == "noble") or
+        ((molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')) and
+        (molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')))
 
     # Debian Bullseye
     - name: Include ansible role as root for Python <= 3.10.0
@@ -267,7 +275,8 @@
             url: https://pypi.org/pypi/yamllint
             venv: ansible
             version: latest
-      when:
-        - molecule_python_version is ansible.builtin.version('3.10.0', 'lt', version_type='semver')
-        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
+      when: >-
+        (ansible_facts.distribution_release == "bullseye") or
+        ((molecule_python_version is ansible.builtin.version('3.10.0', 'lt', version_type='semver')) and
+        (molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')))
 ...

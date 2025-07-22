@@ -57,7 +57,9 @@ ans_pkgs:
       - jc
       - jo
       - libpq-dev
-      - pipx
+      # pipx is not available for bullseye
+      # https://packages.debian.org/search?suite=bullseye&searchon=names&keywords=pipx
+      # - pipx
       - postgresql-client
       - postgresql-common
       - procps
