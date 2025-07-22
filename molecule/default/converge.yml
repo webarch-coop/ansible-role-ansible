@@ -183,7 +183,7 @@
             venv: ansible
             version: latest
       when: >-
-        (ansible_facts.distribution_release == "bullseye") or
+        (ansible_facts.distribution_release == "trixie") or
         ((molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')) and
         (molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')))
 
