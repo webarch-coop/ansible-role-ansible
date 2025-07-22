@@ -39,7 +39,7 @@ argument_specs:
       ans_distros:
         choices:
           - bookworm
-          - bullseye
+          - forky
           - jammy
           - noble
           - trixie
@@ -125,7 +125,7 @@ argument_specs:
             description: The Debian / Ubuntu version, ansible_facts.distribution_release.
             choices:
               - bookworm
-              - bullseye
+              - forky
               - jammy
               - noble
               - trixie

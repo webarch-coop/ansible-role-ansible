@@ -17,7 +17,7 @@ repos:
         name: YAML Lint
   # https://github.com/aristanetworks/j2lint/releases
   - repo: https://github.com/aristanetworks/j2lint.git
-    rev: v1.1.0
+    rev: v1.2.0
     hooks:
       - id: j2lint
         name: Jinja2-Linter
@@ -25,23 +25,22 @@ repos:
           - templates
   # https://github.com/jackdewinter/pymarkdown/releases
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.29
+    rev: v0.9.31
     hooks:
       - id: pymarkdown
         name: Markdown Lint
           - scan
           - README.md
   # https://github.com/ansible/ansible-lint/releases
-  # Newer versions of ansible-lint can't be installed on Bullseye as they require Python >= 3.10
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.22.2
+    rev: v25.6.1
     hooks:
       - id: ansible-lint
         name: Ansible Lint
         language: python
         additional_dependencies:
           # https://github.com/kellyjonbrazil/jc/releases
-          - jc==1.25.4
+          - jc==1.25.5
           # https://github.com/jmespath/jmespath.py/tags
           - jmespath==1.0.1
 ...

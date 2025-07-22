@@ -49,38 +49,6 @@ ans_download:
   delay: 3
   retries: 6
 ans_pkgs:
-  - name: bullseye
-    pkgs_present:
-      - ansible
-      - ansible-lint
-      - git
-      - jc
-      - jo
-      - libpq-dev
-      # pipx is not available for bullseye
-      # https://packages.debian.org/search?suite=bullseye&searchon=names&keywords=pipx
-      # - pipx
-      - postgresql-client
-      - postgresql-common
-      - procps
-      - python3-apt
-      - python3-argcomplete
-      - python3-debian
-      - python3-dnspython
-      - python3-commonmark
-      - python3-jmespath
-      - python3-lxml
-      - python3-mysqldb
-      - python3-netaddr
-      - python3-pip
-      - python3-psycopg2
-      - python3-pymysql
-      - python3-resolvelib
-      - python3-ruamel.yaml
-      - python3-setuptools
-      - python3-venv
-    # Note, nothing is yet done with the pkgs_absent list
-    pkgs_absent: []
   - name: bookworm
     pkgs_present:
       - ansible

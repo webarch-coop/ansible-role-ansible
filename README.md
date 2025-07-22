@@ -4,11 +4,11 @@
 
 **NOTE: This role needs work, it doesn't currently upgrade PyPI packages that have been installed using `pipx` and `pipx` is now the default install method so, for now, running `rm -rf ~/.local/pipx/venvs/ansible` before running this role is the best way to use it.**
 
-This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Debian Bullseye, Ubuntu Noble or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
+This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Ubuntu Noble or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
 
 This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Jammy.
 
-Debian Bullseye only supports Ansible `8.7.0` as Ansible `>=9.0.0` requires [Python `>=3.10`](https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/9/CHANGELOG-v9.rst).
+Debian Bullseye only supports Ansible `8.7.0` as Ansible `>=9.0.0` requires [Python `>=3.10`](https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/9/CHANGELOG-v9.rst), [release 3.56.0](https://git.coop/webarch/ansible/-/releases/3.56.0) is the last version of this role to support Debian Bullseye, [Debian Bullseye no longer provides pipx](https://packages.debian.org/search?suite=bullseye&searchon=names&keywords=pipx).
 
 ## Role variables
 
@@ -39,7 +39,7 @@ The `ans_downgrade` variable defaults to `false`, if it is set to `true` then th
 
 ### ans_distro_check
 
-The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_facts.distribution` is not Debian or Ubuntu and `ansible_facts.distribution_release` is not bullseye, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
+The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_facts.distribution` is not Debian or Ubuntu and `ansible_facts.distribution_release` is not, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
 
 ### ans_pipx_cmd
 
@@ -136,7 +136,7 @@ python3 -m pip list --user --format=json | jq
 python3 -m pip list --user --format=json | jq | jp "[].name" | yq -o=yaml -PM | awk '{ print $2 }'
 ```
 
-Delete all PyPi user packages on Debian Bullseye or Ubuntu Jammy:
+Delete all PyPi user packages on Ubuntu Jammy:
 
 ```bash
 python3 -m pip uninstall $(pip list --user | grep -v -e ^P -e ^- | awk '{ print $1 }' | xargs)

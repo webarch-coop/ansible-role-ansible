@@ -11,18 +11,14 @@
 # https://docs.ansible.com/ansible/latest/playbook_guide/complex_data_manipulation.html
 ansvarnames: "{{ q('varnames', '^ans_') | sort }}"
 anshostvars: "{{ dict(ansvarnames | list | ansible.builtin.zip(q('vars', *ansvarnames))) }}"
-# Bullseye and Jammy have 2.10.8
-# https://packages.debian.org/bullseye/ansible
+# Jammy hass 2.10.8
 # https://packages.ubuntu.com/jammy/ansible
-# Bookworm has 2.14.3
-# https://packages.debian.org/bookworm/ansible-core
 ans_ansible_core_min_version: "2.10.8"
 ans_ansible_path: "{{ ans_bin }}/ansible"
 ans_bash: "{% if ansible_facts.env.SHELL is defined and ansible_facts.env.SHELL is regex('bash$') %}{{ ansible_facts.env.SHELL }}{% else %}/bin/bash{% endif %}"
 ans_bin: /usr/bin
-# https://packages.debian.org/bullseye/ansible
 # https://packages.ubuntu.com/jammy/ansible
-ans_bullseye_jammy_versions:
+ans_jammy_versions:
   - 2.10.7+merged+base+2.10.8+dfsg-1
   - 2.10.7+merged+base+2.10.17+dfsg-0+deb11u1
   - 2.10.7+merged+base+2.10.17+dfsg-0+deb11u2

@@ -135,14 +135,14 @@
           tags:
             - debug
 
-        - name: Set a fact for the Bullseye and Jammy packaged version of Ansible
+        - name: Set a fact for the Jammy packaged version of Ansible
           ansible.builtin.set_fact:
             ans_core_installed_version: "2.10.8"
           when:
-            - ansible_facts.distribution_release is regex('^bullseye|jammy$')
-            - ansible_facts.packages.ansible[0].version in ans_bullseye_jammy_versions
+            - ansible_facts.distribution_release == "jammy"
+            - ansible_facts.packages.ansible[0].version in ans_jammy_versions
 
-        - name: Check the Ansible .deb version when not Bullseye or Jammy
+        - name: Check the Ansible .deb version when not Jammy
           block:
 
             - name: Check ansible .deb version present when not running trixie
@@ -177,7 +177,7 @@
 
               when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
 
-          when: ansible_facts.distribution_release is not regex('^bullseye|jammy$')
+          when: ansible_facts.distribution_release != "jammy"
 
         - name: Ansible core installed version
           ansible.builtin.debug:

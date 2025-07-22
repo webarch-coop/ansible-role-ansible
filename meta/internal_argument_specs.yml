@@ -30,11 +30,6 @@ argument_specs:
         type: str
         required: false
         description: Internal variable for the default bin directory.
-      ans_bullseye_jammy_versions:
-        type: list
-        elements: str
-        required: false
-        description: Ansible versions strings for Debian Bullesye and Ubuntu Jammy.
       ans_col_comgen_jmespath_query:
         type: str
         required: false
@@ -97,6 +92,11 @@ argument_specs:
         type: bool
         required: false
         description: Internal variable to indicate that community.general 3.5.0 or greater is available.
+      ans_jammy_versions:
+        type: list
+        elements: str
+        required: false
+        description: Ansible versions strings for Debian Bullesye and Ubuntu Jammy.
       ans_pkgs_absent:
         type: list
         elements: str
