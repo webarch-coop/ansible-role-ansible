@@ -204,6 +204,7 @@
         ans_download:
           delay: 10
           retries: 20
+        ans_pipx_path: /usr/local/bin/pipx
         ans_pypi_pkgs:
           # Newer versions of Ansible can't be installed due to the version of Python on Bullseye
           - name: ansible
