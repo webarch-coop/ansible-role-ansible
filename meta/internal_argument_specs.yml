@@ -123,6 +123,10 @@ argument_specs:
         type: str
         required: false
         description: Internal variable for a JMESPath query.
+      ans_pipx_core_installed_version:
+        type: str
+        required: false
+        description: Internal variable for the pipx version of ansible-core.
       ans_pipx_info_ansible_version_jmespath_query:
         type: str
         required: false

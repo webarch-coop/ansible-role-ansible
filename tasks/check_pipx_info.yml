@@ -56,14 +56,21 @@
     - name: Set pipx variables when Ansible is a pipx application
       block:
 
-        - name: Set a fact for the pipx Ansible version
+        - name: Set a fact for the pipx Ansible and ansible-core versions
           ansible.builtin.set_fact:
-            # ans_pipx_installed_version: "{{ ans_pipx_info | community.general.json_query(ans_pipx_info_ansible_version_jmespath_query) }}"
             ans_pipx_installed_version: "{{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) }}"
+            ans_pipx_core_installed_version: "{{ ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
 
         - name: Debug pipx Ansible version
           ansible.builtin.debug:
             var: ans_pipx_installed_version
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
+
+        - name: Debug pipx ansible-core version
+          ansible.builtin.debug:
+            var: ans_pipx_core_installed_version
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           tags:
             - debug
