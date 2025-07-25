@@ -138,7 +138,7 @@
 
         - name: Set a fact for the ansible-core version that might need to be injected with force
           ansible.builtin.set_fact:
-            ans_core_inject_version: "{{ community.general.json_query(ans_version_core_jmespath_query) }}"
+            ans_core_inject_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
           vars:
             ans_version_core_jmespath_query: "[?ansible=='{{ ans_required_version }}'].core|[0]"
 
