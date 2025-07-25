@@ -90,7 +90,7 @@
             version: 11.1.0  # community.general
           - name: community.mysql
             url: https://github.com/ansible-collections/community.mysql
-            version: 3.14.0  # community.mysql
+            version: 3.15.0  # community.mysql
           - name: community.postgresql
             url: https://github.com/ansible-collections/community.postgresql
             version: 4.1.0  # community.postgresql
