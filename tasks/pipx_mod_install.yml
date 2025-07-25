@@ -142,6 +142,11 @@
         #   vars:
         #     ans_version_core_jmespath_query: "[?ansible=='{{ ans_required_version }}'].core|[0]"
 
+        - name: Debug the existing ansible-core version installed and the version required"
+          ansible.builtin.debug:
+            msg: "The version of Ansible that has been installed in the pipx venv is {{ ans_core_installed_version }} but ansible-core {{ ans_core_required_version }} is required."
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+
         - name: "Inject into the pipx venv with force ansible-core {{ ans_core_required_version }}"
           community.general.pipx:
             executable: "{{ ans_pipx_path }}"
