@@ -129,6 +129,26 @@
       tags:
         - debug
 
+    # If a version of ansible-core specified is difference from the one provided by the the ansible package then it will be wrong version as --force is not used
+    - name: Check and update ansible-core package when the version required doesn'tr match the ansible package version
+      block:
+
+        - name: Check variables
+          ansible.builtin.include_tasks: checks.yml
+
+        - name: Inject ansible core into the pipx venv with force
+          community.general.pipx:
+            executable: "{{ ans_pipx_path }}"
+            name: ansible-core
+            source: "ansible=={{ ans_core_required_version }}"
+            force: true
+          vars:
+            ans_version: "{{ ans_required_version }}"
+            ans_version_core_jmespath_query: "[?ansible=='{{ ans_version }}'].core|[0]"
+          when: ans_core_required_version != ans_core_installed_version
+
+      when: (ans_core_required_version != community.general.json_query(ans_version_core_jmespath_query)
+
     - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
       ansible.builtin.include_tasks: check_pipx_list.yml
       when: not ans_pipx_mod_info | bool
