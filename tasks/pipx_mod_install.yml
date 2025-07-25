@@ -145,9 +145,13 @@
         - name: Inject ansible core into the pipx venv with force
           community.general.pipx:
             executable: "{{ ans_pipx_path }}"
-            name: ansible-core
-            source: "ansible=={{ ans_core_required_version }}"
+            name: ansible
+            inject_packages: "ansible-core=={{ ans_core_required_version }}"
+            state: inject
+            install_apps: true
+            install_deps: true
             force: true
+          environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           vars:
             ans_version: "{{ ans_required_version }}"
           when: ans_core_inject_version != ans_core_installed_version
