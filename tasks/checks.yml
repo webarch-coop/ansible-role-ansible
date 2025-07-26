@@ -339,6 +339,12 @@
       tags:
         - debug
 
+    - name: Set a fact for the version of ansible-core provided by the required Ansible version
+      ansible.builtin.set_fact:
+        ans_core_provided_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
+      vars:
+        ans_version_core_jmespath_query: "[?ansible=='{{ ans_required_version }}'].core|[0]"
+
     - name: Set a fact for the required version of ansible-core when it is defined and set to latest
       ansible.builtin.set_fact:
         ans_core_required_version: "{{ ans_core_latest_version }}"
@@ -359,8 +365,9 @@
       ansible.builtin.set_fact:
         ans_core_required_version: "{{ ans_versions | community.general.json_query(ans_version_core_jmespath_query) }}"
       vars:
-        ans_version: "{{ ans_required_version }}"
-        ans_version_core_jmespath_query: "[?ansible=='{{ ans_version }}'].core|[0]"
+        # ans_version: "{{ ans_required_version }}"
+        # ans_version_core_jmespath_query: "[?ansible=='{{ ans_version }}'].core|[0]"
+        ans_version_core_jmespath_query: "[?ansible=='{{ ans_required_version }}'].core|[0]"
       when: >-
         ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is not defined ) or
         ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug == "NoneType" )
@@ -374,12 +381,14 @@
         ( ans_core_required_version | length == 0 ) or
         ( ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge') )
 
-    - name: Debug Ansible version variables
+    - name: Debug ansible-core version variables
       ansible.builtin.debug:
         msg:
-          - "ans_running_version: {{ ans_running_version }}"
           - "ans_core_installed_version:{% if ans_core_installed_version is defined %} {{ ans_core_installed_version }}{% endif %}"
-        verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          - "ans_core_provided_version: {{ ans_core_provided_version }}"
+          - "ans_core_required_version: {{ ans_core_required_version }}"
+          - "ans_running_version: {{ ans_running_version }}"
+        verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
       tags:
         - debug
 
