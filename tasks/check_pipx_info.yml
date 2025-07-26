@@ -75,9 +75,6 @@
           tags:
             - debug
 
-        - name: Debug fail
-          ansible.builtin.fail:
-
         - name: Set a fact for the pipx Ansible venv existing injected packages
           ansible.builtin.set_fact:
             ans_pipx_injected: "{{ ans_pipx_info | community.general.json_query(ans_pipx_info_injected_pkgs_jmespath_query) | dict2items(key_name='name', value_name='version') }}"
