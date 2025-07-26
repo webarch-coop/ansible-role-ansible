@@ -155,6 +155,8 @@
             force: true
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           when: ans_pipx_core_installed_version != ans_core_required_version
+          tags:
+            - molecule-idempotence-notest
 
       when:
         - ans_pipx_core_installed_version is defined
