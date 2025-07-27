@@ -85,7 +85,7 @@
 
         - name: "Set a fact for the latest version for {{ ans_col.name }}"
           ansible.builtin.set_fact:
-            ans_col_version_latest: "{{ ans_latest_headers.location | urlsplit('path') | basename | string }}"
+            ans_col_version_latest: "{{ ans_latest_headers.location | ansible.builtin.urlsplit('path') | ansible.builtin.basename | string | ansible.builtin.regex_replace('^v') }}"
 
         - name: "Set a fact for the proposed version for {{ ans_col.name }}"
           ansible.builtin.set_fact:
