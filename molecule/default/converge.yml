@@ -74,10 +74,10 @@
             version: 6.0.0  # ansible.utils
           - name: community.docker
             url: https://github.com/ansible-collections/community.docker
-            version: 4.6.1  # community.docker
+            version: 4.6.2  # community.docker
           - name: community.crypto
             url: https://github.com/ansible-collections/community.crypto
-            version: 3.0.1  # community.crypto
+            version: 3.0.2  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
             version: 3.2.6  # community.dns
@@ -188,7 +188,7 @@
         (molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')))
 
     # Debian Bookworm, Ubuntu Jammy and Ubuntu Noble
-    - name: Include ansible role with Bookworm, Jammy and Ubuntu vars as root for Python >= 3.10.0 and pipx < 1.7.0
+    - name: Include ansible role with Bookworm, Jammy and Noble vars as root for Python >= 3.10.0 and pipx < 1.7.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
