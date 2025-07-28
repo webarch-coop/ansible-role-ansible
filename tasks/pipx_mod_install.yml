@@ -138,7 +138,10 @@
 
         - name: Debug the existing ansible-core version installed and the version required"
           ansible.builtin.debug:
-            msg: "The version of Ansible that has been installed in the pipx venv is {{ ans_pipx_core_installed_version }} but ansible-core {{ ans_core_required_version }} is required."
+            msg: >-
+              The version of ansible-core that is provided by the Ansible {{ ans_required_version }} package is
+              {{ ans_core_provided_version }} and the version that has been installed in the pipx venv is
+              {{ ans_pipx_core_installed_version }} and ansible-core {{ ans_core_required_version }} is required
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
         - name: "Inject into the pipx venv with force ansible-core {{ ans_core_required_version }}"
@@ -152,10 +155,13 @@
             force: true
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           when: ans_pipx_core_installed_version != ans_core_required_version
+          tags:
+            - molecule-idempotence-notest
 
       when:
         - ans_pipx_core_installed_version is defined
         - ans_core_required_version is defined
+        - ans_core_required_version != ans_core_provided_version
 
     - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
       ansible.builtin.include_tasks: check_pipx_list.yml

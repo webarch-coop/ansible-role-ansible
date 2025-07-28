@@ -50,7 +50,7 @@
 
     # Debian Buster Package: python3 (3.7.3-1)
     # https://packages.debian.org/buster/python3
-    - name: The Python version semver is required
+    - name: The Python version must be greater than or equal to 3.7.3
       ansible.builtin.assert:
         that:
           - molecule_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
@@ -74,13 +74,13 @@
             version: 6.0.0  # ansible.utils
           - name: community.docker
             url: https://github.com/ansible-collections/community.docker
-            version: 4.6.1  # community.docker
+            version: 4.6.2  # community.docker
           - name: community.crypto
             url: https://github.com/ansible-collections/community.crypto
-            version: 3.0.1  # community.crypto
+            version: 3.0.2  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
-            version: 3.2.6  # community.dns
+            version: 3.2.7  # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
             # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
@@ -182,13 +182,13 @@
             url: https://pypi.org/pypi/yamllint
             venv: ansible
             version: latest
-      when: >-
-        (ansible_facts.distribution_release == "trixie") or
-        ((molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')) and
-        (molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')))
+      when:
+        - ansible_facts.distribution_release == "trixie"
+        - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
+        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'ge', version_type='semver')
 
     # Debian Bookworm, Ubuntu Jammy and Ubuntu Noble
-    - name: Include ansible role with Bookworm, Jammy and Ubuntu vars as root for Python >= 3.10.0 and pipx < 1.7.0
+    - name: Include ansible role with Bookworm, Jammy and Noble vars as root for Python >= 3.10.0 and pipx < 1.7.0
       ansible.builtin.include_role:
         name: ansible
       vars:  # noqa var-naming[no-role-prefix]
@@ -196,10 +196,8 @@
         ans_download:
           delay: 10
           retries: 20
-      when: >-
-        (ansible_facts.distribution_release == "bookworm") or
-        (ansible_facts.distribution_release == "jammy") or
-        (ansible_facts.distribution_release == "noble") or
-        ((molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')) and
-        (molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')))
+      when:
+        - ansible_facts.distribution_release is ansible.builtin.regex('^bookworm|jammy|noble$')
+        - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')
+        - molecule_pipx_version is ansible.builtin.version('1.7.0', 'lt', version_type='semver')
 ...
