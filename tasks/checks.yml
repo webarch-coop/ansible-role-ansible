@@ -150,7 +150,7 @@
 
                 - name: Set a fact for the Ansible .deb version
                   ansible.builtin.set_fact:
-                    ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | regex_replace('[+].*$') | string }}"
+                    ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | ansible.builtin.regex_replace('[+].*$') | string }}"
 
                 - name: Debug the Ansible installed version
                   ansible.builtin.debug:
@@ -173,7 +173,7 @@
 
                 - name: Set a fact for the .deb package ansible-core version
                   ansible.builtin.set_fact:
-                    ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | regex_replace('[-][0-9]$') | string }}"
+                    ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | ansible.builtin.regex_replace('[-][0-9a-z]$') | string }}"
 
               when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
 
