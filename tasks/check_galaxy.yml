@@ -42,7 +42,8 @@
         - name: Debug ans_col_existing
           ansible.builtin.debug:
             var: ans_col_existing_json
-            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           tags:
             - debug
 
@@ -61,7 +62,7 @@
 
         - name: Set a fact for the lists of ansible-galaxy system collections existing
           ansible.builtin.set_fact:
-            ans_col_existing: "{{ ans_col_existing + ans_col_existing_json[ans_col_path] | dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
+            ans_col_existing: "{{ ans_col_existing + ans_col_existing_json[ans_col_path] | ansible.builtin.dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
           loop: "{{ ans_col_paths }}"
           loop_control:
             loop_var: ans_col_path
@@ -72,6 +73,9 @@
             verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           tags:
             - debug
+
+        - name: Debug fail
+          ansible.builtin.fail:
 
       when: ans_galaxy_json | bool
 
