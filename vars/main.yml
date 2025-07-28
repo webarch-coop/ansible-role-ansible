@@ -54,7 +54,7 @@ ans_pypi_ansible_state_jmespath_query: "[?name=='ansible'].state|[0]"
 ans_pypi_ansible_version_jmespath_query: "[?name=='ansible'].version|[0]"
 ans_pypi_pkg_uninstall: []
 ans_pipx_apps_jmespath_query: "application[].name"
-ans_pipx_bin_jmespath_query: "files[?mode=='0775'].path"
+ans_pipx_bin_jmespath_query: "files[?mode=='0755'].path"
 ans_pipx_info_ansible_version_jmespath_query: "application[?name=='ansible'].version|[0]"
 ans_pipx_info_injected_pkgs_jmespath_query: "application[?name=='ansible'].injected|[0]"
 ans_pipx_info_pkgs_jmespath_query: "application[].{name: name,version: version}"
