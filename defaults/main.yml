@@ -257,6 +257,8 @@ ans_pypi_pkgs:
     venv: ansible
     version: latest
 ans_pipx_cmd: false
+# If pipx has been updated then update this path, eg
+# ans_pipx_path: /usr/local/bin/pipx
 ans_pipx_path: /usr/bin/pipx
 ans_pipx_root_env:
   PIPX_BIN_DIR: /usr/local/bin

@@ -4,6 +4,17 @@
 
 **NOTE: This role needs work, it doesn't currently upgrade PyPI packages that have been installed using `pipx` and `pipx` is now the default install method so, for now, running `rm -rf ~/.local/pipx/venvs/ansible` before running this role is the best way to use it.**
 
+**NOTE: Distros other than Debian Trixie packages `pipx` <= `1.7.0`, but for the latest `community.general` `pipx` >= `1.7.0` is requited, so upgrade using `pipx-in-pipx` as follows.**
+
+```bash
+sudo -i
+export PIPX_BIN_DIR=/usr/local/bin
+export PIPX_HOME=/opt/pipx
+pip install pipx-in-pipx --break-system-packages
+which -a pipx
+/usr/local/bin/pipx --version
+```
+
 This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Ubuntu Noble or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
 
 This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Jammy.
@@ -98,8 +109,8 @@ The role is designed to be run using the `/usr/bin/ansible-playbook` that is ins
 ```bash
 git clone https://git.coop/webarch/localhost.git
 cd localhost
-./ansible.sh --check     # check what will be done
-./ansible.sh --verbose   # verbose install / update
+./ansible.sh --check    # check what will be done
+./ansible.sh --verbose  # verbose install / update
 ```
 
 When this role is run by a non-root user, it will symlink Ansible from `~/.local/bin`, if `~/.local/bin` is not found in the `$PATH` environmental variable and if the users `$SHELL` environmental variable ends in `bash` and `~/.bash_profile` doesn't exist then one will be created (but it won't be touched if it already exists), see the [files/bash_profile.sh](bash_profile.sh) file for it's content.
