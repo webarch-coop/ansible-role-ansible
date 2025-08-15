@@ -33,7 +33,7 @@ ans_cols:
     # https://packages.debian.org/bookworm/pipx
     # and noble has 1.4.3
     # https://packages.ubuntu.com/noble/pipx
-    version: 10.7.2  # community.general
+    version: 10.7.3  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: 3.15.0  # community.mysql
