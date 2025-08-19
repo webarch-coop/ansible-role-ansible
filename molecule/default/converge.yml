@@ -80,14 +80,14 @@
             version: 3.0.3  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
-            version: 3.3.0  # community.dns
+            version: 3.3.1  # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
             # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
             # https://packages.debian.org/bookworm/pipx
             # and noble has 1.4.3
             # https://packages.ubuntu.com/noble/pipx
-            version: 11.2.0  # community.general
+            version: 11.2.1  # community.general
           - name: community.mysql
             url: https://github.com/ansible-collections/community.mysql
             version: 3.15.0  # community.mysql
