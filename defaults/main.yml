@@ -26,14 +26,14 @@ ans_cols:
     version: 3.0.3  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
-    version: 3.3.2  # community.dns
+    version: 3.3.3  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
     # https://packages.debian.org/bookworm/pipx
     # and noble has 1.4.3
     # https://packages.ubuntu.com/noble/pipx
-    version: 10.7.3  # community.general
+    version: 10.7.4  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: 3.15.0  # community.mysql
@@ -178,7 +178,7 @@ ans_pypi_pkgs:
     venv: ansible
     # TODO switch to 2.19.x when Debian Buster Python 3.7.3 no longer needs to be supported
     # https://packages.debian.org/buster/python3
-    version: 2.17.13  # ansible-core
+    version: 2.17.14  # ansible-core
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
