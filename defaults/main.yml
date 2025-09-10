@@ -170,7 +170,7 @@ ans_pkgs:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    # TODO switch to 11.x when Debian Buster Python 3.7.3 no longer needs to be supported
+    # TODO switch to 12.x when Debian Buster Python 3.7.3 no longer needs to be supported
     # https://packages.debian.org/buster/python3
     version: 10.7.0  # ansible
   - name: ansible-core
