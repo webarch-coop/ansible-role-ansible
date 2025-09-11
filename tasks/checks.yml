@@ -150,14 +150,14 @@
         - name: Debug the Ansible installed version
           ansible.builtin.debug:
             var: ans_installed_version
-            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           tags:
             - debug
 
         - name: Debug the installed ansible-core package version string
           ansible.builtin.debug:
             msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
-            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
           tags:
             - debug
 
@@ -168,14 +168,14 @@
         - name: Ansible core installed version
           ansible.builtin.debug:
             var: ans_core_installed_version
-            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           tags:
             - debug
 
         - name: Debug the running Ansible version
           ansible.builtin.debug:
             var: ansible_version
-            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           tags:
             - debug
 
@@ -184,6 +184,9 @@
             ans_running_version: "{{ ansible_version.full }}"
 
       when: ans_distro_check | bool
+
+    - name: CI test fail
+      ansible.builtin.fail:
 
     - name: Check the latest Ansible version
       ansible.builtin.include_tasks: pypi_info.yml
