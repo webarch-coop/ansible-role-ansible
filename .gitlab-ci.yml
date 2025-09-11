@@ -24,7 +24,7 @@ variables:
   DEBIAN_FRONTEND: "noninteractive"
   # [DEPRECATION WARNING]: DEFAULT_MANAGED_STR option. Reason: The `ansible_managed` variable can be set just like any other variable, or a different variable can be used.
   DEFAULT_MANAGED_STR: "Ansible managed"
-  MOLECULE_VERBOSITY: "0"
+  MOLECULE_VERBOSITY: "1"
   PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   PIPX_BIN_DIR: /usr/local/bin
   PIPX_HOME: /opt/pipx

@@ -28,6 +28,12 @@
       ansible.builtin.debug:
         var: ansible_facts.python_version
 
+    - name: Include the upgrade role
+      ansible.builtin.include_role:
+        name: upgrade
+      vars:
+        upgrade: true
+
     - name: Check the pipx version
       ansible.builtin.command: pipx --version
       check_mode: false

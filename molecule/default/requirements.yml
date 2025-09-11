@@ -8,9 +8,8 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-# https://ansible-lint.readthedocs.io/rules/
-skip_list:
-  - key-order[task]
-var_naming_pattern: "^[ans|molecule|upgrade]_?[a-z_]*$"
-# vim: syntax=yaml
+- name: upgrade
+  scm: git
+  src: https://git.coop/webarch/upgrade.git
+  version: 2.12.0  # upgrade
 ...

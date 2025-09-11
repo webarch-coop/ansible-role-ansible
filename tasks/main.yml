@@ -35,6 +35,20 @@
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
             fail_msg: "This role doesn't have support for {{ ansible_facts.distribution }} {{ ansible_facts.distribution_release }}."
 
+        - name: Debug ans_pkgs
+          ansible.builtin.debug:
+            var: ans_pkgs
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
+
+        - name: Debug ans_pkgs_present
+          ansible.builtin.debug:
+            var: ans_pkgs_present
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
+
         - name: Requirements present when root
           ansible.builtin.apt:
             pkg: "{{ ans_pkgs_present }}"
