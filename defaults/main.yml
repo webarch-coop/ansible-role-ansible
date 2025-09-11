@@ -113,6 +113,7 @@ ans_pkgs:
   - name: jammy
     pkgs_present:
       - ansible
+      - ansible-core
       - ansible-lint
       - git
       - jc
