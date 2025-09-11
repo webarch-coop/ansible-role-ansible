@@ -413,12 +413,28 @@
         - name: Debug ans_core_installed_version
           ansible.builtin.debug:
             var: ans_core_installed_version
-            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
+
+        - name: Debug ans_core_installed_version type
+          ansible.builtin.debug:
+            msg: "{{ ans_core_installed_version | ansible.builtin.type_debug }}"
+            # verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
 
         - name: Debug ans_core_required_version
           ansible.builtin.debug:
             var: ans_core_required_version
-            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
+
+        - name: Debug ans_core_required_version type
+          ansible.builtin.debug:
+            msg: "{{ ans_core_required_version | ansible.builtin.type_debug }}"
+            # verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
           tags:
             - debug
 
