@@ -59,13 +59,15 @@
       tags:
         - debug
 
-    - name: Include the pipx install tasks that use the command module
+    - name: Include the pipx install tasks that use the command module when ans_pipx_mod is false or the pipx version is less 1.7.0
       ansible.builtin.include_tasks: pipx_cmd_install.yml
-      when: not ans_pipx_mod | bool
+      when: (not ans_pipx_mod | bool) or (ans_pipx_version is version('1.7.0', 'lt'))
 
-    - name: Include the pipx install tasks that use the community.general.pipx module
+    - name: Include the pipx install tasks that use the community.general.pipx module when ans_pipx_mod is true and the pipx version is greater than or equal to 1.7.0
       ansible.builtin.include_tasks: pipx_mod_install.yml
-      when: ans_pipx_mod | bool
+      when:
+        - ans_pipx_mod | bool
+        - ans_pipx_version is version('1.7.0', 'ge')
 
     # TODO This doesn't yet work properly for packages like ansible-lint or molecule when venv is set to something other than ansible
     - name: PyPI packages configured using pipx when not already available as system packages and not injected into the Ansible venv

@@ -19,7 +19,7 @@
 
     # Debian Buster Package: python3 (3.7.3-1)
     # https://packages.debian.org/buster/python3
-    - name: Check that the Python version is >= 3.7.3
+    - name: Check that the Python version is greater than or equal to 3.7.3
       ansible.builtin.assert:
         that:
           - ans_python_version is ansible.builtin.version('3.7.3', 'ge')
@@ -42,7 +42,7 @@
       tags:
         - debug
 
-    - name: Check that the pipx executable version is >= 1.0.0
+    - name: Check that the pipx executable version is greater than or equal to 1.0.0
       ansible.builtin.assert:
         that:
           - ans_pipx_version is version('1.0.0', 'ge')
@@ -135,49 +135,35 @@
           tags:
             - debug
 
-        - name: Set a fact for the Jammy packaged version of Ansible
+        - name: Set a fact for the Ansible .deb version for Ubuntu Jammy
           ansible.builtin.set_fact:
-            ans_core_installed_version: "2.10.8"
+            ans_installed_version: "2.10.8"
           when:
             - ansible_facts.distribution_release == "jammy"
             - ansible_facts.packages.ansible[0].version in ans_jammy_versions
 
-        - name: Check the Ansible .deb version when not Jammy
-          block:
-
-            - name: Check ansible .deb version present when not running trixie
-              block:
-
-                - name: Set a fact for the Ansible .deb version
-                  ansible.builtin.set_fact:
-                    ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | ansible.builtin.regex_replace('[+].*$') | string }}"
-
-                - name: Debug the Ansible installed version
-                  ansible.builtin.debug:
-                    var: ans_installed_version
-                    verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-                  tags:
-                    - debug
-
-              when: ansible_facts.distribution_release is not regex('^trixie$')
-
-            - name: Check ansible-core .deb version present
-              block:
-
-                - name: Debug the installed ansible-core package version string
-                  ansible.builtin.debug:
-                    msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
-                    verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-                  tags:
-                    - debug
-
-                - name: Set a fact for the .deb package ansible-core version
-                  ansible.builtin.set_fact:
-                    ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | ansible.builtin.regex_replace('[-][0-9a-zA-Z]{1,}$') | string }}"
-
-              when: ansible_facts.packages | community.general.json_query(ans_deb_name_jmespath_query) == "ansible-core"
-
+        - name: Set a fact for the Ansible .deb version when not Ubuntu Jammy
+          ansible.builtin.set_fact:
+            ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | ansible.builtin.regex_replace('[+].*$') | string }}"
           when: ansible_facts.distribution_release != "jammy"
+
+        - name: Debug the Ansible installed version
+          ansible.builtin.debug:
+            var: ans_installed_version
+            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+          tags:
+            - debug
+
+        - name: Debug the installed ansible-core package version string
+          ansible.builtin.debug:
+            msg: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) }}"
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
+
+        - name: Set a fact for the .deb package ansible-core version
+          ansible.builtin.set_fact:
+            ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | ansible.builtin.regex_replace('[-][0-9a-zA-Z]{1,}$') | string }}"
 
         - name: Ansible core installed version
           ansible.builtin.debug:
