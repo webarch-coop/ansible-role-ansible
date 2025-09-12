@@ -186,9 +186,6 @@
 
       when: ans_distro_check | bool
 
-    - name: CI test fail
-      ansible.builtin.fail:
-
     - name: Check the latest Ansible version
       ansible.builtin.include_tasks: pypi_info.yml
       vars:
