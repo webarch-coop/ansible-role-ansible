@@ -112,7 +112,8 @@ ans_pkgs:
     pkgs_absent: []
   - name: jammy
     pkgs_present:
-      - ansible
+      # Ubuntu jammy updates provides a version of ansible-core that results in ansible being uninstalled
+      # - ansible
       - ansible-core
       - ansible-lint
       - git
