@@ -164,7 +164,7 @@
 
         - name: Set a fact for the .deb package ansible-core version
           ansible.builtin.set_fact:
-            ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | ansible.builtin.regex_replace('[-][0-9a-zA-Z]{1,}$') | string }}"
+            ans_core_installed_version: "{{ ansible_facts.packages | community.general.json_query(ans_deb_version_jmespath_query) | ansible.builtin.regex_replace('[-][0-9a-zA-Z.]{1,}$') | string }}"
 
         - name: Ansible core installed version
           ansible.builtin.debug:
