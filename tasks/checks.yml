@@ -138,12 +138,15 @@
             ans_installed_version: "2.10.8"
           when:
             - ansible_facts.distribution_release == "jammy"
+            - ("ansible" in ansible_facts.packages)
             - ansible_facts.packages.ansible[0].version in ans_jammy_versions
 
         - name: Set a fact for the Ansible .deb version when not Ubuntu Jammy
           ansible.builtin.set_fact:
             ans_installed_version: "{{ ansible_facts.packages.ansible[0].version | ansible.builtin.regex_replace('[+].*$') | string }}"
-          when: ansible_facts.distribution_release != "jammy"
+          when:
+            - ansible_facts.distribution_release != "jammy"
+            - ("ansible" in ansible_facts.packages)
 
         - name: Debug the Ansible installed version
           ansible.builtin.debug:
