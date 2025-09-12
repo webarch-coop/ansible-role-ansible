@@ -106,9 +106,8 @@
           ansible.builtin.stat:
             path: "{{ ans_col_path_system }}"
           register: ans_col_path_system_check
-          # NOTE that the ansible package is not available for Trixie
-          # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
-          when: ansible_facts.distribution_release != "trixie"
+          # NOTE that the ansible package is uninstalled on Ubuntu Jammy when ansible-core is updated
+          when: ansible_facts.distribution_release != "jammy"
 
         - name: The system installed ansible-galaxy python module location should be an existing directory
           ansible.builtin.assert:
@@ -116,9 +115,8 @@
               - ans_col_path_system_check.stat.exists | bool
               - ans_col_path_system_check.stat.isdir | bool
             quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
-          # NOTE that the ansible package is not available for Trixie
-          # https://packages.debian.org/search?suite=trixie&searchon=names&keywords=ansible
-          when: ansible_facts.distribution_release != "trixie"
+          # NOTE that the ansible package is uninstalled on Ubuntu Jammy when ansible-core is updated
+          when: ansible_facts.distribution_release != "jammy"
 
         - name: Include checks for ansible-galaxy
           ansible.builtin.include_tasks: check_galaxy.yml
