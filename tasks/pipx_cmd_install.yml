@@ -261,13 +261,15 @@
           tags:
             - debug
 
-        - name: Include pipx list tasks as community.general >= 5.6.0 is required for community.general.pipx_info module
+        - name: Include pipx list tasks as community.general >= 5.6.0 and / or pipx is <= 1.7.0
           ansible.builtin.include_tasks: check_pipx_list.yml
-          when: not ans_pipx_mod_info | bool
+          when: (not ans_pipx_mod_info | bool) or (ans_pipx_version is version('1.7.0', 'lt'))
 
-        - name: Include community.general.pipx_info module tasks as community.general >= 5.6.0
+        - name: Include community.general.pipx_info module tasks as community.general >= 5.6.0 and pipx is >= 1.7.0
           ansible.builtin.include_tasks: check_pipx_info.yml
-          when: ans_pipx_mod_info | bool
+          when:
+            - ans_pipx_mod_info | bool
+            - ans_pipx_version is version('1.7.0', 'ge')
 
         - name: Find executables in the Ansible venv bin
           ansible.builtin.find:
