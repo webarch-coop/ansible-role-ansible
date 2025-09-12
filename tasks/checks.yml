@@ -439,14 +439,14 @@
           tags:
             - debug
 
-        # TODO This doesn't result in ans_pipx being true when downgrading ansible in a pipx venv
-        - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
-          ansible.builtin.set_fact:
-            ans_pipx: true
-          when: >
-            ( ( ans_core_installed_version is defined ) and ( ans_core_required_version is defined ) ) and
-            ( ( not ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'gt') ) ) or
-            ( ( ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'lt') ) )
+        # This role now only installs Ansible using pipx
+        # - name: Set a fact to indicate that pipx, rather than pip is to be use to install PyPi packages
+        #   ansible.builtin.set_fact:
+        #     ans_pipx: true
+        #   when: >
+        #     ( ( ans_core_installed_version is defined ) and ( ans_core_required_version is defined ) ) and
+        #     ( ( not ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'gt') ) ) or
+        #     ( ( ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'lt') ) )
 
         - name: Debug ans_pipx variable
           ansible.builtin.debug:
