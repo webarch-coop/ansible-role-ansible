@@ -15,11 +15,9 @@ which -a pipx
 /usr/local/bin/pipx --version
 ```
 
-This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Ubuntu Noble or Ubuntu Jammy using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
+This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm or Ubuntu Noble using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
 
-This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Jammy.
-
-Debian Bullseye only supports Ansible `8.7.0` as Ansible `>=9.0.0` requires [Python `>=3.10`](https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/9/CHANGELOG-v9.rst), [release 3.56.0](https://git.coop/webarch/ansible/-/releases/3.56.0) is the last version of this role to support Debian Bullseye, [Debian Bullseye no longer provides pipx](https://packages.debian.org/search?suite=bullseye&searchon=names&keywords=pipx).
+This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Noble.
 
 ## Role variables
 
@@ -50,7 +48,7 @@ The `ans_downgrade` variable defaults to `false`, if it is set to `true` then th
 
 ### ans_distro_check
 
-The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_facts.distribution` is not Debian or Ubuntu and `ansible_facts.distribution_release` is not, bookworm or jammy, by default it won't as these are the only distros that have beed used for development and testing.
+The `ans_distro_check` variable defaults to `true`, if it is set to `false` then this role will still run when `ansible_facts.distribution` is not Debian or Ubuntu and `ansible_facts.distribution_release` is not a supported version.
 
 ### ans_pipx_cmd
 
