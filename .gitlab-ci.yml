@@ -33,37 +33,37 @@ before_script:
   - whoami
   - pwd
 stages:
-  # - bookworm
+  - bookworm
   - forky
   # Noble fails idempotence tests for Ansible modules
   # - noble
   - trixie
-# bookworm:
-#   image: debian:bookworm-backports
-#   stage: bookworm
-#   script:
-#     - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
-#     - apt-get update -qq
-#     - apt-get dist-upgrade -qqy
-#     # Install packages for pipx
-#     - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv yamllint
-#     - pre-commit install
-#     - pre-commit run --all-files
-#     - which pipx
-#     - pipx --version
-#     - pipx install molecule
-#     - pipx inject molecule ansible jc jmespath yamllint
-#     - which ansible
-#     - ansible --version
-#     - which yamllint
-#     - yamllint --version
-#     - which molecule
-#     - molecule --version
-#     - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
-#     - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
-#     - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
-#     - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
-#     - molecule test --all
+bookworm:
+  image: debian:bookworm-backports
+  stage: bookworm
+  script:
+    - ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    - apt-get update -qq
+    - apt-get dist-upgrade -qqy
+    # Install packages for pipx
+    - apt-get install -qqy ansible ansible-lint git jc jo libpq-dev pipx pre-commit procps postgresql-client python3-apt python3-argcomplete python3-commonmark python3-jmespath python3-lxml python3-netaddr python3-pip python3-psycopg python3-resolvelib python3-ruamel.yaml python3-setuptools python3-venv yamllint
+    # - pre-commit install
+    # - pre-commit run --all-files
+    - which pipx
+    - pipx --version
+    - pipx install molecule
+    - pipx inject molecule ansible jc jmespath yamllint
+    - which ansible
+    - ansible --version
+    - which yamllint
+    - yamllint --version
+    - which molecule
+    - molecule --version
+    - echo ANSIBLE_COLLECTIONS_PATH ${ANSIBLE_COLLECTIONS_PATH}
+    - echo ANSIBLE_FILTER_PLUGINS   ${ANSIBLE_FILTER_PLUGINS}
+    - echo ANSIBLE_LIBRARY          ${ANSIBLE_LIBRARY}
+    - echo ANSIBLE_ROLES_PATH       ${ANSIBLE_ROLES_PATH}
+    - molecule test --all
 forky:
   image: debian:forky-backports
   stage: forky
