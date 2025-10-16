@@ -96,7 +96,7 @@
             version: 11.4.0  # community.general
           - name: community.mysql
             url: https://github.com/ansible-collections/community.mysql
-            version: 4.0.0  # community.mysql
+            version: 4.0.1  # community.mysql
           - name: community.postgresql
             url: https://github.com/ansible-collections/community.postgresql
             version: 4.1.0  # community.postgresql
