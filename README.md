@@ -19,6 +19,24 @@ This repo contains an Ansible role designed to be run by a non-root user [agains
 
 This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Noble.
 
+## Debian and Ubuntu Python Versions
+
+See the [ansible-core support matrix](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-target-node-python-support).
+
+| Distro   | Python version | Max Ansible version on control node |
+|----------|----------------|-------------------------------------|
+| Buster   | 3.7.3          | 2.17.x                              |
+|----------|----------------|-------------------------------------|
+| Bullseye | 3.9.2          | 2.19.x                              |
+|----------|----------------|-------------------------------------|
+| Bookworm | 3.11.2         | 2.19.x                              |
+|----------|----------------|-------------------------------------|
+| Trixie   | 3.13.5         | 2.20.x                              |
+|----------|----------------|-------------------------------------|
+| Jammy    | 3.10.6         | 2.19.x                              |
+|----------|----------------|-------------------------------------|
+| Noble    | 3.12.3         | 2.20.x                              |
+
 ## Role variables
 
 See the [defaults/main.yml](defaults/main.yml) file for the default variables, the [vars/main.yml](vars/main.yml) file for the preset variables and the [meta/argument_specs.yml](meta/argument_specs.yml) file for the variable specification.
