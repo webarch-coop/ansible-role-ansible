@@ -23,14 +23,14 @@ This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian B
 
 See the [ansible-core support matrix](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-target-node-python-support).
 
-| Distro   | Python version | Max Ansible version on control node |
-|----------|----------------|-------------------------------------|
-| Buster   | 3.7.3          | 2.17.x                              |
-| Bullseye | 3.9.2          | 2.19.x                              |
-| Bookworm | 3.11.2         | 2.19.x                              |
-| Trixie   | 3.13.5         | 2.20.x                              |
-| Jammy    | 3.10.6         | 2.19.x                              |
-| Noble    | 3.12.3         | 2.20.x                              |
+| Target distro | Target python | Max Ansible version on control node |
+|---------------|---------------|-------------------------------------|
+| Buster        | 3.7.3         | 2.17.x                              |
+| Bullseye      | 3.9.2         | 2.19.x                              |
+| Bookworm      | 3.11.2        | 2.19.x                              |
+| Trixie        | 3.13.5        | 2.20.x                              |
+| Jammy         | 3.10.6        | 2.19.x                              |
+| Noble         | 3.12.3        | 2.20.x                              |
 
 ## Role variables
 
