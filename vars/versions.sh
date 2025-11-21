@@ -23,6 +23,7 @@ declare -a core_changelog_urls=(
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/10/CHANGELOG-v10.rst"
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/11/CHANGELOG-v11.rst"
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/12/CHANGELOG-v12.rst"
+"https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/13/CHANGELOG-v13.rst"
 )
 
 echo "---"
