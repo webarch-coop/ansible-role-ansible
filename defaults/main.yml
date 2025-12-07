@@ -20,7 +20,7 @@ ans_cols:
     version: 6.0.0  # ansible.utils
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 5.0.3  # community.docker
+    version: 5.0.4  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: 3.0.5  # community.crypto
@@ -37,6 +37,9 @@ ans_cols:
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
     version: 4.0.1  # community.mysql
+  - name: community.openwrt
+    url: https://github.com/ansible-collections/community.openwrt
+    version: 0.1.0  # community.openwrt
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: 4.2.0  # community.postgresql
