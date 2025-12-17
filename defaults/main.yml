@@ -39,7 +39,7 @@ ans_cols:
     version: 4.0.1  # community.mysql
   - name: community.openwrt
     url: https://github.com/ansible-collections/community.openwrt
-    version: 0.1.0  # community.openwrt
+    version: 0.2.0  # community.openwrt
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: 4.2.0  # community.postgresql
