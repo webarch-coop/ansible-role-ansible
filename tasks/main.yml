@@ -49,10 +49,19 @@
           tags:
             - debug
 
-        - name: Requirements present when root
-          ansible.builtin.apt:
-            pkg: "{{ ans_pkgs_present }}"
-            state: present
+        - name: Update apt cache and install packages when root
+
+            - name: Update apt cache
+              ansible.builtin.apt:
+                update_cache: true
+              check_mode: false
+              changed_when: false
+
+            - name: Requirements present
+              ansible.builtin.apt:
+                pkg: "{{ ans_pkgs_present }}"
+                state: present
+
           when: ansible_facts.effective_user_id == 0
 
       when: ans_distro_check | bool
