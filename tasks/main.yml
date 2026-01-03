@@ -50,6 +50,7 @@
             - debug
 
         - name: Update apt cache and install packages when root
+          block:
 
             - name: Update apt cache
               ansible.builtin.apt:
