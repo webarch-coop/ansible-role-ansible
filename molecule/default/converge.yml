@@ -173,6 +173,11 @@
             url: https://pypi.org/pypi/netaddr
             venv: ansible
             version: latest
+          - name: pexpect
+            type: lib
+            url: https://pypi.org/pypi/pexpect
+            venv: ansible
+            version: latest
           - name: psycopg
             type: lib
             url: https://pypi.org/pypi/psycopg

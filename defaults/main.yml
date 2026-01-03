@@ -281,7 +281,7 @@ ans_pypi_pkgs:
     version: latest
   - name: pexpect
     type: lib
-    url: https://pypi.org/pypi//pexpect
+    url: https://pypi.org/pypi/pexpect
     venv: ansible
     version: latest
   - name: psycopg
