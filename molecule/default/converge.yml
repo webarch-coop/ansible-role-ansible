@@ -28,7 +28,7 @@
       ansible.builtin.debug:
         var: ansible_facts.python_version
 
-    - name: Include the upgrade role
+    - name: Include the upgrade role  # noqa: var-naming[no-role-prefix]
       ansible.builtin.include_role:
         name: upgrade
       vars:
