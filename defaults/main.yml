@@ -36,7 +36,7 @@ ans_cols:
     version: 10.7.7  # community.general
   - name: community.mysql
     url: https://github.com/ansible-collections/community.mysql
-    version: 4.0.1  # community.mysql
+    version: 4.1.0  # community.mysql
   - name: community.openwrt
     url: https://github.com/ansible-collections/community.openwrt
     version: 1.0.0  # community.openwrt

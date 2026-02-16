@@ -96,7 +96,7 @@
             version: 12.3.0  # community.general
           - name: community.mysql
             url: https://github.com/ansible-collections/community.mysql
-            version: 4.0.1  # community.mysql
+            version: 4.1.0  # community.mysql
           - name: community.openwrt
             url: https://github.com/ansible-collections/community.openwrt
             version: 1.0.0  # community.openwrt
