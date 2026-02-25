@@ -26,6 +26,8 @@ repos:
           - README.md
   # https://github.com/ansible/ansible-lint/releases
   - repo: https://github.com/ansible/ansible-lint.git
+    # Versions later than 26.1.1 can't be used due to
+    # https://github.com/ansible/ansible-lint/issues/4978
     rev: v26.1.1
     hooks:
       - id: ansible-lint
@@ -33,7 +35,7 @@ repos:
         language: python
         additional_dependencies:
           # https://pypi.org/project/ansible/
-          - ansible==13.3.0
+          - ansible==13.4.0
           # https://github.com/kellyjonbrazil/jc/releases
           - jc==1.25.6
           # https://github.com/jmespath/jmespath.py/tags
