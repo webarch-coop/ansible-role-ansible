@@ -117,9 +117,7 @@
           - name: ansible-lint
             url: https://pypi.org/pypi/ansible-lint
             venv: ansible
-            # See https://github.com/ansible/ansible-lint/issues/4978
-            version: 26.1.1
-            # version: latest
+            version: latest
           - name: dnspython
             type: lib
             url: https://pypi.org/pypi/dnspython
