@@ -17,7 +17,7 @@ repos:
         name: YAML Lint
   # https://github.com/jackdewinter/pymarkdown/releases
   - repo: https://github.com/jackdewinter/pymarkdown.git
-    rev: v0.9.35
+    rev: v0.9.36
     hooks:
       - id: pymarkdown
         name: Markdown Lint
@@ -28,11 +28,12 @@ repos:
   - repo: https://github.com/ansible/ansible-lint.git
     # Versions later than 26.1.1 can't be used due to
     # https://github.com/ansible/ansible-lint/issues/4978
-    rev: v26.1.1
+    rev: v26.3.0
     hooks:
       - id: ansible-lint
         name: Ansible Lint
         language: python
+        language_version: python
         additional_dependencies:
           # https://pypi.org/project/ansible/
           - ansible==13.4.0
