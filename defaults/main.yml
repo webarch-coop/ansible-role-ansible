@@ -20,13 +20,13 @@ ans_cols:
     version: 6.0.1  # ansible.utils
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 5.0.6  # community.docker
+    version: 5.1.0  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
     version: 3.1.1  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
-    version: 3.5.2  # community.dns
+    version: 3.5.3  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
@@ -39,7 +39,7 @@ ans_cols:
     version: 4.2.0  # community.mysql
   - name: community.openwrt
     url: https://github.com/ansible-collections/community.openwrt
-    version: 1.0.0  # community.openwrt
+    version: 1.2.0  # community.openwrt
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
     version: 4.2.0  # community.postgresql
