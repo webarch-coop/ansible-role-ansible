@@ -28,7 +28,7 @@ repos:
   - repo: https://github.com/ansible/ansible-lint.git
     # Versions later than 26.1.1 can't be used due to
     # https://github.com/ansible/ansible-lint/issues/4978
-    rev: v26.3.0
+    rev: v26.4.0
     hooks:
       - id: ansible-lint
         name: Ansible Lint
