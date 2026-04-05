@@ -42,6 +42,7 @@ argument_specs:
           - forky
           - jammy
           - noble
+          - resolute
           - trixie
         description: Internal list of Debian and Ubuntu distos generated from the ans_pkgs list.
         elements: str
@@ -128,6 +129,7 @@ argument_specs:
               - forky
               - jammy
               - noble
+              - resolute
               - trixie
           pkgs_absent:
             type: list
