@@ -52,8 +52,10 @@ bookworm:
     # - pre-commit run --all-files
     - which pipx
     - pipx --version
+    - cd /tmp  # work around for https://github.com/pypa/pipx/issues/1778
     - pipx install molecule
     - pipx inject molecule ansible jc jmespath yamllint
+    - cd -  # work around for https://github.com/pypa/pipx/issues/1778
     - which ansible
     - ansible --version
     - which yamllint
@@ -79,8 +81,10 @@ forky:
     - pre-commit run --all-files
     - which pipx
     - pipx --version
+    - cd /tmp  # work around for https://github.com/pypa/pipx/issues/1778
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath yamllint
+    - cd -  # work around for https://github.com/pypa/pipx/issues/1778
     - which ansible
     - ansible --version
     - which yamllint
@@ -106,8 +110,10 @@ trixie:
     - pre-commit run --all-files
     - which pipx
     - pipx --version
+    - cd /tmp  # work around for https://github.com/pypa/pipx/issues/1778
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath yamllint
+    - cd -  # work around for https://github.com/pypa/pipx/issues/1778
     - which ansible
     - ansible --version
     - which yamllint
@@ -133,8 +139,10 @@ trixie:
 #     - pre-commit run --all-files
 #     - which pipx
 #     - pipx --version
+#     - cd /tmp  # work around for https://github.com/pypa/pipx/issues/1778
 #     - pipx install molecule
 #     - pipx inject --include-apps --include-deps molecule ansible jc jmespath yamllint
+#     - cd -  # work around for https://github.com/pypa/pipx/issues/1778
 #     - which ansible
 #     - ansible --version
 #     - which yamllint
@@ -160,8 +168,10 @@ resolute:
     - pre-commit run --all-files
     - which pipx
     - pipx --version
+    - cd /tmp  # work around for https://github.com/pypa/pipx/issues/1778
     - pipx install molecule
     - pipx inject --include-apps --include-deps molecule ansible jc jmespath yamllint
+    - cd -  # work around for https://github.com/pypa/pipx/issues/1778
     - which ansible
     - ansible --version
     - which yamllint
