@@ -96,7 +96,7 @@
             # https://packages.debian.org/bookworm/pipx
             # and noble has 1.4.3
             # https://packages.ubuntu.com/noble/pipx
-            version: 13.0.0  # community.general
+            version: 13.0.1  # community.general
           # Replaced with ansible.mysql
           # - name: community.mysql
           #   url: https://github.com/ansible-collections/community.mysql
