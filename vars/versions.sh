@@ -24,9 +24,10 @@ declare -a core_changelog_urls=(
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/11/CHANGELOG-v11.rst"
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/12/CHANGELOG-v12.rst"
 "https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/13/CHANGELOG-v13.rst"
+"https://raw.githubusercontent.com/ansible-community/ansible-build-data/main/14/CHANGELOG-v14.rst"
 )
 
-echo "---"
+echo ""
 echo "ans_versions:"
 for url in "${base_changelog_urls[@]}"
   do
@@ -53,3 +54,4 @@ for url in "${core_changelog_urls[@]}"
     done
 done
 rm CHANGELOG
+echo "..."
