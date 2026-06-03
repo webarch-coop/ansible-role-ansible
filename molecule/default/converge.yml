@@ -103,7 +103,7 @@
           #   version: 5.0.1  # community.mysql
           - name: community.openwrt
             url: https://github.com/ansible-collections/community.openwrt
-            version: 1.3.0  # community.openwrt
+            version: 1.5.0  # community.openwrt
           - name: community.postgresql
             url: https://github.com/ansible-collections/community.postgresql
             version: 4.2.0  # community.postgresql
