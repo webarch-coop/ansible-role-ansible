@@ -11,11 +11,13 @@
 - name: Run Ansible collection install in a block to catch failures
   block:
 
-    - name: "Ansible collection install using ansible_galaxy_install module for {{ ans_col.name }}"
+    - name: "Ansible collection install using ansible_galaxy_install module for {{ ans_col_ver }}"
       community.general.ansible_galaxy_install:
-        name: "{{ ans_col.name }}:{{ ans_col_version_required }}"
+        name: "{{ ans_col_ver }}"
         force: true
         type: collection
+      vars:
+        ans_col_ver: "{{ ans_col.name }}:{{ ans_col_version_required }}"
       retries: "{{ ans_download.retries }}"
       delay: "{{ ans_download.delay }}"
       register: ans_col_install
