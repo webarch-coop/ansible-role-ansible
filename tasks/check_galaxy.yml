@@ -12,7 +12,8 @@
   block:
 
     - name: Check if the installed version of ansible-galaxy supports JSON output
-      ansible.builtin.command: ansible-galaxy collection list --format json
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection list --format json
       environment: "{{ ans_env }}"
       check_mode: false
       changed_when: false

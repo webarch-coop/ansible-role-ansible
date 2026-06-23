@@ -93,6 +93,9 @@
 
       when: ans_latest_headers.location is not regex('releases$')
 
+    - name: Include Ansible Galaxy Collection Check
+      ansible.builtin.include_tasks: check_galaxy.yml
+
     - name: Debug ans_col_existing
       ansible.builtin.debug:
         var: ans_col_existing
@@ -106,9 +109,9 @@
       vars:
         ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
       when: >-
-        ( ans_col_comgen_ver_sort is not defined ) or
-        ( ( ans_col_comgen_ver_sort is defined ) and
-        ( not ans_col_comgen_ver_sort | bool ) )
+        (ans_col_comgen_ver_sort is not defined) or
+        ((ans_col_comgen_ver_sort is defined) and
+        (not ans_col_comgen_ver_sort | bool))
 
     - name: "Set a fact for the versions of the required Ansible collection using community.general.version_sort when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
@@ -188,17 +191,75 @@
           when: not ans_comgen | bool
 
       when: >-
-        ( ( not ans_downgrade | bool ) and
-        ( ans_col_version_required is defined ) and
-        ( ans_col_version_required | length > 0 ) ) and
-        ( ( ans_col_version_present | length == 0 ) or
-        ( ( ans_col_version_present is defined ) and
-        ( ans_col_version_present | length > 0 ) and
-        ( ans_col_version_required is version(ans_col_version_present, '>') ) ) ) or
-        ( ( ans_downgrade | bool ) and
-        ( ( ans_col_version_present is defined ) and
-        ( ans_col_version_present | length > 0 ) and
-        ( ans_col_version_required is version(ans_col_version_present, '<') ) ) )
+        ((not ans_downgrade | bool) and
+        (ans_col_version_required is defined) and
+        (ans_col_version_required | length > 0)) and
+        ((ans_col_version_present | length == 0) or
+        ((ans_col_version_present is defined) and
+        (ans_col_version_present | length > 0) and
+        (ans_col_version_required is version(ans_col_version_present, '>')))) or
+        ((ans_downgrade | bool) and
+        ((ans_col_version_present is defined) and
+        (ans_col_version_present | length > 0) and
+        (ans_col_version_required is version(ans_col_version_present, '<'))))
+
+    - name: Include Ansible Galaxy Collection Check
+      ansible.builtin.include_tasks: check_galaxy.yml
+
+    - name: Debug ans_col_existing
+      ansible.builtin.debug:
+        var: ans_col_existing
+        verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
+
+    - name: "Set a fact for the versions of the required Ansible collection using sort when present for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) | ansible.builtin.unique | sort }}"
+      vars:
+        ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
+      when: >-
+        (ans_col_comgen_ver_sort is not defined) or
+        ((ans_col_comgen_ver_sort is defined) and
+        (not ans_col_comgen_ver_sort | bool))
+
+    - name: "Set a fact for the versions of the required Ansible collection using community.general.version_sort when present for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_versions_present: >-
+          {{- ans_col_existing |
+          community.general.json_query(ans_col_vers_jmespath_query) |
+          ansible.builtin.unique |
+          community.general.version_sort -}}
+      vars:
+        ans_col_vers_jmespath_query: "[?name=='{{ ans_col.name }}'].version"
+      when:
+        - ans_col_comgen_ver_sort is defined
+        - ans_col_comgen_ver_sort | bool
+
+    - name: Debug ans_col_versions_present
+      ansible.builtin.debug:
+        var: ans_col_versions_present
+        verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
+
+    - name: "Set a fact for latest version of the required Ansible collection when present for {{ ans_col.name }}"
+      ansible.builtin.set_fact:
+        ans_col_version_present: "{{ ans_col_versions_present | last }}"
+      when:
+        - ans_col_versions_present is defined
+        - ans_col_versions_present != []
+        - ans_col_comgen_versions is defined
+        - ans_col_comgen_versions != []
+
+    - name: "Check that the required Ansible collection is present for {{ ans_col.name }}"
+      ansible.builtin.assert:
+        that:
+          - ans_col_version_required == ans_col_version_present
+        quiet: "{% if (ansible_check_mode | ansible.builtin.bool) or (ansible_verbosity >= 1) %}false{% else %}true{% endif %}"
+        fail_msg: >-
+          The version of {{ ans_col.name }} that is present is {{ ans_col_version_present }} when it should be
+          {{ ans_col_version_required }}.
 
     # TODO
     # - name: Remove Ansible Galaxy collection
