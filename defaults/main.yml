@@ -95,7 +95,7 @@ ans_pkgs:
       - ansible-core
       # ansible-lint is currently missing from forky
       # https://packages.debian.org/search?suite=forky&searchon=names&keywords=ansible-lint
-      - ansible-lint
+      # - ansible-lint
       - git
       - jc
       - jo
