@@ -71,7 +71,7 @@
         - name: Debug system ans_col_existing
           ansible.builtin.debug:
             var: ans_col_existing
-            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           tags:
             - debug
 
@@ -115,7 +115,14 @@
 
     - name: Set a fact for the versions of community.general present
       ansible.builtin.set_fact:
-        ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | sort }}"
+        ans_col_comgen_versions: "{{ ans_col_existing | community.general.json_query(ans_col_comgen_vers_jmespath_query) | ansible.builtin.unique | community.general.version_sort }}"
+
+    - name: Debug ans_col_comgen_versions
+      ansible.builtin.debug:
+        var: ans_col_comgen_versions
+        # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: Set a fact for latest version of community.general present
       ansible.builtin.set_fact:
@@ -123,6 +130,13 @@
       when:
         - ans_col_comgen_versions is defined
         - ans_col_comgen_versions != []
+
+    - name: Debug ans_col_comgen_version
+      ansible.builtin.debug:
+        var: ans_col_comgen_version
+        # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+      tags:
+        - debug
 
     - name: The version of community.general present needs to be defined
       ansible.builtin.assert:
