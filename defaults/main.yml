@@ -51,7 +51,7 @@ ans_cols:
     version: 4.2.0  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
-    version: 1.6.0  # community.rabbitmq
+    version: 1.7.0  # community.rabbitmq
 ans_distro_check: true
 ans_downgrade: false
 ans_download:
