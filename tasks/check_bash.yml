@@ -15,7 +15,8 @@
       block:
 
         - name: Check the files in the python3-argcomplete package
-          ansible.builtin.command: dpkg -L python3-argcomplete
+          ansible.builtin.command:
+            cmd: dpkg -L python3-argcomplete
           check_mode: false
           changed_when: false
           register: ans_dpkg_argcomplete

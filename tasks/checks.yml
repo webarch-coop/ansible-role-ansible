@@ -26,7 +26,8 @@
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Check the pipx version
-      ansible.builtin.command: "{{ ans_pipx_path }} --version"
+      ansible.builtin.command:
+        cmd: "{{ ans_pipx_path }} --version"
       check_mode: false
       changed_when: false
       register: ans_pipx_executable_check
@@ -480,7 +481,8 @@
       when: ans_pipx_version is version('1.0.0', 'ge')
 
     - name: Check the version of pip
-      ansible.builtin.command: python3 -m pip --version
+      ansible.builtin.command:
+        cmd: python3 -m pip --version
       check_mode: false
       changed_when: false
       register: ans_pip_version_check
@@ -500,7 +502,8 @@
       block:
 
         - name: Run pip inspect
-          ansible.builtin.command: python3 -m pip inspect
+          ansible.builtin.command:
+            cmd: python3 -m pip inspect
           check_mode: false
           changed_when: false
           register: ans_pip_inspect
@@ -512,7 +515,8 @@
       when: ans_pip_version is version('22.2', 'ge')
 
     - name: Check the user PyPI packages
-      ansible.builtin.command: python3 -m pip list --user --format=json
+      ansible.builtin.command:
+        cmd: python3 -m pip list --user --format=json
       check_mode: false
       changed_when: false
       register: ans_pip_user_list
@@ -529,7 +533,8 @@
         - debug
 
     - name: Check the system PyPI packages
-      ansible.builtin.command: python3 -m pip list --format=json
+      ansible.builtin.command:
+        cmd: python3 -m pip list --format=json
       check_mode: false
       changed_when: false
       register: ans_pip_system_list
@@ -548,7 +553,8 @@
 
     # When in a docker container ans_init.stdout == "sh" or "bash"
     - name: Check if system has been booted with systemd as init system
-      ansible.builtin.command: ps -p 1 -o comm=
+      ansible.builtin.command:
+        cmd: ps -p 1 -o comm=
       changed_when: false
       check_mode: false
       register: ans_ps

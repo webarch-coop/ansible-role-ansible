@@ -163,7 +163,8 @@
           block:
 
             - name: "Ansible collection install using command module for {{ ans_col.name }}"
-              ansible.builtin.command: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --force"
+              ansible.builtin.command:
+                cmd: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --force"
               changed_when: true
               retries: "{{ ans_download.retries }}"
               delay: "{{ ans_download.delay }}"
@@ -183,7 +184,8 @@
               when: ans_core_installed_version is version(ans_ansible_core_min_version, '>')
 
             - name: "Ansible collection install using command module without certificate verification for {{ ans_col.name }}"
-              ansible.builtin.command: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force"
+              ansible.builtin.command:
+                cmd: "ansible-galaxy collection install {{ ans_col.name }}:{{ ans_col_version_required }} --ignore-certs --force"
               changed_when: true
               retries: "{{ ans_download.retries }}"
               delay: "{{ ans_download.delay }}"

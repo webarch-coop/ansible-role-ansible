@@ -35,7 +35,8 @@
         upgrade: true
 
     - name: Check the pipx version
-      ansible.builtin.command: pipx --version
+      ansible.builtin.command:
+        cmd: pipx --version
       check_mode: false
       changed_when: false
       register: molecule_pipx_executable_check

@@ -17,7 +17,8 @@
   tasks:
 
     - name: Find symlinks using ls -l /usr/local/bin
-      ansible.builtin.command: ls -l /usr/local/bin
+      ansible.builtin.command:
+        cmd: ls -l /usr/local/bin
       check_mode: false
       changed_when: false
       register: molecule_root_usr_local_bin_ls
@@ -31,7 +32,8 @@
         var: molecule_root_usr_local_bin
 
     - name: Run which ansible
-      ansible.builtin.command: which ansible
+      ansible.builtin.command:
+        cmd: which ansible
       check_mode: false
       changed_when: false
       register: molecule_root_which_ansible
@@ -41,14 +43,16 @@
         var: molecule_root_which_ansible.stdout
 
     - name: Run which ansible -a
-      ansible.builtin.command: which ansible -a
+      ansible.builtin.command:
+        cmd: which ansible -a
       check_mode: false
       changed_when: false
       register: molecule_root_which_ansible_a
       failed_when: molecule_root_which_ansible_a.rc is not regex('^0|1$')
 
     - name: Check Ansible versions
-      ansible.builtin.command: "{{ molecule_ansible_path }} --version"
+      ansible.builtin.command:
+        cmd: "{{ molecule_ansible_path }} --version"
       check_mode: false
       changed_when: false
       register: molecule_root_ansible_v
@@ -65,7 +69,8 @@
         var: molecule_root_ansible_versions
 
     - name: List collections
-      ansible.builtin.command: ansible-galaxy collection list --format=json
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection list --format=json
       check_mode: false
       changed_when: false
       register: molecule_collections_list

@@ -82,12 +82,12 @@
       block:
 
         - name: Check ansible-galaxy collections
-          ansible.builtin.shell: >-
-            set -e -o pipefail &&
-            ansible-galaxy collection list |
-            grep -v -e '^#' -e '^Collection' -e '^-' -e '^$' |
-            sed 's/ /=/' | sed 's/ //g' | sort | jo
-          args:
+          ansible.builtin.shell:
+            cmd: >-
+              set -e -o pipefail &&
+              ansible-galaxy collection list |
+              grep -v -e '^#' -e '^Collection' -e '^-' -e '^$' |
+              sed 's/ /=/' | sed 's/ //g' | sort | jo
             executable: "{{ ans_bash }}"
           check_mode: false
           changed_when: false

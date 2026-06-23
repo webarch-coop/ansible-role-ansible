@@ -12,7 +12,8 @@
   block:
 
     - name: Install Ansible using pipx
-      ansible.builtin.command: "{{ ans_pipx_path }} install --include-deps ansible=={{ ans_required_version }}"
+      ansible.builtin.command:
+        cmd: "{{ ans_pipx_path }} install --include-deps ansible=={{ ans_required_version }}"
       environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       retries: "{{ ans_download.retries }}"
       delay: "{{ ans_download.delay }}"
@@ -32,7 +33,8 @@
         - debug
 
     - name: Upgrade Ansible using pipx
-      ansible.builtin.command: "{{ ans_pipx_path }} upgrade ansible=={{ ans_required_version }}"
+      ansible.builtin.command:
+        cmd: "{{ ans_pipx_path }} upgrade ansible=={{ ans_required_version }}"
       environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       retries: "{{ ans_download.retries }}"
       delay: "{{ ans_download.delay }}"
@@ -59,7 +61,8 @@
       block:
 
         - name: Remove Ansible using pipx
-          ansible.builtin.command: "{{ ans_pipx_path }} uninstall ansible"
+          ansible.builtin.command:
+            cmd: "{{ ans_pipx_path }} uninstall ansible"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_downgrade_removed
           changed_when: ( "uninstalled" in ans_pipx_ansible_downgrade_removed.stdout )
@@ -73,7 +76,8 @@
             - debug
 
         - name: Install Ansible using pipx
-          ansible.builtin.command: "{{ ans_pipx_path }} install --include-deps ansible=={{ ans_required_version }}"
+          ansible.builtin.command:
+            cmd: "{{ ans_pipx_path }} install --include-deps ansible=={{ ans_required_version }}"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"
@@ -96,7 +100,8 @@
         - ans_required_version is version(ans_pipx_installed_version, 'lt')
 
     - name: Remove Ansible using pipx
-      ansible.builtin.command: "{{ ans_pipx_path }} uninstall ansible"
+      ansible.builtin.command:
+        cmd: "{{ ans_pipx_path }} uninstall ansible"
       environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_removed
       changed_when: ( "uninstalled" in ans_pipx_ansible_removed.srdout )
@@ -126,7 +131,9 @@
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
         - name: "Inject into the pipx venv with force ansible-core {{ ans_core_required_version }}"
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps --force ansible ansible-core=={{ ans_core_required_version }}"
+          ansible.builtin.command:
+            cmd: >-
+              {{ ans_pipx_path }} inject --include-apps --include-deps --force ansible ansible-core=={{ ans_core_required_version }}
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_core_injected
           changed_when: ( "installed package" in ans_pipx_ansible_core_injected.stdout )
@@ -213,7 +220,8 @@
             - debug
 
         - name: Inject PyPI application packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_inject_str }}"
+          ansible.builtin.command:
+            cmd: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_inject_str }}"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
           changed_when: ( "installed package" in ans_pipx_ansible_injected.stdout )
@@ -232,7 +240,8 @@
             - debug
 
         - name: Inject PyPI library packages into the Ansible venv
-          ansible.builtin.command: "{{ ans_pipx_path }} inject ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
+          ansible.builtin.command:
+            cmd: "{{ ans_pipx_path }} inject ansible {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"

@@ -18,16 +18,16 @@
           block:
 
             - name: Bash completion present using argcomplete present system-wide
-              ansible.builtin.command: "{{ ans_argcomplete_path }}"
-              args:
+              ansible.builtin.command:
+                cmd: "{{ ans_argcomplete_path }}"
                 creates: "{{ ans_argcomplete_root_path }}"
               when:
                 - ans_argcomplete_root_path is defined
                 - ans_argcomplete_root_path | length > 0
 
             - name: Bash completion for pipx generated using argcomplete
-              ansible.builtin.shell: "{{ ans_argcomplete_register_path }} pipx > /root/pipx-completion.sh"
-              args:
+              ansible.builtin.shell:
+                cmd: "{{ ans_argcomplete_register_path }} pipx > /root/pipx-completion.sh"
                 creates: /root/pipx-completion.sh
                 executable: "{{ ans_bash }}"
               environment: "{{ ans_pipx_root_env }}"
@@ -53,8 +53,8 @@
           block:
 
             - name: Bash completion present using argcomplete present locally
-              ansible.builtin.command: "{{ ans_argcomplete_path }} --user"
-              args:
+              ansible.builtin.command:
+                cmd: "{{ ans_argcomplete_path }} --user"
                 creates: "{{ ans_argcomplete_user_path }}"
               when:
                 - ans_argcomplete_user_path is defined
@@ -73,8 +73,8 @@
                 mode: "0700"
 
             - name: Bash completion for pipx generated using argcomplete
-              ansible.builtin.shell: "{{ ans_argcomplete_register_path }} pipx > {{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
-              args:
+              ansible.builtin.shell:
+                cmd: "{{ ans_argcomplete_register_path }} pipx > {{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
                 creates: "{{ ansible_facts.env.HOME }}/.local/pipx/tmp/pipx-completion.sh"
                 executable: "{{ ans_bash }}"
               environment: "{{ ans_pipx_user_env }}"
