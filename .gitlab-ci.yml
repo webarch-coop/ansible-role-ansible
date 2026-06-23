@@ -33,8 +33,8 @@ before_script:
   - whoami
   - pwd
 stages:
-  - bookworm
   - trixie
+  - bookworm
   - resolute
   - forky
   - noble

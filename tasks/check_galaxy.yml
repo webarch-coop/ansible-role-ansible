@@ -61,6 +61,10 @@
           tags:
             - debug
 
+        - name: Set ans_col_existing to an empty list
+          ansible.builtin.set_fact:
+            ans_col_existing: []
+
         - name: Set a fact for the lists of ansible-galaxy system collections existing
           ansible.builtin.set_fact:
             ans_col_existing: "{{ ans_col_existing + ans_col_existing_json[ans_col_path] | ansible.builtin.dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
