@@ -99,7 +99,8 @@
           tags:
             - debug
 
-        - name: Install Ansible collections when not already available as system or user collections
+        # - name: Install Ansible collections when not already available as system or user collections
+        - name: Install Ansible collections
           ansible.builtin.include_tasks: col.yml
           # vars:
           #   ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"

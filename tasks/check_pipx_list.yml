@@ -64,6 +64,13 @@
           tags:
             - debug
 
+        - name: Check that ans_pipx_installed_version is a version string
+          ansible.builtin.assert:
+            that:
+              - ans_pipx_installed_version is ansible.builtin.version('0.0.0', 'gt', version_type='semver')
+            fail_msg: "ans_pipx_installed_version is set to {{ ans_pipx_installed_version }}, it should be a semver"
+            quiet: "{% if (ansible_check_mode | ansible.builtin.bool) or (ansible_verbosity >= 1) %}false{% else %}true{% endif %}"
+
         - name: Set a fact for the pipx Ansible venv existing injected packages
           ansible.builtin.set_fact:
             ans_pipx_injected: "{{ ans_pipx_list | community.general.json_query(ans_pipx_list_injected_pkgs_jmespath_query) }}"
@@ -75,16 +82,31 @@
           tags:
             - debug
 
-        - name: Set a fact for the pipx ansible-core injected version
-          ansible.builtin.set_fact:
-            ans_pipx_core_installed_version: "{{ ans_pipx_injected | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
+        - name: Conditionally set a fact for ans_pipx_core_installed_version
+          block:
 
-        - name: Debug pipx ansible-core version
-          ansible.builtin.debug:
-            var: ans_pipx_core_installed_version
-            verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
-          tags:
-            - debug
+            - name: Set a fact for the pipx ansible-core injected version
+              ansible.builtin.set_fact:
+                ans_pipx_core_installed_version: "{{ ans_pipx_injected | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) }}"
+
+            - name: Debug pipx ansible-core version
+              ansible.builtin.debug:
+                var: ans_pipx_core_installed_version
+                verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
+              tags:
+                - debug
+
+            - name: Check that ans_pipx_core_installed_version is a version string
+              ansible.builtin.assert:
+                that:
+                  - ans_pipx_core_installed_version is ansible.builtin.version('0.0.0', 'gt', version_type='semver')
+                fail_msg: "ans_pipx_core_installed_version is set to {{ ans_pipx_core_installed_version }}, it should be a semver"
+                quiet: "{% if (ansible_check_mode | ansible.builtin.bool) or (ansible_verbosity >= 1) %}false{% else %}true{% endif %}"
+
+          when: >-
+            ans_pipx_injected
+            | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query)
+            | ansible.builtin.type_debug != "NoneType"
 
       when: ans_pipx_pkgs | community.general.json_query(ans_pypi_ansible_version_jmespath_query) | type_debug != "NoneType"
 

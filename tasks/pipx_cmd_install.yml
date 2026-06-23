@@ -122,7 +122,7 @@
     - name: Check and inject ansible-core version in pipx venv
       block:
 
-        - name: Debug the existing ansible-core version installed and the version required"
+        - name: Debug the existing ansible-core version installed and the version required
           ansible.builtin.debug:
             msg: >-
               The version of ansible-core that is provided by the Ansible {{ ans_required_version }} package is

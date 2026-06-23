@@ -87,9 +87,35 @@
           ansible.builtin.set_fact:
             ans_col_version_latest: "{{ ans_latest_headers.location | ansible.builtin.urlsplit('path') | ansible.builtin.basename | string | ansible.builtin.regex_replace('^v') }}"
 
+        - name: Debug ans_col_version_latest
+          ansible.builtin.debug:
+            var: ans_col_version_latest
+            verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
+
+        - name: Check that ans_col_version_latest is a version string
+          ansible.builtin.assert:
+            that:
+              - ans_col_version_latest is ansible.builtin.version('0.0.0', 'gt', version_type='semver')
+            quiet: "{% if (ansible_check_mode | ansible.builtin.bool) or (ansible_verbosity >= 1) %}false{% else %}true{% endif %}"
+
         - name: "Set a fact for the proposed version for {{ ans_col.name }}"
           ansible.builtin.set_fact:
-            ans_col_version_required: "{% if ans_col.version == 'latest' %}{{ ans_col_latest }}{% else %}{{ ans_col.version }}{% endif %}"
+            ans_col_version_required: "{% if ans_col.version == 'latest' %}{{ ans_col_version_latest }}{% else %}{{ ans_col.version }}{% endif %}"
+
+        - name: Debug ans_col_version_required
+          ansible.builtin.debug:
+            var: ans_col_version_required
+            verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
+
+        - name: Check that ans_col_version_required is a version string
+          ansible.builtin.assert:
+            that:
+              - ans_col_version_required is ansible.builtin.version('0.0.0', 'gt', version_type='semver')
+            quiet: "{% if (ansible_check_mode | ansible.builtin.bool) or (ansible_verbosity >= 1) %}false{% else %}true{% endif %}"
 
       when: ans_latest_headers.location is not regex('releases$')
 

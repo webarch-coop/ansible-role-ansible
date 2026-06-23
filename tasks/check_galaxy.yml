@@ -43,8 +43,7 @@
         - name: Debug ans_col_existing
           ansible.builtin.debug:
             var: ans_col_existing_json
-            # verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
-            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
           tags:
             - debug
 
@@ -65,17 +64,18 @@
           ansible.builtin.set_fact:
             ans_col_existing: []
 
-        - name: Set a fact for the lists of ansible-galaxy system collections existing
+        - name: Set a fact for the lists of ansible-galaxy system collections existing omitting paths containing _internal
           ansible.builtin.set_fact:
             ans_col_existing: "{{ ans_col_existing + ans_col_existing_json[ans_col_path] | ansible.builtin.dict2items(key_name='name') | community.general.json_query(ans_col_list_jmespath_query) }}"
           loop: "{{ ans_col_paths }}"
           loop_control:
             loop_var: ans_col_path
+          when: ans_col_path is not ansible.builtin.regex('^.*_internal.*$')
 
         - name: Debug system ans_col_existing
           ansible.builtin.debug:
             var: ans_col_existing
-            # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
           tags:
             - debug
 
@@ -124,7 +124,7 @@
     - name: Debug ans_col_comgen_versions
       ansible.builtin.debug:
         var: ans_col_comgen_versions
-        # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
       tags:
         - debug
 
@@ -138,7 +138,7 @@
     - name: Debug ans_col_comgen_version
       ansible.builtin.debug:
         var: ans_col_comgen_version
-        # verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+        verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
       tags:
         - debug
 
