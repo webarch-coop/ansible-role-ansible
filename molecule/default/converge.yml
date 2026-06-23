@@ -80,23 +80,23 @@
             version: 2.2.0  # ansible.posix
           - name: ansible.utils
             url: https://github.com/ansible-collections/ansible.utils
-            version: 6.0.2  # ansible.utils
+            version: 6.0.3  # ansible.utils
           - name: community.docker
             url: https://github.com/ansible-collections/community.docker
             version: 5.2.1  # community.docker
           - name: community.crypto
             url: https://github.com/ansible-collections/community.crypto
-            version: 3.2.1  # community.crypto
+            version: 3.2.2  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
-            version: 4.0.0  # community.dns
+            version: 4.0.R1 # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
             # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
             # https://packages.debian.org/bookworm/pipx
             # and noble has 1.4.3
             # https://packages.ubuntu.com/noble/pipx
-            version: 13.0.1  # community.general
+            version: 13.1.0  # community.general
           # Replaced with ansible.mysql
           # - name: community.mysql
           #   url: https://github.com/ansible-collections/community.mysql
@@ -109,7 +109,7 @@
             version: 4.2.0  # community.postgresql
           - name: community.rabbitmq
             url: https://github.com/ansible-collections/community.rabbitmq
-            version: 1.6.0  # community.rabbitmq
+            version: 1.7.0  # community.rabbitmq
         ans_pypi_pkgs:
           - name: ansible
             url: https://pypi.org/pypi/ansible

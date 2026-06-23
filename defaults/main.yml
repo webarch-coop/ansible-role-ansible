@@ -20,24 +20,24 @@ ans_cols:
     version: 2.2.0  # ansible.posix
   - name: ansible.utils
     url: https://github.com/ansible-collections/ansible.utils
-    version: 6.0.2  # ansible.utils
+    version: 6.0.3  # ansible.utils
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
     version: 5.2.1  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 3.2.1  # community.crypto
+    version: 3.2.2  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
     # 4.0.0 removes support for ansible-core < 2.18, and thus Python < 3.8, and for dnspython < 2.0.0.
-    version: 3.5.5  # community.dns
+    version: 3.5.6  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
     # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
     # https://packages.debian.org/bookworm/pipx
     # and noble has 1.4.3
     # https://packages.ubuntu.com/noble/pipx
-    version: 10.7.8  # community.general
+    version: 10.7.9  # community.general
   # Replaced with ansible.mysql
   # https://forum.ansible.com/t/ansible-mysql-replaces-community-mysql/45798/3
   # - name: community.mysql
