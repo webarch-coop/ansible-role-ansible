@@ -103,9 +103,13 @@
       tags:
         - debug
 
-    - name: "Set a fact for the versions of the required Ansible collection using sort when present for {{ ans_col.name }}"
+    - name: "Set a fact for the versions of the required Ansible collection using version_sort when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
-        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) | ansible.builtin.unique | sort }}"
+        ans_col_versions_present: >-
+          {{- ans_col_existing
+          | community.general.json_query(ans_col_jmespath_query)
+          | ansible.builtin.unique
+          | community.general.version_sort -}}
       vars:
         ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
       when: >-
@@ -219,9 +223,13 @@
       tags:
         - debug
 
-    - name: "Set a fact for the versions of the required Ansible collection using sort when present for {{ ans_col.name }}"
+    - name: "Set a fact for the versions of the required Ansible collection using version_sort when present for {{ ans_col.name }}"
       ansible.builtin.set_fact:
-        ans_col_versions_present: "{{ ans_col_existing | community.general.json_query(ans_col_jmespath_query) | ansible.builtin.unique | sort }}"
+        ans_col_versions_present: >-
+          {{- ans_col_existing
+          | community.general.json_query(ans_col_jmespath_query)
+          | ansible.builtin.unique
+          | community.general.version_sort -}}
       vars:
         ans_col_jmespath_query: "[?name=='{{ ans_col.name }}'].version|[0]"
       when: >-
