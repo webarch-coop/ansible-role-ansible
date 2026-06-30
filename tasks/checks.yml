@@ -512,6 +512,20 @@
           ansible.builtin.set_fact:
             ans_pip_metadata: "{{ ans_pip_inspect.stdout | from_json | community.general.json_query('installed[].metadata') }}"
 
+        - name: Debug ans_pip_metadata var type
+          ansible.builtin.debug:
+            msg: "{{ ans_pip_metadata | ansible.builtin.type_debug }}"
+            verbosity: "{% if ansible_check_mode | bool %}1{% else %}2{% endif %}"
+          tags:
+            - debug
+
+        - name: Debug ans_pip_metadata
+          ansible.builtin.debug:
+            var: ans_pip_metadata
+            verbosity: "{% if ansible_check_mode | bool %}2{% else %}3{% endif %}"
+          tags:
+            - debug
+
       when: ans_pip_version is version('22.2', 'ge')
 
     - name: Check the user PyPI packages
