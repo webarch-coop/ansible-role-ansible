@@ -75,42 +75,34 @@
         ans_cols:
           - name: ansible.mysql
             url: https://github.com/ansible-collections/ansible.mysql
-            version: 5.0.1  # ansible.mysql
+            version: latest  # ansible.mysql
           - name: ansible.posix
             url: https://github.com/ansible-collections/ansible.posix
-            version: 2.2.0  # ansible.posix
+            version: latest  # ansible.posix
           - name: ansible.utils
             url: https://github.com/ansible-collections/ansible.utils
-            version: 6.0.3  # ansible.utils
+            version: latest  # ansible.utils
           - name: community.docker
             url: https://github.com/ansible-collections/community.docker
-            version: 5.2.1  # community.docker
+            version: latest  # community.docker
           - name: community.crypto
             url: https://github.com/ansible-collections/community.crypto
-            version: 3.2.2  # community.crypto
+            version: latest  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
-            version: 4.0.1 # community.dns
+            version: latest # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
-            # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
-            # https://packages.debian.org/bookworm/pipx
-            # and noble has 1.4.3
-            # https://packages.ubuntu.com/noble/pipx
-            version: 13.1.0  # community.general
-          # Replaced with ansible.mysql
-          # - name: community.mysql
-          #   url: https://github.com/ansible-collections/community.mysql
-          #   version: 5.0.1  # community.mysql
+            version: latest  # community.general
           - name: community.openwrt
             url: https://github.com/ansible-collections/community.openwrt
-            version: 1.5.0  # community.openwrt
+            version: latest  # community.openwrt
           - name: community.postgresql
             url: https://github.com/ansible-collections/community.postgresql
-            version: 4.2.0  # community.postgresql
+            version: latest  # community.postgresql
           - name: community.rabbitmq
             url: https://github.com/ansible-collections/community.rabbitmq
-            version: 1.7.0  # community.rabbitmq
+            version: latest  # community.rabbitmq
         ans_pypi_pkgs:
           - name: ansible
             url: https://pypi.org/pypi/ansible
@@ -220,6 +212,140 @@
         ans_download:
           delay: 10
           retries: 20
+        ans_cols:
+          - name: ansible.mysql
+            url: https://github.com/ansible-collections/ansible.mysql
+            version: 5.1.0  # ansible.mysql
+          - name: ansible.posix
+            url: https://github.com/ansible-collections/ansible.posix
+            version: 2.2.0  # ansible.posix
+          - name: ansible.utils
+            url: https://github.com/ansible-collections/ansible.utils
+            version: 6.0.3  # ansible.utils
+          - name: community.docker
+            url: https://github.com/ansible-collections/community.docker
+            version: 5.2.1  # community.docker
+          - name: community.crypto
+            url: https://github.com/ansible-collections/community.crypto
+            version: 3.2.2  # community.crypto
+          - name: community.dns
+            url: https://github.com/ansible-collections/community.dns
+            # 4.0.1 removes support for ansible-core < 2.18, and thus Python < 3.8, and for dnspython < 2.0.0.
+            version: 3.5.6  # community.dns
+          - name: community.general
+            url: https://github.com/ansible-collections/community.general
+            # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
+            # https://packages.debian.org/bookworm/pipx
+            # and noble has 1.4.3
+            # https://packages.ubuntu.com/noble/pipx
+            # version: 13.1.0  # community.general
+            version: 10.7.9  # community.general
+          - name: community.openwrt
+            url: https://github.com/ansible-collections/community.openwrt
+            version: 1.6.0  # community.openwrt
+          - name: community.postgresql
+            url: https://github.com/ansible-collections/community.postgresql
+            version: 4.2.0  # community.postgresql
+          - name: community.rabbitmq
+            url: https://github.com/ansible-collections/community.rabbitmq
+            version: 1.7.0  # community.rabbitmq
+        ans_pypi_pkgs:
+          - name: ansible
+            url: https://pypi.org/pypi/ansible
+            # 12.x is needed due to the Python version
+            version: 12.3.0  # ansible
+          - name: ansible-core
+            url: https://pypi.org/pypi/ansible-core
+            venv: ansible
+            # 2.19.x is needed due to the Python version
+            version: 2.19.11  # ansible-core
+          - name: ansible-lint
+            url: https://pypi.org/pypi/ansible-lint
+            venv: ansible
+            version: latest
+          - name: dnspython
+            type: lib
+            url: https://pypi.org/pypi/dnspython
+            venv: ansible
+            version: latest
+          - name: fqdn
+            type: lib
+            url: https://pypi.org/pypi/fqdn
+            venv: ansible
+            version: latest
+          - name: jc
+            url: https://pypi.org/pypi/jc
+            venv: ansible
+            version: latest
+          - name: jinjanator
+            url: https://pypi.org/pypi/jinjanator
+            venv: ansible
+            version: latest
+          - name: jinjanator-plugin-ansible
+            url: https://pypi.org/pypi/jinjanator-plugin-ansible
+            venv: ansible
+            version: latest
+          - name: jinja2-ansible-filters
+            type: lib
+            url: https://pypi.org/pypi/jinja2-ansible-filters
+            venv: ansible
+            version: latest
+          - name: j2lint
+            url: https://pypi.org/pypi/j2lint
+            venv: ansible
+            version: latest
+          - name: jmespath
+            url: https://pypi.org/pypi/jmespath
+            venv: ansible
+            version: latest
+          - name: molecule
+            url: https://pypi.org/pypi/molecule
+            venv: ansible
+            version: latest
+          - name: lxml
+            type: lib
+            url: https://pypi.org/pypi/lxml
+            venv: ansible
+            version: latest
+          - name: molecule-plugins
+            extras:
+              - docker
+            url: https://pypi.org/pypi/molecule-plugins
+            venv: ansible
+            version: latest
+          - name: netaddr
+            type: lib
+            url: https://pypi.org/pypi/netaddr
+            venv: ansible
+            version: latest
+          - name: pexpect
+            type: lib
+            url: https://pypi.org/pypi/pexpect
+            venv: ansible
+            version: latest
+          - name: psycopg
+            type: lib
+            url: https://pypi.org/pypi/psycopg
+            venv: ansible
+            version: latest
+          - name: pymarkdownlnt
+            url: https://pypi.org/pypi/pymarkdownlnt
+            venv: ansible
+            version: latest
+          - name: pymysql
+            type: lib
+            url: https://pypi.org/pypi/pymysql
+            venv: ansible
+            version: latest
+          - name: python-debian
+            type: lib
+            url: https://pypi.org/pypi/python-debian
+            venv: ansible
+            version: latest
+          - name: yamllint
+            url: https://pypi.org/pypi/yamllint
+            venv: ansible
+            version: latest
       when:
         - ansible_facts.distribution_release is ansible.builtin.regex('^bookworm|jammy|noble$')
         - molecule_python_version is ansible.builtin.version('3.10.0', 'ge', version_type='semver')

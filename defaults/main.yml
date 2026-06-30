@@ -14,44 +14,35 @@ ans: false
 ans_cols:
   - name: ansible.mysql
     url: https://github.com/ansible-collections/ansible.mysql
-    version: 5.0.1  # ansible.mysql
+    version: latest  # ansible.mysql
   - name: ansible.posix
     url: https://github.com/ansible-collections/ansible.posix
-    version: 2.2.0  # ansible.posix
+    version: latest  # ansible.posix
   - name: ansible.utils
     url: https://github.com/ansible-collections/ansible.utils
-    version: 6.0.3  # ansible.utils
+    version: latest  # ansible.utils
   - name: community.docker
     url: https://github.com/ansible-collections/community.docker
-    version: 5.2.1  # community.docker
+    version: latest  # community.docker
   - name: community.crypto
     url: https://github.com/ansible-collections/community.crypto
-    version: 3.2.2  # community.crypto
+    version: latest  # community.crypto
   - name: community.dns
     url: https://github.com/ansible-collections/community.dns
-    # 4.0.0 removes support for ansible-core < 2.18, and thus Python < 3.8, and for dnspython < 2.0.0.
-    version: 3.5.6  # community.dns
+    # 4.0.1 removes support for ansible-core < 2.18, and thus Python < 3.8, and for dnspython < 2.0.0.
+    version: latest  # community.dns
   - name: community.general
     url: https://github.com/ansible-collections/community.general
-    # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
-    # https://packages.debian.org/bookworm/pipx
-    # and noble has 1.4.3
-    # https://packages.ubuntu.com/noble/pipx
-    version: 10.7.9  # community.general
-  # Replaced with ansible.mysql
-  # https://forum.ansible.com/t/ansible-mysql-replaces-community-mysql/45798/3
-  # - name: community.mysql
-  #   url: https://github.com/ansible-collections/community.mysql
-  #   version: 5.0.1  # community.mysql
+    version: latest  # community.general
   - name: community.openwrt
     url: https://github.com/ansible-collections/community.openwrt
-    version: 1.5.0  # community.openwrt
+    version: latest  # community.openwrt
   - name: community.postgresql
     url: https://github.com/ansible-collections/community.postgresql
-    version: 4.2.0  # community.postgresql
+    version: latest  # community.postgresql
   - name: community.rabbitmq
     url: https://github.com/ansible-collections/community.rabbitmq
-    version: 1.7.0  # community.rabbitmq
+    version: latest  # community.rabbitmq
 ans_distro_check: true
 ans_downgrade: false
 ans_download:
@@ -248,15 +239,11 @@ ans_pkgs:
 ans_pypi_pkgs:
   - name: ansible
     url: https://pypi.org/pypi/ansible
-    # TODO switch to 12.x when Debian Buster Python 3.7.3 no longer needs to be supported
-    # https://packages.debian.org/buster/python3
-    version: 10.7.0  # ansible
+    version: latest  # ansible
   - name: ansible-core
     url: https://pypi.org/pypi/ansible-core
     venv: ansible
-    # TODO switch to 2.19.x when Debian Buster Python 3.7.3 no longer needs to be supported
-    # https://packages.debian.org/buster/python3
-    version: 2.17.14  # ansible-core
+    version: latest  # ansible-core
   - name: ansible-lint
     url: https://pypi.org/pypi/ansible-lint
     venv: ansible
