@@ -200,6 +200,10 @@ argument_specs:
         type: str
         required: false
         description: Internal variable for the path to pip3.
+      ans_pipx_ansible_core_injected:
+        type: dict
+        required: false
+        description: Internal dictionary of the results from the ansible.builtin.command module.
       ans_pipx_app_ver_jmespath_query:
         type: str
         required: false
@@ -233,6 +237,14 @@ argument_specs:
         elements: str
         required: false
         description: Internal variable for a list of pipx packages to be injected.
+      ans_pipx_inject_str:
+        type: str
+        required: false
+        description: Internal string for the pipx application, packages, extras and versions to be injected.
+      ans_pipx_list:
+        type: dict
+        required: false
+        description: Internal dictionary of the results from running pipx list --include-injected --json.
       ans_pipx_list_ansible_version_jmespath_query:
         type: str
         required: false
