@@ -22,6 +22,11 @@ argument_specs:
         type: str
         required: false
         description: Internal variable for the path to Ansible.
+      ans_available_versions:
+        type: list
+        elements: str
+        required: false
+        description: Internal variable for a list of available versions of Ansible.
       ans_bash:
         type: str
         required: false
@@ -34,6 +39,15 @@ argument_specs:
         type: str
         required: false
         description: Internal variable for a JMESPath query.
+      ans_col_comgen_versions:
+        type: list
+        elements: str
+        required: false
+        description: Internal list of the versions of community.general present.
+      ans_col_comgen_ver_sort:
+        type: bool
+        required: false
+        description: Internal boolean that is set to true when community.general 2.2.0 or greater is available.
       ans_col_comgen_ver_jmespath_query:
         type: str
         required: false
@@ -56,6 +70,10 @@ argument_specs:
             type: str
             required: true
             description: Ansible collection version.
+      ans_col_existing_json:
+        type: dict
+        required: false
+        description: Internal dictionary of the ansible-galaxy collections present.
       ans_col_jmespath_query:
         type: str
         required: false
@@ -68,10 +86,36 @@ argument_specs:
         type: str
         required: false
         description: Internal variable for the system installed ansible-galaxy collections path.
+      ans_col_path_system_check:
+        type: dict
+        required: false
+        description: Internal dictionary of the results from running the ansible.builtin.stat module.
+      ans_col_paths:
+        type: list
+        elements: str
+        required: false
+        description: Internal variable for a list of ansible-galaxy collection paths.
       ans_col_path_user:
         type: str
         required: false
         description: Internal variable for the users installed ansible-galaxy collections path.
+      ans_col_version_latest:
+        type: str
+        required: false
+        description: Internal variable for the latest version of an Ansible collection.
+      ans_col_version_present:
+        type: str
+        required: false
+        description: Internal variable for the present version of an Ansible collection.
+      ans_col_versions_present:
+        type: list
+        elements: str
+        required: false
+        description: Internal list of Ansible collection versions present.
+      ans_col_version_required:
+        type: str
+        required: false
+        description: Internal variable for the Ansible collection version required.
       ans_col_vers_jmespath_query:
         type: str
         required: false
@@ -80,6 +124,27 @@ argument_specs:
         type: bool
         required: false
         description: Internal variable to indicate that community.general 6.2.0 or greater is available.
+      ans_core_available_versions:
+        type: list
+        elements: str
+        required: false
+        description: Internal list of Ansible core versions available.
+      ans_core_installed_version:
+        type: str
+        required: false
+        description: Internal variable for the .deb package ansible-core version.
+      ans_core_latest_version:
+        type: str
+        required: false
+        description: Internal variable for the latest ansible-core version.
+      ans_core_provided_version:
+        type: str
+        required: false
+        description: Internal variable for the version of ansible-core provided by the required Ansible version.
+      ans_core_required_version:
+        type: str
+        required: false
+        description: Internal variable for the required version of ansible-core.
       ans_deb_name_jmespath_query:
         type: str
         required: false
@@ -92,11 +157,23 @@ argument_specs:
         type: bool
         required: false
         description: Internal variable to indicate that community.general 3.5.0 or greater is available.
+      ans_init:
+        type: str
+        required: false
+        description: Internal variable for the init system.
+      ans_installed_version:
+        type: str
+        required: false
+        description: Internal variable for the Ansible installed version.
       ans_jammy_versions:
         type: list
         elements: str
         required: false
         description: Ansible versions strings for Debian Bullesye and Ubuntu Jammy.
+      ans_latest_version:
+        type: str
+        required: false
+        description: Latest version of Ansible.
       ans_pkgs_absent:
         type: list
         elements: str
@@ -255,9 +332,9 @@ argument_specs:
         required: false
         type: dict
       ans_galaxy_json_check:
-        description: Internal variables for the results from running ansible-galaxy collection list --format json.
-        required: false
         type: dict
+        required: false
+        description: Internal variable for the results from ansible.builtin.command for ansible-galaxy collection list --format json.
       ans_internal_argument_spec:
         description: Internal variable for the internal argument spec.
         required: false
@@ -270,18 +347,50 @@ argument_specs:
         description: Internal variable for the results from running python3 -m pip inspect.
         required: false
         type: dict
+      ans_pip_metadata:
+        type: dict
+        required: false
+        description: Internal variable for for the pip metadata.
       ans_pip_system_list:
-        description: Internal variable for the results from running python3 -m pip list --format=json.
+        description: 'Internal variable for the results from running python3 -m pip list --format=json.'
         required: false
         type: dict
+      ans_pip_system_existing:
+        type: list
+        elements: dict
+        required: false
+        description: Internal list of dictionaries of system PyPI packages present.
+        options:
+          name:
+            type: str
+            required: true
+            description: PyPI package name.
+          version:
+            type: str
+            required: true
+            description: PyPI package version.
+      ans_pip_user_existing:
+        type: list
+        elements: dict
+        required: false
+        description: Internal list of dictionaries of user PyPI packages present.
+        options:
+          name:
+            type: str
+            required: true
+            description: PyPI package name.
+          version:
+            type: str
+            required: true
+            description: PyPI package version.
       ans_pip_user_list:
-        description: Internal variable for the results from running python3 -m pip list --user --format=json.
+        description: 'Internal variable for the results from running python3 -m pip list --user --format=json.'
         required: false
         type: dict
       ans_pip_version_check:
-        description: Internal variable for the results from running python3 -m pip --version.
-        required: false
         type: dict
+        required: false
+        description: Internal variable for the results from running python3 -m pip --version.
       ans_pipx_ansible_downgrade_installed:
         description: Internal variable for the results from downgrading Ansible using community.general.pipx.
         required: false
@@ -326,6 +435,38 @@ argument_specs:
         description: Internal variabled for the results from community.general.pipx_info.
         required: false
         type: dict
+      ans_pipx_injected:
+        type: list
+        elements: dict
+        required: false
+        description: Internal list of dictionaries of pipx Ansible venv existing injected packages.
+        options:
+          name:
+            type: str
+            required: true
+            description: PyPI package name.
+          version:
+            type: str
+            required: true
+            description: PyPI package version.
+      ans_pipx_installed_version:
+        type: str
+        required: false
+        description: The pipx Ansible version.
+      ans_pipx_pkgs:
+        type: list
+        elements: dict
+        required: false
+        description: Internal list of dictionaries of pipx installed packages.
+        options:
+          name:
+            type: str
+            required: true
+            description: PyPI package name.
+          version:
+            type: str
+            required: true
+            description: PyPI package version.
       ans_pipx_lib_injected:
         description: Internal variable for the results from injecting libraries using community.general.pipx.
         required: false
@@ -347,14 +488,18 @@ argument_specs:
         description: Internal variable for the results from running ansible.builtin.find to find files in the Ansible venv bin.
         required: false
         type: dict
+      ans_pipx_version:
+        type: str
+        required: false
+        description: The pipx version.
       ans_pkg:
         description: Internal loop variable for the loop through ans_pkgs.
         required: false
         type: dict
       ans_ps:
-        description: Internal variable for the results from running ps -p 1 -o comm=.
-        required: false
         type: dict
+        required: false
+        description: 'Internal variable for the results from running ps -p 1 -o comm= via ansible.builtin.command.'
       ans_pypi:
         description: Internal variable for the results from doing a GET request for a list of available PyPi versions.
         required: false
@@ -383,6 +528,22 @@ argument_specs:
         description: Internal variable for a list of PyPi package versions available.
         required: false
         type: list
+      ans_python_version:
+        type: str
+        required: false
+        description: The Python version.
+      ans_required_state:
+        type: str
+        required: false
+        choices:
+          - absent
+          - forcereinstall
+          - present
+        description: Internal variable for the required state of the PyPI package.
+      ans_required_version:
+        type: str
+        required: false
+        description: Internal variable for the required Ansible version.
       ans_stat_ansible:
         description: Internal variable for the results from stat'ing the path to ansible.
         required: false

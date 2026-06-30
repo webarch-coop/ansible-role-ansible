@@ -24,8 +24,8 @@
       register: ans_pipx_ansible_installed
       when:
         - ans_required_state == "present"
-        - ( ans_pipx_installed_version is not defined ) or ( ( ans_pipx_installed_version is defined ) and ( ans_pipx_installed_version | length == 0 ) )
-        - ( ( not ans_downgrade | bool ) and ( ans_required_version is version(ans_core_installed_version, 'gt') ) ) or ( ( ans_downgrade | bool ) and ( ans_required_version is version(ans_core_installed_version, 'lt') ) )
+        - (ans_pipx_installed_version is not defined) or ((ans_pipx_installed_version is defined) and (ans_pipx_installed_version | length == 0))
+        - ((not ans_downgrade | bool) and (ans_required_version is version(ans_core_installed_version, 'gt'))) or ((ans_downgrade | bool) and (ans_required_version is version(ans_core_installed_version, 'lt')))
 
     - name: Debug ans_pipx_ansible_installed
       ansible.builtin.debug:
@@ -119,7 +119,7 @@
       when:
         - ans_pipx_installed_version is defined
         - ans_pipx_installed_version | length > 0
-        - ( ans_required_state == "absent" ) or ( ( ans_required_state == "present" ) and ( ans_core_installed_version is version(ans_required_version, 'eq') ) )
+        - (ans_required_state == "absent") or ((ans_required_state == "present") and (ans_core_installed_version is version(ans_required_version, 'eq')))
 
     - name: Debug ans_pipx_ansible_removed
       ansible.builtin.debug:
@@ -192,8 +192,8 @@
             - ans_pypi_pkg.venv is defined
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
-            - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
-            - ( ans_pypi_pkg.type is not defined ) or ( ans_pypi_pkg.type == "app" )
+            - (ans_pypi_pkg.state is not defined) or (ans_pypi_pkg.state is regex('^forcereinstall|present$'))
+            - (ans_pypi_pkg.type is not defined) or (ans_pypi_pkg.type == "app")
           vars:
             ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
           loop: "{{ ans_pypi_pkgs }}"
@@ -250,7 +250,7 @@
             - ans_pypi_pkg.venv is defined
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
-            - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
+            - (ans_pypi_pkg.state is not defined) or (ans_pypi_pkg.state is regex('^forcereinstall|present$'))
             - ans_pypi_pkg.type is defined
             - ans_pypi_pkg.type == "lib"
           loop: "{{ ans_pypi_pkgs }}"
@@ -326,8 +326,8 @@
         ans_pypi_pkg_version_jmespath_query: "[?name=='{{ ans_pypi_pkg.name }}'].version|[0]"
       when:
         - ans_pypi_pkg.name != "ansible"
-        - ( ans_pypi_pkg.venv is not defined ) or ( ( ans_pypi_pkg.venv is defined ) and ( ans_pypi_pkg.venv != "ansible" ) )
-        - ( ans_pypi_pkg_existing_version is not defined ) or ( ans_pypi_pkg_existing_version | length == 0 ) or  ( ( ans_pypi_pkg_existing_version is defined ) and ( ans_pypi_pkg_existing_version is version(ans_pypi_pkg.version, 'ne') ) )
+        - (ans_pypi_pkg.venv is not defined) or ((ans_pypi_pkg.venv is defined) and (ans_pypi_pkg.venv != "ansible"))
+        - (ans_pypi_pkg_existing_version is not defined) or (ans_pypi_pkg_existing_version | length == 0) or  ((ans_pypi_pkg_existing_version is defined) and (ans_pypi_pkg_existing_version is version(ans_pypi_pkg.version, 'ne')))
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg

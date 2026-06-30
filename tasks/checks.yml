@@ -56,8 +56,8 @@
           - ans_pypi_pkg.version is defined
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
       when: >-
-        ( ans_pypi_pkg.state is not defined ) or
-        ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state != "absent" ) )
+        (ans_pypi_pkg.state is not defined) or
+        ((ans_pypi_pkg.state is defined) and (ans_pypi_pkg.state != "absent"))
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg
@@ -357,8 +357,8 @@
         # ans_version_core_jmespath_query: "[?ansible=='{{ ans_version }}'].core|[0]"
         ans_version_core_jmespath_query: "[?ansible=='{{ ans_required_version }}'].core|[0]"
       when: >-
-        ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is not defined ) or
-        ( ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug == "NoneType" )
+        (ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) is not defined) or
+        (ans_pypi_pkgs | community.general.json_query(ans_pypi_ansible_core_version_jmespath_query) | type_debug == "NoneType")
 
     - name: Fail if ans_core_required_version is not a version number
       ansible.builtin.fail:
@@ -366,8 +366,8 @@
           - "This variable is required to be a version number, it is set to '{{ ans_core_required_version }}'"
           - "One cause of this error could be that the list of versions in the ans_versions list might not contain {{ ans_required_version }}"
       when: >-
-        ( ans_core_required_version | length == 0 ) or
-        ( ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge') )
+        (ans_core_required_version | length == 0) or
+        (ans_core_required_version is not ansible.builtin.version('2.10.8', 'ge'))
 
     - name: Debug ansible-core version variables
       ansible.builtin.debug:
@@ -445,9 +445,9 @@
         #   ansible.builtin.set_fact:
         #     ans_pipx: true
         #   when: >
-        #     ( ( ans_core_installed_version is defined ) and ( ans_core_required_version is defined ) ) and
-        #     ( ( not ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'gt') ) ) or
-        #     ( ( ans_downgrade | bool ) and ( ans_core_required_version is version(ans_core_installed_version, 'lt') ) )
+        #     ((ans_core_installed_version is defined) and (ans_core_required_version is defined)) and
+        #     ((not ans_downgrade | bool) and (ans_core_required_version is version(ans_core_installed_version, 'gt'))) or
+        #     ((ans_downgrade | bool) and (ans_core_required_version is version(ans_core_installed_version, 'lt')))
 
         - name: Debug ans_pipx variable
           ansible.builtin.debug:
@@ -551,10 +551,10 @@
       tags:
         - debug
 
-    # When in a docker container ans_init.stdout == "sh" or "bash"
+    # When in a docker container ans_ps.stdout == "sh" or "bash"
     - name: Check if system has been booted with systemd as init system
       ansible.builtin.command:
-        cmd: ps -p 1 -o comm=
+        cmd: 'ps -p 1 -o comm='
       changed_when: false
       check_mode: false
       register: ans_ps

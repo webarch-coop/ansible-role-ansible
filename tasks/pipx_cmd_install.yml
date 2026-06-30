@@ -18,11 +18,11 @@
       retries: "{{ ans_download.retries }}"
       delay: "{{ ans_download.delay }}"
       register: ans_pipx_ansible_installed
-      changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
+      changed_when: ("installed package" in ans_pipx_ansible_installed.stdout)
       when:
         - ans_required_state == "present"
-        - ( ans_pipx_installed_version is not defined ) or ( ( ans_pipx_installed_version is defined ) and ( ans_pipx_installed_version | length == 0 ) )
-        - ( ( not ans_downgrade | bool ) and ( ans_required_version is version(ans_core_installed_version, 'gt') ) ) or ( ( ans_downgrade | bool ) and ( ans_required_version is version(ans_core_installed_version, 'lt') ) )
+        - (ans_pipx_installed_version is not defined) or ((ans_pipx_installed_version is defined) and (ans_pipx_installed_version | length == 0))
+        - ((not ans_downgrade | bool) and (ans_required_version is version(ans_core_installed_version, 'gt'))) or ((ans_downgrade | bool) and (ans_required_version is version(ans_core_installed_version, 'lt')))
 
     - name: Debug ans_pipx_ansible_installed
       ansible.builtin.debug:
@@ -39,7 +39,7 @@
       retries: "{{ ans_download.retries }}"
       delay: "{{ ans_download.delay }}"
       register: ans_pipx_ansible_upgraded
-      changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
+      changed_when: ("installed package" in ans_pipx_ansible_installed.stdout)
       when:
         - ans_required_state == "present"
         - ans_pipx_ansible_state is defined
@@ -65,7 +65,7 @@
             cmd: "{{ ans_pipx_path }} uninstall ansible"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_downgrade_removed
-          changed_when: ( "uninstalled" in ans_pipx_ansible_downgrade_removed.stdout )
+          changed_when: ("uninstalled" in ans_pipx_ansible_downgrade_removed.stdout)
 
         - name: Debug ans_pipx_ansible_downgrade_removed
           ansible.builtin.debug:
@@ -82,7 +82,7 @@
           retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"
           register: ans_pipx_ansible_downgrade_installed
-          changed_when: ( "installed package" in ans_pipx_ansible_installed.stdout )
+          changed_when: ("installed package" in ans_pipx_ansible_installed.stdout)
 
         - name: Debug ans_pipx_ansible_downgrade_installed
           ansible.builtin.debug:
@@ -104,11 +104,11 @@
         cmd: "{{ ans_pipx_path }} uninstall ansible"
       environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
       register: ans_pipx_ansible_removed
-      changed_when: ( "uninstalled" in ans_pipx_ansible_removed.srdout )
+      changed_when: ("uninstalled" in ans_pipx_ansible_removed.srdout)
       when:
         - ans_pipx_installed_version is defined
         - ans_pipx_installed_version | length > 0
-        - ( ans_required_state == "absent" ) or ( ( ans_required_state == "present" ) and ( ans_core_installed_version is version(ans_required_version, 'eq') ) )
+        - (ans_required_state == "absent") or ((ans_required_state == "present") and (ans_core_installed_version is version(ans_required_version, 'eq')))
 
     - name: Debug ans_pipx_ansible_removed
       ansible.builtin.debug:
@@ -136,7 +136,7 @@
               {{ ans_pipx_path }} inject --include-apps --include-deps --force ansible ansible-core=={{ ans_core_required_version }}
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_core_injected
-          changed_when: ( "installed package" in ans_pipx_ansible_core_injected.stdout )
+          changed_when: ("installed package" in ans_pipx_ansible_core_injected.stdout)
           when: ans_pipx_core_installed_version != ans_core_required_version
           tags:
             - molecule-idempotence-notest
@@ -190,8 +190,8 @@
             - ans_pypi_pkg.venv is defined
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
-            - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
-            - ( ans_pypi_pkg.type is not defined ) or ( ans_pypi_pkg.type == "app" )
+            - (ans_pypi_pkg.state is not defined) or (ans_pypi_pkg.state is regex('^forcereinstall|present$'))
+            - (ans_pypi_pkg.type is not defined) or (ans_pypi_pkg.type == "app")
           vars:
             ans_pipx_inject_pkg: "{{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}{% if ans_pypi_pkg.version != 'latest' %}=={{ ans_pypi_pkg.version }}{% endif %}"
           loop: "{{ ans_pypi_pkgs }}"
@@ -224,7 +224,7 @@
             cmd: "{{ ans_pipx_path }} inject --include-apps --include-deps ansible {{ ans_pipx_inject_str }}"
           environment: "{% if ansible_facts.effective_user_id == 0 %}{{ ans_pipx_root_env | default('') }}{% else %}{{ ans_pipx_user_env | default('') }}{% endif %}"
           register: ans_pipx_ansible_injected
-          changed_when: ( "installed package" in ans_pipx_ansible_injected.stdout )
+          changed_when: ("installed package" in ans_pipx_ansible_injected.stdout)
           when:
             - ans_pipx_inject is defined
             - ans_pipx_inject != []
@@ -246,13 +246,13 @@
           retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"
           register: ans_pipx_lib_injected
-          changed_when: ( "installed package" in ans_pipx_lib_injected.stdout )
+          changed_when: ("installed package" in ans_pipx_lib_injected.stdout)
           when:
             - ans_pypi_pkg.name != "ansible"
             - ans_pypi_pkg.venv is defined
             - ans_pypi_pkg.venv == "ansible"
             - ans_pypi_pkg.version is defined
-            - ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state is regex('^forcereinstall|present$') )
+            - (ans_pypi_pkg.state is not defined) or (ans_pypi_pkg.state is regex('^forcereinstall|present$'))
             - ans_pypi_pkg.type is defined
             - ans_pypi_pkg.type == "lib"
           loop: "{{ ans_pypi_pkgs }}"

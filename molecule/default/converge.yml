@@ -65,11 +65,6 @@
           - molecule_python_version is ansible.builtin.version('3.7.3', 'ge', version_type='semver')
         quiet: "{% if ansible_check_mode or ansible_verbosity >= 1 %}false{% else %}true{% endif %}"
 
-    - name: Include verify argument spec tasks
-      ansible.builtin.include_role:
-        name: ansible
-        tasks_from: verify.yml
-
     # Debian Forky and Trixie and Ubuntu Resolute
     - name: Include ansible role with Trixie vars as root for Python >= 3.10.0 and pipx >= 1.7.0
       ansible.builtin.include_role:

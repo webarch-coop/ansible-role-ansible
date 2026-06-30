@@ -78,8 +78,8 @@
       when:
         - ans_pipx_mod | bool
         - ans_pypi_pkg.name != "ansible"
-        - ( ans_pypi_pkg.venv is not defined ) or ( ( ans_pypi_pkg.venv is defined ) and ( ans_pypi_pkg.venv != "ansible" ) )
-        - ( ans_pypi_pkg_existing_version is not defined ) or ( ans_pypi_pkg_existing_version | length == 0 ) or  ( ( ans_pypi_pkg_existing_version is defined ) and ( ans_pypi_pkg_existing_version is version(ans_pypi_pkg.version, 'ne') ) )
+        - (ans_pypi_pkg.venv is not defined) or ((ans_pypi_pkg.venv is defined) and (ans_pypi_pkg.venv != "ansible"))
+        - (ans_pypi_pkg_existing_version is not defined) or (ans_pypi_pkg_existing_version | length == 0) or  ((ans_pypi_pkg_existing_version is defined) and (ans_pypi_pkg_existing_version is version(ans_pypi_pkg.version, 'ne')))
       loop: "{{ ans_pypi_pkgs }}"
       loop_control:
         loop_var: ans_pypi_pkg

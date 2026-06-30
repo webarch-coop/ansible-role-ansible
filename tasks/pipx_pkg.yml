@@ -101,8 +101,8 @@
           ansible.builtin.set_fact:
             ans_pipx_pkg_state: absent
           when: >-
-            ( ( ans_pipx_existing_version is defined ) and ( ans_pipx_existing_version | length > 0 ) and ( ans_pypi_pkg_state == "absent" ) ) or
-            ( ( ans_pypi_pkg.version is defined ) and ( not ans_downgrade | bool ) and ( ans_pypi_system_version_present is defined ) and ( ans_pypi_system_version_present | length > 0 ) and ( ans_pypi_system_version_present is version(ans_pypi_pkg.version, 'ge') ) )
+            ((ans_pipx_existing_version is defined) and (ans_pipx_existing_version | length > 0) and (ans_pypi_pkg_state == "absent")) or
+            ((ans_pypi_pkg.version is defined) and (not ans_downgrade | bool) and (ans_pypi_system_version_present is defined) and (ans_pypi_system_version_present | length > 0) and (ans_pypi_system_version_present is version(ans_pypi_pkg.version, 'ge')))
 
         - name: "Set the pipx package state to reinstall for {{ ans_pypi_pkg.name }}"
           ansible.builtin.set_fact:
@@ -117,18 +117,18 @@
           ansible.builtin.set_fact:
             ans_pipx_pkg_state: upgrade
           when: >-
-            ( ans_pipx_existing_version is defined ) and
-            ( ans_pipx_existing_version | length > 0 ) and
-            ( ans_pypi_version_required is version(ans_pipx_existing_version, 'gt') )
+            (ans_pipx_existing_version is defined) and
+            (ans_pipx_existing_version | length > 0) and
+            (ans_pypi_version_required is version(ans_pipx_existing_version, 'gt'))
 
         - name: "Set the pipx package state to present for {{ ans_pypi_pkg.name }}"
           ansible.builtin.set_fact:
             ans_pipx_pkg_state: present
           when: >-
-            ( ( ans_pypi_pkg.state is defined ) and ( ans_pypi_pkg.state == "present" ) ) or
-            ( ( ans_pypi_pkg.state is not defined ) or ( ans_pypi_pkg.state | length == 0 ) ) and
-            ( ( ans_pipx_existing_version is not defined ) or
-            ( ( ans_pipx_existing_version is defined ) and ( ans_pipx_existing_version | length == 0 ) ) )
+            ((ans_pypi_pkg.state is defined) and (ans_pypi_pkg.state == "present")) or
+            ((ans_pypi_pkg.state is not defined) or (ans_pypi_pkg.state | length == 0)) and
+            ((ans_pipx_existing_version is not defined) or
+            ((ans_pipx_existing_version is defined) and (ans_pipx_existing_version | length == 0)))
 
         - name: "PyPI package configured using pipx {{ ans_pypi_pkg.name }}{% if ans_pypi_pkg.extras is defined %}[{% for extra in ans_pypi_pkg.extras %}{{ extra }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}=={{ ans_pypi_version_required }}"  # noqa args[module] name[template]
           community.general.pipx:
