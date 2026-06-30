@@ -234,12 +234,7 @@
             version: 3.5.6  # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
-            # community.general 11.x requires pipx >= 1.7.0 and bookworm has 1.1.0
-            # https://packages.debian.org/bookworm/pipx
-            # and noble has 1.4.3
-            # https://packages.ubuntu.com/noble/pipx
-            # version: 13.1.0  # community.general
-            version: 10.7.9  # community.general
+            version: 11.4.9  # community.general
           - name: community.openwrt
             url: https://github.com/ansible-collections/community.openwrt
             version: 1.6.0  # community.openwrt
