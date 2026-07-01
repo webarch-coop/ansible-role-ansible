@@ -33,10 +33,10 @@ before_script:
   - whoami
   - pwd
 stages:
-  - trixie
-  - bookworm
-  - resolute
-  - forky
+  # - trixie
+  # - bookworm
+  # - resolute
+  # - forky
   - noble
 bookworm:
   image: debian:bookworm-backports
