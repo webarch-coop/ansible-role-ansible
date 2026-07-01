@@ -2,9 +2,9 @@
 
 [![pipeline status](https://git.coop/webarch/ansible/badges/master/pipeline.svg)](https://git.coop/webarch/ansible/-/commits/master)
 
-**NOTE: This role needs work, it doesn't currently upgrade PyPI packages that have been installed using `pipx` and `pipx` is now the default install method so, for now, running `rm -rf ~/.local/pipx/venvs/ansible` before running this role is the best way to use it.**
+**NOTE: This role doesn't currently upgrade PyPI packages that have been installed using `pipx`, running `rm -rf ~/.local/pipx/venvs/ansible` before running this role results in a fresh install each time.**
 
-**NOTE: Distros other than Debian Trixie packages `pipx` <= `1.7.0`, but for the latest `community.general` `pipx` >= `1.7.0` is requited, so upgrade using `pipx-in-pipx` as follows.**
+**NOTE: Distros other than Debian Trixie and Ubuntu Resolute packages `pipx` <= `1.7.0`, but for the latest `community.general` `pipx` >= `1.7.0` is requited, so upgrade using `pipx-in-pipx` as follows.**
 
 ```bash
 sudo -i
@@ -15,9 +15,9 @@ which -a pipx
 /usr/local/bin/pipx --version
 ```
 
-This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm or Ubuntu Noble using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
+This repo contains an Ansible role designed to be run by a non-root user [against a localhost](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#running-against-localhost) running Debian Trixie, Debian Bookworm, Ubuntu Noble or Ubuntu Resolute using the systems `.deb` installed version of Ansible in order to install or upgrade [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html), [Ansible Lint](https://github.com/ansible/ansible-lint), [Molecule](https://github.com/ansible-community/molecule) and other [Python Package Index](https://pypi.org/) (PyPI) packages using [pipx](https://pypa.github.io/pipx/).
 
-This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Noble.
+This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian Bookworm and Ubuntu Noble and Resolute.
 
 ## Debian and Ubuntu Python Versions
 
