@@ -141,7 +141,7 @@
             msg: >-
               The version of ansible-core that is provided by the Ansible {{ ans_required_version }} package is
               {{ ans_core_provided_version }} and the version that has been installed in the pipx venv is
-              {{ ns_pipx_core_installed_version }} and ansible-core {{ ans_core_required_version }} is required
+              {{ ans_pipx_core_installed_version }} and ansible-core {{ ans_core_required_version }} is required
             verbosity: "{% if ansible_check_mode | bool %}0{% else %}1{% endif %}"
 
         - name: "Inject into the pipx venv with force ansible-core {{ ans_core_required_version }}"
