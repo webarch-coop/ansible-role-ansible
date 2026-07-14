@@ -304,4 +304,6 @@ ans_versions:
     core: 2.21.0
   - ansible: 14.1.0
     core: 2.21.1
+  - ansible: 14.2.0
+    core: 2.21.2
 ...

@@ -220,7 +220,7 @@
             version: 5.1.0  # ansible.mysql
           - name: ansible.posix
             url: https://github.com/ansible-collections/ansible.posix
-            version: 2.2.1  # ansible.posix
+            version: 2.2.2  # ansible.posix
           - name: ansible.utils
             url: https://github.com/ansible-collections/ansible.utils
             version: 6.0.3  # ansible.utils
@@ -229,11 +229,11 @@
             version: 5.2.1  # community.docker
           - name: community.crypto
             url: https://github.com/ansible-collections/community.crypto
-            version: 3.2.2  # community.crypto
+            version: 3.3.0  # community.crypto
           - name: community.dns
             url: https://github.com/ansible-collections/community.dns
             # 4.0.1 removes support for ansible-core < 2.18, and thus Python < 3.8, and for dnspython < 2.0.0.
-            version: 3.5.6  # community.dns
+            version: 3.5.7  # community.dns
           - name: community.general
             url: https://github.com/ansible-collections/community.general
             version: 11.4.9  # community.general
