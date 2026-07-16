@@ -12,9 +12,9 @@
 ans: false
 # Ansible collections required
 ans_cols:
-  - name: ansible.mysql
-    url: https://github.com/ansible-collections/ansible.mysql
-    version: latest  # ansible.mysql
+  - name: ansible.mariadb
+    url: https://github.com/ansible-collections/ansible.mariadb
+    version: latest  # ansible.mariadb
   - name: ansible.posix
     url: https://github.com/ansible-collections/ansible.posix
     version: latest  # ansible.posix

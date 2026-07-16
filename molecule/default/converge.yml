@@ -75,9 +75,9 @@
           delay: 10
           retries: 20
         ans_cols:
-          - name: ansible.mysql
-            url: https://github.com/ansible-collections/ansible.mysql
-            version: latest  # ansible.mysql
+          - name: ansible.mariadb
+            url: https://github.com/ansible-collections/ansible.mariadb
+            version: latest  # ansible.mariadb
           - name: ansible.posix
             url: https://github.com/ansible-collections/ansible.posix
             version: latest  # ansible.posix
@@ -215,9 +215,9 @@
           delay: 10
           retries: 20
         ans_cols:
-          - name: ansible.mysql
-            url: https://github.com/ansible-collections/ansible.mysql
-            version: 5.1.0  # ansible.mysql
+          - name: ansible.mariadb
+            url: https://github.com/ansible-collections/ansible.mariadb
+            version: 6.0.2  # ansible.mariadb
           - name: ansible.posix
             url: https://github.com/ansible-collections/ansible.posix
             version: 2.2.2  # ansible.posix
