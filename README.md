@@ -21,7 +21,7 @@ This role is tested using [GitLab CI](.gitlab-ci.yml) on Debian Trixie, Debian B
 
 ## Debian and Ubuntu Python Versions
 
-See the [ansible-core support matrix](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-target-node-python-support).
+See the [ansible-core support matrix](https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix):
 
 | Target distro | Target python | Max Ansible version on control node |
 |---------------|---------------|-------------------------------------|
