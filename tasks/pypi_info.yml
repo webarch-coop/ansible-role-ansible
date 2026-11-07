@@ -19,6 +19,7 @@
             url: "{{ ans_pypi_pkg.url }}/json/"
             method: GET
             return_content: true
+            http_agent: "{{ ans_http_agent }}"
           check_mode: false
           retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"
@@ -43,6 +44,7 @@
             method: GET
             return_content: true
             validate_certs: false
+            http_agent: "{{ ans_http_agent }}"
           check_mode: false
           changed_when: false
           register: ans_pypi

@@ -33,6 +33,7 @@
             method: HEAD
             status_code: 302
             follow_redirects: none
+            http_agent: "{{ ans_http_agent }}"
           check_mode: false
           changed_when: false
           retries: "{{ ans_download.retries }}"
@@ -58,6 +59,7 @@
             status_code: 302
             follow_redirects: none
             validate_certs: false
+            http_agent: "{{ ans_http_agent }}"
           check_mode: false
           changed_when: false
           retries: "{{ ans_download.retries }}"

@@ -73,6 +73,10 @@ argument_specs:
         description: An internal dictionary of environment variables to use when running ansible.
         required: true
         type: dict
+      ans_http_agent:
+        description: HTTP User-Agent for requests.
+        required: true
+        type: str
       ans_jpq:
         description: A dictionary of JMESPath queries for use with the community.general.json_query module.
         required: true
