@@ -32,7 +32,6 @@
         - name: "Debug the outcome of the available PyPi versions check for {{ ans_pypi_pkg.name }}"
           ansible.builtin.debug:
             var: ans_pypi.msg
-            verbosity: 1
           when: ans_pypi.status == -1
 
         - name: Fail if the GET request failure didn't occur when running the minimum Ansible version

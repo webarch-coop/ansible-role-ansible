@@ -72,7 +72,7 @@
       vars:  # noqa var-naming[no-role-prefix]
         ans: true
         ans_download:
-          delay: 10
+          delay: 30
           retries: 20
         ans_cols:
           - name: ansible.mariadb
