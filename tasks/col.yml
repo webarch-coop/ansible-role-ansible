@@ -36,9 +36,10 @@
             http_agent: "{{ ans_http_agent }}"
           check_mode: false
           changed_when: false
-          retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"
+          retries: "{{ ans_download.retries }}"
           register: ans_latest_headers
+          until: ans_latest_headers.status == 302
 
       rescue:
 
@@ -62,9 +63,10 @@
             http_agent: "{{ ans_http_agent }}"
           check_mode: false
           changed_when: false
-          retries: "{{ ans_download.retries }}"
           delay: "{{ ans_download.delay }}"
+          retries: "{{ ans_download.retries }}"
           register: ans_latest_headers
+          until: ans_latest_headers.status == 302
 
     - name: Setting the latest variable is not possible
       block:

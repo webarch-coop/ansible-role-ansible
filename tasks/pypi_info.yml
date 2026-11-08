@@ -21,10 +21,11 @@
             return_content: true
             http_agent: "{{ ans_http_agent }}"
           check_mode: false
-          retries: "{{ ans_download.retries }}"
-          delay: "{{ ans_download.delay }}"
           changed_when: false
+          delay: "{{ ans_download.delay }}"
+          retries: "{{ ans_download.retries }}"
           register: ans_pypi
+          until: ans_pypi.status == 200
 
       rescue:
 
@@ -47,7 +48,10 @@
             http_agent: "{{ ans_http_agent }}"
           check_mode: false
           changed_when: false
+          delay: "{{ ans_download.delay }}"
+          retries: "{{ ans_download.retries }}"
           register: ans_pypi
+          until: ans_pypi.status == 200
           when: ans_core_installed_version == ans_ansible_core_min_version
 
     - name: "Debug available PyPi versions for {{ ans_pypi_pkg.name }}"

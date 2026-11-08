@@ -28,10 +28,10 @@ See the [ansible-core support matrix](https://docs.ansible.com/projects/ansible/
 | Buster        | 3.7.3         | 2.17.x                              |
 | Bullseye      | 3.9.2         | 2.19.x                              |
 | Bookworm      | 3.11.2        | 2.19.x                              |
-| Trixie        | 3.13.5        | 2.20.x                              |
-| Forky         | 3.13.7        | 2.20.x                              |
+| Trixie        | 3.13.5        | 2.21.x                              |
+| Forky         | 3.13.7        | 2.21.x                              |
 | Jammy         | 3.10.6        | 2.19.x                              |
-| Noble         | 3.12.3        | 2.20.x                              |
+| Noble         | 3.12.3        | 2.21.x                              |
 
 ## Role variables
 
